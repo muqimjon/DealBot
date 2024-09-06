@@ -4,10 +4,10 @@ using DealBot.Domain.Common;
 
 public class Address : Auditable
 {
-    public string Country { get; set; } = string.Empty;
-    public string CountryCode { get; set; } = string.Empty;
-    public string City { get; set; } = string.Empty;
-    public string Street { get; set; } = string.Empty;
-    public string Longitude { get; set; } = string.Empty;
-    public string Latitude { get; set; } = string.Empty;
+    public string Country { get; set; }
+    public string CountryCode { get; set; }
+    public string City { get; set; }
+    public string Street { get; set; }
+    public string Longitude { get; set; }
+    public string Latitude { get; set; }
 }

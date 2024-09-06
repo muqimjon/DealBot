@@ -9,8 +9,8 @@ public sealed class Transaction : Auditable
     public CashBackStatus Status { get; set; }
 
     public long UserId { get; set; }
-    public User User { get; set; } = default!;
+    public User User { get; set; }
 
     public long StoreId { get; set; }
-    public Store Store { get; set; } = default!;
+    public Store Store { get; set; }
 }

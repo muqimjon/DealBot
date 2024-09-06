@@ -5,10 +5,10 @@ using DealBot.Domain.Enums;
 
 public sealed class User : Auditable
 {
-    public string FirstName { get; set; } = string.Empty;
-    public string LastName { get; set; } = string.Empty;
-    public string Username { get; set; } = string.Empty;
-    public string PasswordHash { get; set; } = string.Empty;
+    public string FirstName { get; set; }
+    public string LastName { get; set; }
+    public string Username { get; set; }
+    public string PasswordHash { get; set; }
     public DateTimeOffset DateOfBirth { get; set; }
     public Genders Gender { get; set; }
     public decimal Balance { get; set; }
@@ -18,18 +18,18 @@ public sealed class User : Auditable
     public bool IsActive { get; set; }
 
     public long ContactId { get; set; }
-    public Contact Contact { get; set; } = default!;
+    public Contact Contact { get; set; }
 
 
     public long AddressId { get; set; }
-    public Address Address { get; set; } = default!;
+    public Address Address { get; set; }
 
     public long AssetId { get; set; }
-    public Asset Image { get; set; } = default!;
+    public Asset Image { get; set; }
 
     public Referral? ReferredBy { get; set; }
-    public Store Store { get; set; } = default!;
-    public ICollection<Transaction> Transactions { get; set; } = default!;
-    public ICollection<StoreReview> Reviews { get; set; } = default!;
-    public ICollection<Referral> ReferralsInitiated { get; set; } = default!;
+    public Store Store { get; set; }
+    public ICollection<Transaction> Transactions { get; set; }
+    public ICollection<StoreReview> Reviews { get; set; }
+    public ICollection<Referral> ReferralsInitiated { get; set; }
 }
