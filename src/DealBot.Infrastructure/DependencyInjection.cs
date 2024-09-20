@@ -1,5 +1,6 @@
 ﻿namespace DealBot.Infrastructure;
 
+using DealBot.Application.Common;
 using DealBot.Infrastructure.Persistance.EntityFramework;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -11,7 +12,7 @@ public static class DependencyInjection
         this IServiceCollection services,
         IConfiguration configuration)
     {
-        services.AddDbContext<AppDbContext>(options =>
+        services.AddDbContext<IAppDbContext, AppDbContext>(options =>
             options.UseNpgsql(configuration.GetConnectionString(name: "DefaultConnection")));
 
         return services;

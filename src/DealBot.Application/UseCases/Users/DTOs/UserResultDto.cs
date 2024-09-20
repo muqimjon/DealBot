@@ -1,10 +1,11 @@
-﻿namespace DealBot.Domain.Entities;
+﻿namespace DealBot.Application.Users.Commands.CreateUser;
 
-using DealBot.Domain.Common;
+using DealBot.Domain.Entities;
 using DealBot.Domain.Enums;
 
-public sealed class User : Auditable
+public class UserResultDto
 {
+    public long Id { get; set; }
     public string FirstName { get; set; }
     public string LastName { get; set; }
     public string Username { get; set; }
@@ -14,18 +15,20 @@ public sealed class User : Auditable
     public Roles Role { get; set; }
     public string LanguageCode { get; set; }
     public long TelegramId { get; set; }
+    public bool IsPremium { get; set; }
+    public bool IsBot { get; set; }
+    public long ChatId { get; set; }
     public TelegramStates State { get; set; }
-    public int MessageId { get; set; }
     public bool IsActive { get; set; }
 
-    public long? ContactId { get; set; }
+    public long ContactId { get; set; }
     public Contact Contact { get; set; }
 
 
-    public long? AddressId { get; set; }
+    public long AddressId { get; set; }
     public Address Address { get; set; }
 
-    public long? AssetId { get; set; }
+    public long AssetId { get; set; }
     public Asset Image { get; set; }
 
     public Referral? ReferredBy { get; set; }

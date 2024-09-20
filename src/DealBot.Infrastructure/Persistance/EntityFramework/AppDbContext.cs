@@ -1,10 +1,12 @@
 ﻿namespace DealBot.Infrastructure.Persistance.EntityFramework;
 
+using DealBot.Application.Common;
 using DealBot.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
+using System.Threading.Tasks;
 
 public class AppDbContext(DbContextOptions<AppDbContext> options)
-    : DbContext(options)
+    : DbContext(options), IAppDbContext
 {
     public DbSet<User> Users { get; set; }
     public DbSet<Address> Addresses { get; set; }
@@ -14,6 +16,9 @@ public class AppDbContext(DbContextOptions<AppDbContext> options)
     public DbSet<Store> Stores { get; set; }
     public DbSet<StoreReview> Reviews { get; set; }
     public DbSet<Transaction> Transactions { get; set; }
+
+    public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
+        => await base.SaveChangesAsync(cancellationToken);
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
