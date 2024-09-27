@@ -398,3 +398,4 @@ FodyWeavers.xsd
 *.sln.iml
 /src/DealBot.Bot/appsettings.Development.json
 /src/DealBot.Infrastructure/Persistance/EntityFramework/Migration
+/src/DealBot.Infrastructure/Persistance/EntityFramework/Migrations
