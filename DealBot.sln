@@ -5,13 +5,13 @@ VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{4BA4D378-77B4-4B37-A11A-CE24195AF872}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DealBot.Application", "src\DealBot.Application\DealBot.Application.csproj", "{DBFDD555-A2CE-4976-AC5A-15DF0E633E05}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DealBot.Application", "src\DealBot.Application\DealBot.Application.csproj", "{DBFDD555-A2CE-4976-AC5A-15DF0E633E05}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DealBot.Domain", "src\DealBot.Domain\DealBot.Domain.csproj", "{DB51B037-8E71-4AA1-BA50-2B67A8F258EC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DealBot.Domain", "src\DealBot.Domain\DealBot.Domain.csproj", "{DB51B037-8E71-4AA1-BA50-2B67A8F258EC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DealBot.Infrastructure", "src\DealBot.Infrastructure\DealBot.Infrastructure.csproj", "{68F5C8F1-5C29-49D2-B82E-E24F135D765A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DealBot.Infrastructure", "src\DealBot.Infrastructure\DealBot.Infrastructure.csproj", "{68F5C8F1-5C29-49D2-B82E-E24F135D765A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DealBot.Bot", "src\DealBot.Bot\DealBot.Bot.csproj", "{470A9A2A-1217-4911-9C84-7EBDD7F5E2B1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DealBot.Bot", "src\DealBot.Bot\DealBot.Bot.csproj", "{470A9A2A-1217-4911-9C84-7EBDD7F5E2B1}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

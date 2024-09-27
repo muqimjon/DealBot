@@ -2,7 +2,6 @@
 
 using AutoMapper;
 using DealBot.Application.Common;
-using DealBot.Domain.Entities;
 using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;

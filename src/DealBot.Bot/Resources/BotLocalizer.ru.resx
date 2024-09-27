@@ -117,6 +117,13 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="Greeting" xml:space="preserve">
+    <value>Assalomu alaykum {0} {1}!
+Rus tili tanlandi</value>
+  </data>
+  <data name="SelectLanguage" xml:space="preserve">
+    <value>viberay svoy yazik</value>
+  </data>
   <data name="txtSelectedLanguage" xml:space="preserve">
     <value>Отлично, мы продолжим с вами на русском языке!</value>
   </data>

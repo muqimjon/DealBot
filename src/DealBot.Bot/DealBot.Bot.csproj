@@ -16,6 +16,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\DealBot.Domain\DealBot.Domain.csproj" />
     <ProjectReference Include="..\DealBot.Infrastructure\DealBot.Infrastructure.csproj" />
   </ItemGroup>
 

@@ -14,7 +14,7 @@ public sealed class User : Auditable
     public Roles Role { get; set; }
     public string LanguageCode { get; set; }
     public long TelegramId { get; set; }
-    public TelegramStates State { get; set; }
+    public States State { get; set; }
     public int MessageId { get; set; }
     public bool IsActive { get; set; }
 

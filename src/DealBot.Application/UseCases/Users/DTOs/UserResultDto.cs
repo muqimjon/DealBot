@@ -18,7 +18,7 @@ public class UserResultDto
     public bool IsPremium { get; set; }
     public bool IsBot { get; set; }
     public long ChatId { get; set; }
-    public TelegramStates State { get; set; }
+    public States State { get; set; }
     public bool IsActive { get; set; }
 
     public long ContactId { get; set; }

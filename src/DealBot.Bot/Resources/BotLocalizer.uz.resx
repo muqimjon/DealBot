@@ -117,13 +117,58 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="greeting" xml:space="preserve">
+  <data name="AskLanguage" xml:space="preserve">
+    <value>Qulay tilni tanlang</value>
+  </data>
+  <data name="AskPhoneNumber" xml:space="preserve">
+    <value>Telefon raqamingizni yuboring</value>
+  </data>
+  <data name="Comment" xml:space="preserve">
+    <value>✍️ Sharx qoldirish</value>
+  </data>
+  <data name="ContactUs" xml:space="preserve">
+    <value>☎️ Biz bilan a'loqa</value>
+  </data>
+  <data name="Customer" xml:space="preserve">
+    <value>Mijoz</value>
+  </data>
+  <data name="Greeting" xml:space="preserve">
     <value>Assalomu alaykum {0} {1}!
-O'zingiz uchun qulay tilni tanlang: </value>
+Bot haqida ma'lumot va siz ushbu botdan kim sifatida foydalanmoqchisiz :</value>
     <comment>Salomlashish matni, bir vaqtda foydalanuvchiga qulay bo'lgan tilni belgilashi so'raladi bundan foydalanilayotganda foudalanuvchining ismi va familiyasi talab qilinadi.</comment>
   </data>
-  <data name="txtSelectedLanguage" xml:space="preserve">
+  <data name="LanguageSelected" xml:space="preserve">
     <value>Juda yaxshi, suhbatimizni o'zbek tilida davom ettiramiz!</value>
     <comment>Tilni tanlash yoki o'zgartirish qismida</comment>
+  </data>
+  <data name="MyPrivilegeCard" xml:space="preserve">
+    <value>💳 Mening imtiyoz kartam 💳</value>
+  </data>
+  <data name="OrderOnTheSite" xml:space="preserve">
+    <value>🛍 Sayt orqali buyurtma berish 🛍</value>
+  </data>
+  <data name="Referral" xml:space="preserve">
+    <value>⤴️ Do'stlar bilan ulashish</value>
+  </data>
+  <data name="SelectLanguage" xml:space="preserve">
+    <value>O'zingizga qulay tinlni tanlang</value>
+  </data>
+  <data name="SelectMenu" xml:space="preserve">
+    <value>Menyuni  tanlang</value>
+  </data>
+  <data name="SelectRole" xml:space="preserve">
+    <value>Ro'lingizni tanlang</value>
+  </data>
+  <data name="Seller" xml:space="preserve">
+    <value>Sotuvchi</value>
+  </data>
+  <data name="SendPhoneNumber" xml:space="preserve">
+    <value>Telefon raqamni yuborish</value>
+  </data>
+  <data name="Settings" xml:space="preserve">
+    <value>⚙️ Sozlamalar</value>
+  </data>
+  <data name="StoreAddress" xml:space="preserve">
+    <value>📍 Do'konimiz</value>
   </data>
 </root>

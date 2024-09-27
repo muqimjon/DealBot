@@ -3,6 +3,6 @@
 public interface IAuditable
 {
     long Id { get; set; }
-    DateTimeOffset CteatedAt { get; }
+    DateTimeOffset CreatedAt { get; }
     DateTimeOffset? UpdatedAt { get; }
 }
