@@ -6,8 +6,8 @@ public enum States
     Restart,
     WaitingForSelectLanguage,
     WaitingForSelectMenu,
-    WaitingForSelectRole,
     WaitingForSendPhoneNumber,
     WaitingForSelecCustomertMenu,
-    WaitingForSubscribeToChannel
+    WaitingForSubscribeToChannel,
+    WaitingForSelectCardOption
 }

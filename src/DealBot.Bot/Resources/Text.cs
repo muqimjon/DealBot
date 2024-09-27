@@ -26,5 +26,6 @@ public class Text
     public const string AskJoinToChannelForCard = nameof(AskJoinToChannelForCard);
     public const string Subscribe = nameof(Subscribe);
     public const string Check  = nameof(Check);
-    public const string Back = nameof(Back); 
+    public const string Back = nameof(Back);
+    public const string ShortInfo = nameof(ShortInfo);
 }

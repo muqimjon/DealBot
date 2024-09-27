@@ -19,12 +19,13 @@ public partial class BotUpdateHandler
         InlineKeyboardMarkup keyboard = new(new InlineKeyboardButton[][]
         {
             [InlineKeyboardButton.WithCallbackData(localizer[Text.MyPrivilegeCard], CallbackData.MyPrivilegeCard)],
-            [InlineKeyboardButton.WithCallbackData(localizer[Text.OrderOnTheSite], CallbackData.OrderOnTheSite)],
+            [InlineKeyboardButton.WithWebApp(localizer[Text.OrderOnTheSite], new WebAppInfo() { Url = "https://google.uz"})],
             [InlineKeyboardButton.WithCallbackData(localizer[Text.Settings], CallbackData.Settings),
                 InlineKeyboardButton.WithCallbackData(localizer[Text.StoreAddress], CallbackData.StoreAddress)],
             [InlineKeyboardButton.WithCallbackData(localizer[Text.ContactUs], CallbackData.ContactUs),
                 InlineKeyboardButton.WithCallbackData(localizer[Text.Comment], CallbackData.Comment)],
-            [InlineKeyboardButton.WithCallbackData(localizer[Text.Referral], CallbackData.Referral)],
+            [InlineKeyboardButton.WithUrl(localizer[Text.Referral],
+            $"https://t.me/share/url?url={(await botClient.GetMeAsync(cancellationToken: cancellationToken)).Username}&text={localizer[Text.ShortInfo]}")],
         });
 
         await botClient.SendTextMessageAsync(
@@ -41,8 +42,7 @@ public partial class BotUpdateHandler
     {
         var handler = callbackQuery.Data switch
         {
-            CallbackData.MyPrivilegeCard => CheckSubscription(botClient, callbackQuery.Message, cancellationToken),
-            CallbackData.OrderOnTheSite => SendOrderOnTheSiteAsync(botClient, callbackQuery.Message, cancellationToken),
+            CallbackData.MyPrivilegeCard => CheckSubscription(botClient, callbackQuery, cancellationToken),
             CallbackData.StoreAddress => SendStoreAddressAsync(botClient, callbackQuery.Message, cancellationToken),
             CallbackData.ContactUs => SendContactInfoAsync(botClient, callbackQuery.Message, cancellationToken),
             CallbackData.Comment => SendRequestCommentAsync(botClient, callbackQuery.Message, cancellationToken),
@@ -53,13 +53,46 @@ public partial class BotUpdateHandler
         try { await handler; }
         catch (Exception ex) { logger.LogError(ex, "Error handling callback query: {callbackQuery.Data}", callbackQuery); }
     }
-    private async Task CheckSubscription(ITelegramBotClient botClient, Message? message, CancellationToken cancellationToken)
+    private async Task CheckSubscription(ITelegramBotClient botClient, CallbackQuery callbackQuery, CancellationToken cancellationToken)
+    {
+        ChatMember chatMember = await botClient.GetChatMemberAsync(
+            chatId: "@Milestonies",
+            callbackQuery.From.Id,
+            cancellationToken: cancellationToken);
+
+        await (chatMember.Status switch
+        {
+            ChatMemberStatus.Left => SendrequestJoinToChannel(botClient, callbackQuery.Message, cancellationToken),
+            ChatMemberStatus.Member => SendUserPrivilegeCardAsync(botClient, callbackQuery.Message, cancellationToken),
+            _ => HandleUnknownCallbackQueryAsync(botClient, callbackQuery, cancellationToken)
+        });
+    }
+
+    private async Task SendrequestJoinToChannel(ITelegramBotClient botClient, Message? message, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(message, nameof(message));
 
-        // TO DO
+        await botClient.SendChatActionAsync(
+            chatId: message.Chat.Id,
+            chatAction: ChatAction.Typing,
+            cancellationToken: cancellationToken);
 
-        await SendUserPrivilegeCardAsync(botClient, message, cancellationToken);
+        InlineKeyboardMarkup keyboard = new(new InlineKeyboardButton[][]
+        {
+            [InlineKeyboardButton.WithCallbackData(localizer[Text.Subscribe], CallbackData.Subscribe)],
+            [InlineKeyboardButton.WithCallbackData(localizer[Text.Check], CallbackData.Check)],
+            [InlineKeyboardButton.WithCallbackData(localizer[Text.Back], CallbackData.Back)],
+        });
+
+        await botClient.EditMessageTextAsync(
+            chatId: message.Chat.Id,
+            messageId: message.MessageId,
+            text: localizer[Text.AskJoinToChannelForCard],
+            replyMarkup: keyboard,
+            cancellationToken: cancellationToken);
+
+        user.MessageId = message.MessageId;
+        user.State = States.WaitingForSubscribeToChannel;
     }
 
     private async Task SendUserPrivilegeCardAsync(ITelegramBotClient botClient, Message? message, CancellationToken cancellationToken)
@@ -86,7 +119,17 @@ public partial class BotUpdateHandler
             cancellationToken: cancellationToken);
 
         user.MessageId = message.MessageId;
-        user.State = States.WaitingForSubscribeToChannel;
+        user.State = States.WaitingForSelectCardOption;
+    }
+
+    private async Task HandleSelectCardOptionAsync(ITelegramBotClient botClient, CallbackQuery callbackQuery, CancellationToken cancellationToken)
+    {
+        ArgumentNullException.ThrowIfNull(callbackQuery.Message);
+
+        await botClient.SendChatActionAsync(
+            chatId: callbackQuery.Message.Chat.Id,
+            chatAction: ChatAction.Typing,
+            cancellationToken: cancellationToken);
     }
 
     private async Task HandleSubscribeToChannel(ITelegramBotClient botClient, CallbackQuery callbackQuery, CancellationToken cancellationToken)
@@ -104,16 +147,6 @@ public partial class BotUpdateHandler
             CallbackData.Back => SendCustomerMenuAsync(botClient, callbackQuery.Message, cancellationToken),
             _ => HandleUnknownCallbackQueryAsync(botClient, callbackQuery, cancellationToken)
         });
-    }
-
-    private async Task SendOrderOnTheSiteAsync(ITelegramBotClient botClient, Message? message, CancellationToken cancellationToken)
-    {
-        ArgumentNullException.ThrowIfNull(message, nameof(message));
-
-        await botClient.SendChatActionAsync(
-            chatId: message.Chat.Id,
-            chatAction: ChatAction.Typing,
-            cancellationToken: cancellationToken);
     }
 
     private async Task SendStoreAddressAsync(ITelegramBotClient botClient, Message? message, CancellationToken cancellationToken)

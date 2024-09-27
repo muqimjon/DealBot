@@ -18,8 +18,8 @@ public partial class BotUpdateHandler
         var handler = user.State switch
         {
             States.WaitingForSelectLanguage => HandleSelectedLanguageAsync(botClient, callbackQuery, cancellationToken),
-            States.WaitingForSelectRole => HandleSelectedUserRoleAsync(botClient, callbackQuery, cancellationToken),
             States.WaitingForSelecCustomertMenu => HandleSelectedCustomerMenuAsync(botClient, callbackQuery, cancellationToken),
+            States.WaitingForSelectCardOption => HandleSelectCardOptionAsync(botClient, callbackQuery, cancellationToken),
             _ => HandleUnknownCallbackQueryAsync(botClient, callbackQuery, cancellationToken)
         };
 
@@ -73,30 +73,6 @@ public partial class BotUpdateHandler
         CultureInfo.CurrentUICulture = new CultureInfo(user.LanguageCode);
 
         await SendGreetingAsync(botClient, callbackQuery.Message, cancellationToken);
-    }
-
-    private async Task SendUserRolesAsync(ITelegramBotClient botClient, Message message, CancellationToken cancellationToken)
-    {
-        InlineKeyboardMarkup keyboard = new(new InlineKeyboardButton[][]
-        {
-            [InlineKeyboardButton.WithCallbackData(localizer[Text.Seller], CallbackData.Seller)],
-            [InlineKeyboardButton.WithCallbackData(localizer[Text.Customer], CallbackData.Customer)]
-        });
-
-        await botClient.SendChatActionAsync(
-            chatId: message.Chat.Id,
-            chatAction: ChatAction.Typing,
-            cancellationToken: cancellationToken);
-
-        await botClient.EditMessageTextAsync(
-            messageId: message.MessageId,
-            chatId: message.Chat.Id,
-            text: localizer[Text.SelectRole],
-            replyMarkup: keyboard,
-            cancellationToken: cancellationToken);
-
-        user.MessageId = message.MessageId;
-        user.State = States.WaitingForSelectRole;
     }
 }
 

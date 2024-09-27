@@ -28,9 +28,4 @@ public partial class BotUpdateHandler
         try { await handler; }
         catch (Exception ex) { logger.LogError(ex, "Error handling message from {user.FirstName}", user.FirstName); }
     }
-
-    private async Task SendSellerMenuAsync(ITelegramBotClient botClient, Message message, CancellationToken cancellationToken)
-    {
-        
-    }
 }

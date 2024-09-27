@@ -5,6 +5,7 @@ using DealBot.Bot.Resources;
 using DealBot.Infrastructure.Persistance.EntityFramework;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Localization;
+using System;
 using System.Globalization;
 using Telegram.Bot;
 using Telegram.Bot.Polling;

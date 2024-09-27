@@ -10,7 +10,6 @@ public class CallbackData
     public const string Contacts = nameof(Contacts);
     public const string Seller = nameof(Seller);
     public const string Customer = nameof(Customer);
-    public const string OrderOnTheSite = nameof(OrderOnTheSite);
     public const string StoreAddress = nameof(StoreAddress);
     public const string ContactUs = nameof(ContactUs);
     public const string Comment = nameof(Comment);

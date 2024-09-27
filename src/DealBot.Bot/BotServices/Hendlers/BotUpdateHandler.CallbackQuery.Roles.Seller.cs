@@ -13,4 +13,9 @@ public partial class BotUpdateHandler
             chatAction: ChatAction.Typing,
             cancellationToken: cancellationToken);
     }
+
+    private Task SendSellerMenuAsync(ITelegramBotClient botClient, Message message, CancellationToken cancellationToken)
+    {
+        return default(Task)!;
+    }
 }
