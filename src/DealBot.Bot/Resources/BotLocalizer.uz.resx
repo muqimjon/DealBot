@@ -126,6 +126,12 @@
   <data name="AskPhoneNumber" xml:space="preserve">
     <value>Telefon raqamingizni yuboring</value>
   </data>
+  <data name="Back" xml:space="preserve">
+    <value>🔙 Ortga</value>
+  </data>
+  <data name="Check" xml:space="preserve">
+    <value>✔️ Tekchirish</value>
+  </data>
   <data name="Comment" xml:space="preserve">
     <value>✍️ Sharx qoldirish</value>
   </data>
@@ -137,7 +143,8 @@
   </data>
   <data name="Greeting" xml:space="preserve">
     <value>Assalomu alaykum {0} {1}!
-Bot haqida ma'lumot va siz ushbu botdan kim sifatida foydalanmoqchisiz :</value>
+Bot haqida ma'lumot...
+Telefon raqamingizni yuboring</value>
     <comment>Salomlashish matni, bir vaqtda foydalanuvchiga qulay bo'lgan tilni belgilashi so'raladi bundan foydalanilayotganda foudalanuvchining ismi va familiyasi talab qilinadi.</comment>
   </data>
   <data name="LanguageSelected" xml:space="preserve">
@@ -176,5 +183,8 @@ Bot haqida ma'lumot va siz ushbu botdan kim sifatida foydalanmoqchisiz :</value>
   </data>
   <data name="StoreAddress" xml:space="preserve">
     <value>📍 Do'konimiz</value>
+  </data>
+  <data name="Subscribe" xml:space="preserve">
+    <value>➕ Obuna bo'lish</value>
   </data>
 </root>

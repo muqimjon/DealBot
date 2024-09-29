@@ -9,6 +9,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options)
     : DbContext(options), IAppDbContext
 {
     public DbSet<User> Users { get; set; }
+    public DbSet<Card> Cards { get; set; }
     public DbSet<Address> Addresses { get; set; }
     public DbSet<Contact> Contacts { get; set; }
     public DbSet<Asset> Assets { get; set; }

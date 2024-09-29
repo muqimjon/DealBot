@@ -10,7 +10,6 @@ public sealed class User : Auditable
     public string Username { get; set; }
     public DateTimeOffset DateOfBirth { get; set; }
     public Genders Gender { get; set; }
-    public decimal Balance { get; set; }
     public Roles Role { get; set; }
     public string LanguageCode { get; set; }
     public long TelegramId { get; set; }
@@ -18,15 +17,18 @@ public sealed class User : Auditable
     public int MessageId { get; set; }
     public bool IsActive { get; set; }
 
-    public long? ContactId { get; set; }
+    public Card Card { get; set; }
+    public long? CardId { get; set; }
+
     public Contact Contact { get; set; }
+    public long? ContactId { get; set; }
 
 
-    public long? AddressId { get; set; }
     public Address Address { get; set; }
+    public long? AddressId { get; set; }
 
-    public long? AssetId { get; set; }
     public Asset Image { get; set; }
+    public long? AssetId { get; set; }
 
     public Referral? ReferredBy { get; set; }
     public Store Store { get; set; }

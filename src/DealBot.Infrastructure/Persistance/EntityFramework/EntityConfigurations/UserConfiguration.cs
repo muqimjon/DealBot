@@ -31,9 +31,6 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
         builder.Property(u => u.Username)
                .HasMaxLength(22);
 
-        builder.Property(u => u.Balance)
-               .HasColumnType("decimal(18,2)");
-
         builder.Property(u => u.Role)
                .IsRequired();
 
@@ -49,17 +46,17 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
 
     private static void ConfigureRelationships(EntityTypeBuilder<User> builder)
     {
-        builder.HasOne(u => u.Contact)
-               .WithOne()
-               .HasForeignKey<User>(u => u.ContactId);
+        //builder.HasOne(u => u.Contact)
+        //       .WithOne()
+        //       .HasForeignKey<User>(u => u.ContactId);
 
-        builder.HasOne(u => u.Address)
-               .WithOne()
-               .HasForeignKey<User>(u => u.AddressId);
+        //builder.HasOne(u => u.Address)
+        //       .WithOne()
+        //       .HasForeignKey<User>(u => u.AddressId);
 
-        builder.HasOne(u => u.Image)
-               .WithOne()
-               .HasForeignKey<User>(u => u.AssetId);
+        //builder.HasOne(u => u.Image)
+        //       .WithOne()
+        //       .HasForeignKey<User>(u => u.AssetId);
 
         builder.HasMany(u => u.Transactions)
                .WithOne(t => t.User)

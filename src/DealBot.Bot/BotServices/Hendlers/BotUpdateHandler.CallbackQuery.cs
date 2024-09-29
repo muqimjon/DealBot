@@ -42,9 +42,9 @@ public partial class BotUpdateHandler
 
         InlineKeyboardMarkup keyboard = new(new InlineKeyboardButton[][]
         {
-            [InlineKeyboardButton.WithCallbackData(Text.LanguageUz, CallbackData.LanguageUz)],
-            [InlineKeyboardButton.WithCallbackData(Text.LanguageEn, CallbackData.LanguageEn)],
-            [InlineKeyboardButton.WithCallbackData(Text.LanguageRu, CallbackData.LanguageRu)]
+            [InlineKeyboardButton.WithCallbackData(Text.LanguageUz, CallbackData.CultureUz)],
+            [InlineKeyboardButton.WithCallbackData(Text.LanguageEn, CallbackData.CultureEn)],
+            [InlineKeyboardButton.WithCallbackData(Text.LanguageRu, CallbackData.CultureRu)]
         });
 
         await botClient.SendTextMessageAsync(
@@ -64,8 +64,8 @@ public partial class BotUpdateHandler
 
         user.LanguageCode = callbackQuery.Data switch
         {
-            CallbackData.LanguageEn => "en",
-            CallbackData.LanguageRu => "ru",
+            CallbackData.CultureEn => "en",
+            CallbackData.CultureRu => "ru",
             _ => "uz"
         };
 
@@ -73,6 +73,37 @@ public partial class BotUpdateHandler
         CultureInfo.CurrentUICulture = new CultureInfo(user.LanguageCode);
 
         await SendGreetingAsync(botClient, callbackQuery.Message, cancellationToken);
+    }
+
+    private async Task SendGreetingAsync(ITelegramBotClient botClient, Message message, CancellationToken cancellationToken)
+    {
+        await botClient.SendChatActionAsync(
+            chatId: message.Chat.Id,
+            chatAction: ChatAction.Typing,
+            cancellationToken: cancellationToken);
+
+        ReplyKeyboardMarkup keyboard = new(new KeyboardButton[][]
+        {
+            [new(localizer[Text.SendPhoneNumber]) { RequestContact = true }]
+        })
+        {
+            ResizeKeyboard = true,
+            InputFieldPlaceholder = "Telefon raqamingizni kiriting..",
+        };
+
+        var sentMessage = await botClient.SendTextMessageAsync(
+            chatId: message.Chat.Id,
+            text: localizer[Text.Greeting, user.FirstName, user.LastName],
+            replyMarkup: keyboard,
+            cancellationToken: cancellationToken);
+
+        await botClient.DeleteMessageAsync(
+            messageId: message.MessageId,
+            chatId: message.Chat.Id,
+            cancellationToken: cancellationToken);
+
+        user.MessageId = sentMessage.MessageId;
+        user.State = States.WaitingForSendPhoneNumber;
     }
 }
 

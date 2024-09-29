@@ -77,6 +77,8 @@ public partial class BotUpdateHandler(
                 Username = from.Username,
                 FirstName = from.FirstName,
                 LanguageCode = from.LanguageCode,
+                Contact = new Domain.Entities.Contact(),
+                Card = new Domain.Entities.Card(),
             }, cancellationToken);
 
         return entity;
@@ -94,14 +96,14 @@ public partial class BotUpdateHandler(
     {
         var culture = languageCode switch
         {
-            "uz" => new CultureInfo("uz-UZ"),
-            "en" => new CultureInfo("en-US"),
-            "ru" => new CultureInfo("ru-RU"),
+            CallbackData.CultureUz => new CultureInfo("uz-UZ"),
+            CallbackData.CultureEn => new CultureInfo("en-US"),
+            CallbackData.CultureRu => new CultureInfo("ru-RU"),
             _ => CultureInfo.CurrentCulture
         };
 
-        CultureInfo.CurrentCulture = new CultureInfo("uz-UZ");
-        CultureInfo.CurrentUICulture = new CultureInfo("uz-UZ");
+        CultureInfo.CurrentCulture = new CultureInfo("uz-UZ"); // culture
+        CultureInfo.CurrentUICulture = new CultureInfo("uz-UZ"); // culture
     }
 
     private Task HandleUnknownUpdateAsync(ITelegramBotClient _, Update update, CancellationToken __)

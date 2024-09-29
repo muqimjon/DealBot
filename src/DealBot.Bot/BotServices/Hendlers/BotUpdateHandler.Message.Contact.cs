@@ -72,7 +72,7 @@ public partial class BotUpdateHandler
             };
 
             await appDbContext.SaveChangesAsync(cancellationToken);
-            user.ContactId = user.Contact.Id;
+            //user.ContactId = user.Contact.Id;
         }
         else
             user.Contact.Phone = message.Contact.PhoneNumber;

@@ -3,9 +3,9 @@ namespace DealBot.Bot.Resources;
 
 public class CallbackData
 {
-    public const string LanguageUz = nameof(LanguageUz);
-    public const string LanguageRu = nameof(LanguageRu);
-    public const string LanguageEn = nameof(LanguageEn);
+    public const string CultureUz = nameof(CultureUz);
+    public const string CultureRu = nameof(CultureRu);
+    public const string CultureEn = nameof(CultureEn);
     public const string Settings = nameof(Settings);
     public const string Contacts = nameof(Contacts);
     public const string Seller = nameof(Seller);

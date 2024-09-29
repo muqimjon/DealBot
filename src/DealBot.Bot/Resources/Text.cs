@@ -28,4 +28,5 @@ public class Text
     public const string Check  = nameof(Check);
     public const string Back = nameof(Back);
     public const string ShortInfo = nameof(ShortInfo);
+    public const string CardInfo = nameof(CardInfo);
 }
