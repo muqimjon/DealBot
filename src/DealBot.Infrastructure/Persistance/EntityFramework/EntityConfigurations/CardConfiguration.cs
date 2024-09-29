@@ -27,7 +27,7 @@ public class CardConfiguration : IEntityTypeConfiguration<Card>
         builder.Property(c => c.Type)
             .IsRequired();
 
-        builder.Property(c => c.IsActive)
+        builder.Property(c => c.State)
             .IsRequired();
     }
 }

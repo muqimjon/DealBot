@@ -9,5 +9,16 @@ public enum States
     WaitingForSendPhoneNumber,
     WaitingForSelecCustomertMenu,
     WaitingForSubscribeToChannel,
-    WaitingForSelectCardOption
+    WaitingForSelectCardOption,
+    WaitingForSelectAddressOption,
+    WaitingForSelectStoreContactOption,
+    WaitingForSendComment,
+    WaitingForSelectCustomerSettings,
+    WaitingForSelectMenuChangeCustomerInfo,
+    WaitingForFirstSelectLanguage,
+    WaitingForSendFirstName,
+    WaitingForSendLastName,
+    WaitingForSendEmail,
+    WaitingForSelectGender,
+    WaitingForSelectDateOfBirth
 }

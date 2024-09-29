@@ -24,7 +24,7 @@ public partial class BotUpdateHandler
         catch (Exception ex) { logger.LogError(ex, "Error handling message from {FirstName}", user.FirstName); }
     }
 
-    private async Task SendRequestForPhoneNumberAsync(ITelegramBotClient botClient, Message message, CancellationToken cancellationToken)
+    private async Task SendRequestPhoneNumberAsync(ITelegramBotClient botClient, Message message, CancellationToken cancellationToken)
     {
         await botClient.SendChatActionAsync(
             chatId: message.Chat.Id,
@@ -37,7 +37,7 @@ public partial class BotUpdateHandler
         })
         {
             ResizeKeyboard = true,
-            InputFieldPlaceholder = "Telefon raqamingizni kiriting..",
+            InputFieldPlaceholder = localizer[Text.AskPhoneNumberInPlaceHolder],
         };
 
         var sentMessage = await botClient.SendTextMessageAsync(
@@ -64,18 +64,7 @@ public partial class BotUpdateHandler
             messageId: user.MessageId,
             cancellationToken: cancellationToken);
 
-        if (user.Contact is null)
-        {
-            user.Contact = new Domain.Entities.Contact
-            {
-                Phone = message.Contact.PhoneNumber
-            };
-
-            await appDbContext.SaveChangesAsync(cancellationToken);
-            //user.ContactId = user.Contact.Id;
-        }
-        else
-            user.Contact.Phone = message.Contact.PhoneNumber;
+        user.Contact.Phone = message.Contact.PhoneNumber;
 
         await SendCustomerMenuAsync(botClient, message, cancellationToken);
     }

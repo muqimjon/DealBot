@@ -21,13 +21,8 @@ public partial class BotUpdateHandler(
     private Domain.Entities.User user = default!;
     private IAppDbContext appDbContext = default!;
 
-    public async Task HandleUpdateAsync(
-        ITelegramBotClient botClient,
-        Update update,
-        CancellationToken cancellationToken)
+    public async Task HandleUpdateAsync(ITelegramBotClient botClient, Update update, CancellationToken cancellationToken)
     {
-        if (update is null)
-            return;
 
         using var scope = serviceScopeFactory.CreateScope();
         localizer = scope.ServiceProvider.GetRequiredService<IStringLocalizer<BotLocalizer>>();
@@ -39,7 +34,7 @@ public partial class BotUpdateHandler(
         var handlerTask = update.Type switch
         {
             UpdateType.Message => HandleMessageAsync(botClient, update.Message, cancellationToken),
-            UpdateType.CallbackQuery => HandleCallbackQueryAsync(botClient, update.CallbackQuery, cancellationToken),
+            UpdateType.CallbackQuery => HandleCallbackQueryAsync(botClient, update.CallbackQuery!, cancellationToken),
             _ => HandleUnknownUpdateAsync(botClient, update, cancellationToken)
         };
 
@@ -65,6 +60,7 @@ public partial class BotUpdateHandler(
             .Include(user => user.Store)
             .Include(user => user.Transactions)
             .Include(user => user.Reviews)
+            .Include(user => user.Card)
             .Include(user => user.ReferralsInitiated)
             .FirstOrDefaultAsync(user
                 => user.TelegramId.Equals(telegramId), cancellationToken);

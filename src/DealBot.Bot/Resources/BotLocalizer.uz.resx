@@ -117,17 +117,66 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="AskJoinToChannelForCard" xml:space="preserve">
+  <data name="AskComment" xml:space="preserve">
+    <value>Taklif va shikoyatlar uchun izoh qoldiring va biz albatta buni e'tiborga olamiz!</value>
+  </data>
+  <data name="AskCommentInPlaceHolder" xml:space="preserve">
+    <value>Izoh yozing...</value>
+  </data>
+  <data name="AskDateOfBirth" xml:space="preserve">
+    <value>Tug'ilgan sanangiz:</value>
+  </data>
+  <data name="AskEmail" xml:space="preserve">
+    <value>Emailingiz:</value>
+  </data>
+  <data name="AskEmailInPlaceHolder" xml:space="preserve">
+    <value>Emailingizni kiriting...</value>
+  </data>
+  <data name="AskFirstName" xml:space="preserve">
+    <value>Ismingiz:</value>
+  </data>
+  <data name="AskFirstNameInPlaceHolder" xml:space="preserve">
+    <value>Ismingizni kiriting...</value>
+  </data>
+  <data name="AskGender" xml:space="preserve">
+    <value>Jinsingiz:</value>
+  </data>
+  <data name="AskJoinToChannel" xml:space="preserve">
     <value>Davom ettirish uchun kanalga a'zo bo'ling!</value>
+  </data>
+  <data name="AskJoinToChannelAgain" xml:space="preserve">
+    <value>Siz hali ham a'zo emassiz!
+Iltimos, davom ettirish uchun kanalga a'zo bo'ling!</value>
   </data>
   <data name="AskLanguage" xml:space="preserve">
     <value>Qulay tilni tanlang</value>
   </data>
+  <data name="AskLastName" xml:space="preserve">
+    <value>Familiyangiz:</value>
+  </data>
+  <data name="AskLastNameInPlaceHolder" xml:space="preserve">
+    <value>Familiyangizni kiriting...</value>
+  </data>
   <data name="AskPhoneNumber" xml:space="preserve">
     <value>Telefon raqamingizni yuboring</value>
   </data>
+  <data name="AskPhoneNumberInPlaceHolder" xml:space="preserve">
+    <value>Telefon raqamingizni kiriting..</value>
+  </data>
   <data name="Back" xml:space="preserve">
     <value>🔙 Ortga</value>
+  </data>
+  <data name="CardInfo" xml:space="preserve">
+    <value>Imtiyoz karta ma'lumotlari:
+Hisob: {0}
+Turi: {1}
+Holati: {2}</value>
+  </data>
+  <data name="ChangeLanguage" xml:space="preserve">
+    <value>🌐 Tilni o'zgartirish</value>
+  </data>
+  <data name="ChangePersonalInfo" xml:space="preserve">
+    <value>🔖 Shaxsiy ma'lumotlarni o'zgartirish</value>
   </data>
   <data name="Check" xml:space="preserve">
     <value>✔️ Tekchirish</value>
@@ -138,8 +187,23 @@
   <data name="ContactUs" xml:space="preserve">
     <value>☎️ Biz bilan a'loqa</value>
   </data>
-  <data name="Customer" xml:space="preserve">
-    <value>Mijoz</value>
+  <data name="CustomerSettings" xml:space="preserve">
+    <value>Sozlamalar</value>
+  </data>
+  <data name="DateOfBirth" xml:space="preserve">
+    <value>🔢 Tug'ilgan sana</value>
+  </data>
+  <data name="Email" xml:space="preserve">
+    <value>📧 Email</value>
+  </data>
+  <data name="Female" xml:space="preserve">
+    <value>Ayol</value>
+  </data>
+  <data name="FirstName" xml:space="preserve">
+    <value>🪪 Ism</value>
+  </data>
+  <data name="Gender" xml:space="preserve">
+    <value>🚻 Jins</value>
   </data>
   <data name="Greeting" xml:space="preserve">
     <value>Assalomu alaykum {0} {1}!
@@ -151,11 +215,26 @@ Telefon raqamingizni yuboring</value>
     <value>Juda yaxshi, suhbatimizni o'zbek tilida davom ettiramiz!</value>
     <comment>Tilni tanlash yoki o'zgartirish qismida</comment>
   </data>
+  <data name="LastName" xml:space="preserve">
+    <value>🪪 Familiya</value>
+  </data>
+  <data name="Male" xml:space="preserve">
+    <value>Erkak</value>
+  </data>
+  <data name="MenuChangePersonalInfo" xml:space="preserve">
+    <value>Shaxsiy ma'lumotlarni o'zgartirish</value>
+  </data>
   <data name="MyPrivilegeCard" xml:space="preserve">
-    <value>💳 Mening imtiyoz kartam 💳</value>
+    <value>💳 Mening imtiyoz kartam</value>
   </data>
   <data name="OrderOnTheSite" xml:space="preserve">
-    <value>🛍 Sayt orqali buyurtma berish 🛍</value>
+    <value>🛍 Sayt orqali buyurtma berish</value>
+  </data>
+  <data name="PhoneNumber" xml:space="preserve">
+    <value>☎️ Telefon Raqam</value>
+  </data>
+  <data name="ReceiveComment" xml:space="preserve">
+    <value>Izohingizni albatta ko'rib chiqamiz. E'tibor uchun rahmat!</value>
   </data>
   <data name="Referral" xml:space="preserve">
     <value>⤴️ Do'stlar bilan ulashish</value>
@@ -169,9 +248,6 @@ Telefon raqamingizni yuboring</value>
   <data name="SelectRole" xml:space="preserve">
     <value>Ro'lingizni tanlang</value>
   </data>
-  <data name="Seller" xml:space="preserve">
-    <value>Sotuvchi</value>
-  </data>
   <data name="SendPhoneNumber" xml:space="preserve">
     <value>Telefon raqamni yuborish</value>
   </data>
@@ -183,6 +259,13 @@ Telefon raqamingizni yuboring</value>
   </data>
   <data name="StoreAddress" xml:space="preserve">
     <value>📍 Do'konimiz</value>
+  </data>
+  <data name="StoreAddressInfo" xml:space="preserve">
+    <value>Farg'ona, Chimyon</value>
+  </data>
+  <data name="StoreContactInfo" xml:space="preserve">
+    <value>Email: muqimjon.mr@gmail.com
+tel: +998 93 7349808</value>
   </data>
   <data name="Subscribe" xml:space="preserve">
     <value>➕ Obuna bo'lish</value>
