@@ -31,5 +31,6 @@ public class CallbackData
     public const string Year = nameof(Year);
     public const string Month = nameof(Month);
     public const string Day = nameof(Day);
-    public const string Submit = nameof(Submit);
+    public const string Previous = nameof(Previous);
+    public const string Next = nameof(Next);
 }

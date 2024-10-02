@@ -2,7 +2,6 @@
 
 using DealBot.Bot.Resources;
 using DealBot.Domain.Enums;
-using System.Globalization;
 using Telegram.Bot;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
@@ -28,6 +27,13 @@ public partial class BotUpdateHandler
             States.WaitingForSelectMenuChangeCustomerInfo => HandleSelectedMenuChangePersonalInfoAsync(botClient, callbackQuery, cancellationToken),
             States.WaitingForSelectGender => HandleSelectedGenderAsync(botClient, callbackQuery, cancellationToken),
             States.WaitingForSelectDateOfBirth => HandleDateOfBirthAsync(botClient, callbackQuery, cancellationToken),
+            States.WaitingForSelectDateOfBirthYear1 => HandleYearAsync(botClient, callbackQuery, cancellationToken),
+            States.WaitingForSelectDateOfBirthYear2 => HandleYearAsync(botClient, callbackQuery, cancellationToken),
+            States.WaitingForSelectDateOfBirthYear3 => HandleYearAsync(botClient, callbackQuery, cancellationToken),
+            States.WaitingForSelectDateOfBirthYear4 => HandleYearAsync(botClient, callbackQuery, cancellationToken),
+            States.WaitingForSelectDateOfBirthYear5 => HandleYearAsync(botClient, callbackQuery, cancellationToken),
+            States.WaitingForSelectDateOfBirthMonth => HandleMonthAsync(botClient, callbackQuery, cancellationToken),
+            States.WaitingForSelectDateOfBirthDay => HandleDayAsync(botClient, callbackQuery, cancellationToken),
             _ => HandleUnknownCallbackQueryAsync(botClient, callbackQuery, cancellationToken)
         };
 
@@ -52,6 +58,13 @@ public partial class BotUpdateHandler
             States.WaitingForSendEmail => SendMenuChangeCustomerInfoAsync(botClient, message, cancellationToken),
             States.WaitingForSendLastName => SendMenuChangeCustomerInfoAsync(botClient, message, cancellationToken),
             States.WaitingForSendFirstName => SendMenuChangeCustomerInfoAsync(botClient, message, cancellationToken),
+            States.WaitingForSelectDateOfBirthYear1 => SendRequestDateOfBirthAsync(botClient, message, cancellationToken),
+            States.WaitingForSelectDateOfBirthYear2 => SendRequestDateOfBirthAsync(botClient, message, cancellationToken),
+            States.WaitingForSelectDateOfBirthYear3 => SendRequestDateOfBirthAsync(botClient, message, cancellationToken),
+            States.WaitingForSelectDateOfBirthYear4 => SendRequestDateOfBirthAsync(botClient, message, cancellationToken),
+            States.WaitingForSelectDateOfBirthYear5 => SendRequestDateOfBirthAsync(botClient, message, cancellationToken),
+            States.WaitingForSelectDateOfBirthMonth => SendRequestDateOfBirthAsync(botClient, message, cancellationToken),
+            States.WaitingForSelectDateOfBirthDay => SendRequestDateOfBirthAsync(botClient, message, cancellationToken),
             _ => HandleUnknownMessageAsync(botClient, message, cancellationToken),
         };
 
@@ -71,6 +84,14 @@ public partial class BotUpdateHandler
             chatId: message.Chat.Id,
             chatAction: ChatAction.Typing,
             cancellationToken: cancellationToken);
+        try
+        {
+            await botClient.DeleteMessageAsync(
+                chatId: message.Chat.Id,
+                messageId: message.MessageId,
+                cancellationToken: cancellationToken);
+        }
+        catch { }
 
         InlineKeyboardMarkup keyboard = new(new InlineKeyboardButton[][]
         {

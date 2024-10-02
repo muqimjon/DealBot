@@ -2,22 +2,16 @@
 
 using DealBot.Bot.Resources;
 using DealBot.Domain.Enums;
+using System.Globalization;
+using Telegram.Bot;
+using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
 using Telegram.Bot.Types.ReplyMarkups;
-using Telegram.Bot.Types;
-using Telegram.Bot;
-using System.Globalization;
-using Telegram.Bot.Exceptions;
 
 public partial class BotUpdateHandler
 {
     private async Task SendCustomerSettingsAsync(ITelegramBotClient botClient, Message message, CancellationToken cancellationToken)
     {
-        await botClient.SendChatActionAsync(
-            chatId: message.Chat.Id,
-            chatAction: ChatAction.Typing,
-            cancellationToken: cancellationToken);
-
         InlineKeyboardMarkup keyboard = new(new InlineKeyboardButton[][]
         {
             [InlineKeyboardButton.WithCallbackData(localizer[Text.ChangeLanguage], CallbackData.ChangeLanguage)],
@@ -50,11 +44,6 @@ public partial class BotUpdateHandler
 
     private async Task SendMenuLanguagesAsync(ITelegramBotClient botClient, Message message, CancellationToken cancellationToken)
     {
-        await botClient.SendChatActionAsync(
-            chatId: message.Chat.Id,
-            chatAction: ChatAction.Typing,
-            cancellationToken: cancellationToken);
-
         InlineKeyboardMarkup keyboard = new(new InlineKeyboardButton[][]
         {
             [InlineKeyboardButton.WithCallbackData(localizer[Text.LanguageUz], CallbackData.CultureUz)],
@@ -76,7 +65,6 @@ public partial class BotUpdateHandler
 
     private async Task HandleSelectedLanguageAsync(ITelegramBotClient botClient, CallbackQuery callbackQuery, CancellationToken cancellationToken)
     {
-        ArgumentNullException.ThrowIfNull(callbackQuery.Data);
         ArgumentNullException.ThrowIfNull(callbackQuery.Message);
 
         user.LanguageCode = callbackQuery.Data switch
@@ -86,8 +74,8 @@ public partial class BotUpdateHandler
             _ => "uz"
         };
 
-        CultureInfo.CurrentCulture = new CultureInfo(user.LanguageCode);
-        CultureInfo.CurrentUICulture = new CultureInfo(user.LanguageCode);
+        CultureInfo.CurrentCulture = new CultureInfo("uz");
+        CultureInfo.CurrentUICulture = new CultureInfo("uz");
 
         await (user.State switch
         {
@@ -99,11 +87,6 @@ public partial class BotUpdateHandler
 
     private async Task SendMenuChangeCustomerInfoAsync(ITelegramBotClient botClient, Message message, CancellationToken cancellationToken)
     {
-        await botClient.SendChatActionAsync(
-            chatId: message.Chat.Id,
-            chatAction: ChatAction.Typing,
-            cancellationToken: cancellationToken);
-
         InlineKeyboardMarkup keyboard = new(new InlineKeyboardButton[][]
         {
             [InlineKeyboardButton.WithCallbackData(localizer[Text.FirstName], CallbackData.FirstName),
@@ -122,19 +105,40 @@ public partial class BotUpdateHandler
             sentMessage = await botClient.EditMessageTextAsync(
                 chatId: message.Chat.Id,
                 messageId: message.MessageId,
-                text: localizer[Text.MenuChangePersonalInfo],
+                text: localizer[Text.MenuChangePersonalInfo,
+                    user.FirstName,
+                    user.LastName,
+                    user.DateOfBirth.ToString("yyyy-MM-dd"),
+                    user.Gender,
+                    user.Contact.Phone!,
+                    user.Contact.Email!],
                 replyMarkup: keyboard,
                 cancellationToken: cancellationToken);
         }
-        catch (ApiRequestException ex)
+        catch
         {
-            logger.LogError(message: $"Error: {ex}");
             try
             {
+                await botClient.SendChatActionAsync(
+                    chatId: message.Chat.Id,
+                    chatAction: ChatAction.Typing,
+                    cancellationToken: cancellationToken);
+
                 sentMessage = await botClient.SendTextMessageAsync(
                     chatId: message.Chat.Id,
-                    text: localizer[Text.MenuChangePersonalInfo],
+                    text: localizer[Text.MenuChangePersonalInfo,
+                        user.FirstName,
+                        user.LastName,
+                        user.DateOfBirth.ToString("yyyy-MM-dd"),
+                        user.Gender,
+                        user.Contact.Phone!,
+                        user.Contact.Email!],
                     replyMarkup: keyboard,
+                    cancellationToken: cancellationToken);
+
+                await botClient.DeleteMessageAsync(
+                    messageId: message.MessageId,
+                    chatId: message.Chat.Id,
                     cancellationToken: cancellationToken);
 
                 await botClient.DeleteMessageAsync(
@@ -142,7 +146,7 @@ public partial class BotUpdateHandler
                     chatId: message.Chat.Id,
                     cancellationToken: cancellationToken);
             }
-            catch { logger.LogError(message: $"Error: {ex}"); }
+            catch { }
         }
 
         user.MessageId = sentMessage.MessageId;
@@ -167,22 +171,17 @@ public partial class BotUpdateHandler
 
     private async Task SendRequestGenderAsync(ITelegramBotClient botClient, Message message, CancellationToken cancellationToken)
     {
-        await botClient.SendChatActionAsync(
-            chatId: message.Chat.Id,
-            chatAction: ChatAction.Typing,
-            cancellationToken: cancellationToken);
-
         InlineKeyboardMarkup keyboard = new(new InlineKeyboardButton[][]
         {
-            [InlineKeyboardButton.WithCallbackData(localizer[Text.Male], CallbackData.Male)],
-            [InlineKeyboardButton.WithCallbackData(localizer[Text.Female], CallbackData.Female)],
+            [InlineKeyboardButton.WithCallbackData(localizer[Text.Male], CallbackData.Male),
+                InlineKeyboardButton.WithCallbackData(localizer[Text.Female], CallbackData.Female)],
             [InlineKeyboardButton.WithCallbackData(localizer[Text.Back], CallbackData.Back)],
         });
 
         Message sentMessage = await botClient.EditMessageTextAsync(
                 chatId: message.Chat.Id,
                 messageId: message.MessageId,
-                text: localizer[Text.AskGender],
+                text: localizer[Text.AskGender, localizer[user.Gender.ToString()]],
                 replyMarkup: keyboard,
                 cancellationToken: cancellationToken);
 
@@ -202,37 +201,5 @@ public partial class BotUpdateHandler
         };
 
         await SendMenuChangeCustomerInfoAsync(botClient, callbackQuery.Message, cancellationToken);
-    }
-
-    private async Task SendRequestDateOfBirthAsync(ITelegramBotClient botClient, Message message, CancellationToken cancellationToken)
-    {
-        await botClient.SendChatActionAsync(
-            chatId: message.Chat.Id,
-            chatAction: ChatAction.Typing,
-            cancellationToken: cancellationToken);
-
-        InlineKeyboardMarkup keyboard = new(new InlineKeyboardButton[][]
-        {
-            [InlineKeyboardButton.WithCallbackData(localizer[Text.Year], CallbackData.Year)],
-            [InlineKeyboardButton.WithCallbackData(localizer[Text.Month], CallbackData.Month)],
-            [InlineKeyboardButton.WithCallbackData(localizer[Text.Day], CallbackData.Day)],
-            [InlineKeyboardButton.WithCallbackData(localizer[Text.Submit], CallbackData.Submit)],
-            [InlineKeyboardButton.WithCallbackData(localizer[Text.Back], CallbackData.Back)],
-        });
-
-        Message sentMessage = await botClient.EditMessageTextAsync(
-                chatId: message.Chat.Id,
-                messageId: message.MessageId,
-                text: localizer[Text.AskDateOfBirth],
-                replyMarkup: keyboard,
-                cancellationToken: cancellationToken);
-        
-        user.MessageId = sentMessage.MessageId;
-        user.State = States.WaitingForSelectDateOfBirth;
-    }
-
-    private async Task HandleDateOfBirthAsync(ITelegramBotClient botClient, CallbackQuery callbackQuery, CancellationToken cancellationToken)
-    {
-        throw new NotImplementedException();
     }
 }

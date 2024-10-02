@@ -4,20 +4,14 @@ using DealBot.Bot.Resources;
 using DealBot.Domain.Enums;
 using System.Threading;
 using Telegram.Bot;
-using Telegram.Bot.Exceptions;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
 using Telegram.Bot.Types.ReplyMarkups;
 
 public partial class BotUpdateHandler
 {
-    private async Task SendCustomerMenuAsync(ITelegramBotClient botClient, Message message, CancellationToken cancellationToken)
+    private async Task SendCustomerMenuAsync(ITelegramBotClient botClient, Message message, CancellationToken cancellationToken, string messageText = "")
     {
-        await botClient.SendChatActionAsync(
-            chatId: message.Chat.Id,
-            chatAction: ChatAction.Typing,
-            cancellationToken: cancellationToken);
-
         InlineKeyboardMarkup keyboard = new(new InlineKeyboardButton[][]
         {
             [InlineKeyboardButton.WithCallbackData(localizer[Text.MyPrivilegeCard], CallbackData.MyPrivilegeCard)],
@@ -36,18 +30,22 @@ public partial class BotUpdateHandler
             sentMessage = await botClient.EditMessageTextAsync(
                 chatId: message.Chat.Id,
                 messageId: message.MessageId,
-                text: localizer[Text.SelectMenu],
+                text: string.Concat(messageText, localizer[Text.SelectMenu]),
                 replyMarkup: keyboard,
                 cancellationToken: cancellationToken);
         }
-        catch(ApiRequestException ex)
+        catch
         {
-            logger.LogError(message: $"Error: {ex}");
             try
             {
+                await botClient.SendChatActionAsync(
+                    chatId: message.Chat.Id,
+                    chatAction: ChatAction.Typing,
+                    cancellationToken: cancellationToken);
+
                 sentMessage = await botClient.SendTextMessageAsync(
                     chatId: message.Chat.Id,
-                    text: localizer[Text.SelectMenu],
+                    text: string.Concat(messageText, localizer[Text.SelectMenu]),
                     replyMarkup: keyboard,
                     cancellationToken: cancellationToken);
 
@@ -56,7 +54,15 @@ public partial class BotUpdateHandler
                     chatId: message.Chat.Id,
                     cancellationToken: cancellationToken);
             }
-            catch { logger.LogError(message: $"Error: {ex}"); }
+            catch { }
+            try
+            {
+                await botClient.DeleteMessageAsync(
+                    chatId: message.Chat.Id,
+                    messageId: message.MessageId,
+                    cancellationToken: cancellationToken);
+            }
+            catch { }
         }
 
         user.MessageId = sentMessage.MessageId;
@@ -85,11 +91,6 @@ public partial class BotUpdateHandler
 
     private async Task SendrequestJoinToChannel(ITelegramBotClient botClient, Message message, CancellationToken cancellationToken)
     {
-        await botClient.SendChatActionAsync(
-            chatId: message.Chat.Id,
-            chatAction: ChatAction.Typing,
-            cancellationToken: cancellationToken);
-
         InlineKeyboardMarkup keyboard = new(new InlineKeyboardButton[][]
         {
             [InlineKeyboardButton.WithUrl(localizer[Text.Subscribe], "https://t.me/milestonies")],
@@ -134,11 +135,6 @@ public partial class BotUpdateHandler
 
     private async Task SendUserPrivilegeCardAsync(ITelegramBotClient botClient, Message message, CancellationToken cancellationToken)
     {
-        await botClient.SendChatActionAsync(
-            chatId: message.Chat.Id,
-            chatAction: ChatAction.Typing,
-            cancellationToken: cancellationToken);
-
         InlineKeyboardMarkup keyboard = new(new InlineKeyboardButton[][]
         {
             [InlineKeyboardButton.WithCallbackData(localizer[Text.Back], CallbackData.Back)],
@@ -159,11 +155,6 @@ public partial class BotUpdateHandler
 
     private async Task SendStoreAddressAsync(ITelegramBotClient botClient, Message message, CancellationToken cancellationToken)
     {
-        await botClient.SendChatActionAsync(
-            chatId: message.Chat.Id,
-            chatAction: ChatAction.Typing,
-            cancellationToken: cancellationToken);
-
         InlineKeyboardMarkup keyboard = new(new InlineKeyboardButton[][]
         {
             [InlineKeyboardButton.WithCallbackData(localizer[Text.Back], CallbackData.Back)],
@@ -182,11 +173,6 @@ public partial class BotUpdateHandler
 
     private async Task SendContactInfoAsync(ITelegramBotClient botClient, Message message, CancellationToken cancellationToken)
     {
-        await botClient.SendChatActionAsync(
-            chatId: message.Chat.Id,
-            chatAction: ChatAction.Typing,
-            cancellationToken: cancellationToken);
-
         InlineKeyboardMarkup keyboard = new(new InlineKeyboardButton[][]
         {
             [InlineKeyboardButton.WithCallbackData(localizer[Text.Back], CallbackData.Back)],

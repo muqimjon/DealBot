@@ -19,12 +19,11 @@ public partial class BotUpdateHandler
 
         var handler = userState switch
         {
-            States.None => SendMenuLanguagesAsync(botClient, message, cancellationToken),
+            States.None => SendFirstMenuLanguagesAsync(botClient, message, cancellationToken),
             States.Restart => user.Role switch
             {
-                Roles.Seller => SendSellerMenuAsync(botClient, message, cancellationToken),
                 Roles.Customer => SendCustomerMenuAsync(botClient, message, cancellationToken),
-                _ => SendGreetingAsync(botClient, message, cancellationToken),
+                _ => SendSellerMenuAsync(botClient, message, cancellationToken),
             },
             States.WaitingForSendComment => HandleCommentMessageAsync(botClient, message, cancellationToken),
             States.WaitingForSendEmail => HandleEmailAsync(botClient, message, cancellationToken),

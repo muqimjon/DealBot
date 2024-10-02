@@ -124,22 +124,22 @@
     <value>Izoh yozing...</value>
   </data>
   <data name="AskDateOfBirth" xml:space="preserve">
-    <value>Tug'ilgan sanangiz:</value>
+    <value>Tug'ilgan sanangiz: {0}</value>
   </data>
   <data name="AskEmail" xml:space="preserve">
-    <value>Emailingiz:</value>
+    <value>Emailingiz: {0}</value>
   </data>
   <data name="AskEmailInPlaceHolder" xml:space="preserve">
     <value>Emailingizni kiriting...</value>
   </data>
   <data name="AskFirstName" xml:space="preserve">
-    <value>Ismingiz:</value>
+    <value>Ismingiz: {0}</value>
   </data>
   <data name="AskFirstNameInPlaceHolder" xml:space="preserve">
     <value>Ismingizni kiriting...</value>
   </data>
   <data name="AskGender" xml:space="preserve">
-    <value>Jinsingiz:</value>
+    <value>Jinsingiz: {0}</value>
   </data>
   <data name="AskJoinToChannel" xml:space="preserve">
     <value>Davom ettirish uchun kanalga a'zo bo'ling!</value>
@@ -152,7 +152,7 @@ Iltimos, davom ettirish uchun kanalga a'zo bo'ling!</value>
     <value>Qulay tilni tanlang</value>
   </data>
   <data name="AskLastName" xml:space="preserve">
-    <value>Familiyangiz:</value>
+    <value>Familiyangiz: {0}</value>
   </data>
   <data name="AskLastNameInPlaceHolder" xml:space="preserve">
     <value>Familiyangizni kiriting...</value>
@@ -164,7 +164,7 @@ Iltimos, davom ettirish uchun kanalga a'zo bo'ling!</value>
     <value>Telefon raqamingizni kiriting..</value>
   </data>
   <data name="Back" xml:space="preserve">
-    <value>🔙 Ortga</value>
+    <value>⇚ Ortga</value>
   </data>
   <data name="CardInfo" xml:space="preserve">
     <value>Imtiyoz karta ma'lumotlari:
@@ -176,7 +176,7 @@ Holati: {2}</value>
     <value>🌐 Tilni o'zgartirish</value>
   </data>
   <data name="ChangePersonalInfo" xml:space="preserve">
-    <value>🔖 Shaxsiy ma'lumotlarni o'zgartirish</value>
+    <value>🔖 Shaxsiy ma'lumotlarni tahrirlash</value>
   </data>
   <data name="Check" xml:space="preserve">
     <value>✔️ Tekchirish</value>
@@ -193,11 +193,14 @@ Holati: {2}</value>
   <data name="DateOfBirth" xml:space="preserve">
     <value>🔢 Tug'ilgan sana</value>
   </data>
+  <data name="Day" xml:space="preserve">
+    <value>Kun</value>
+  </data>
   <data name="Email" xml:space="preserve">
     <value>📧 Email</value>
   </data>
   <data name="Female" xml:space="preserve">
-    <value>Ayol</value>
+    <value>♀ Ayol</value>
   </data>
   <data name="FirstName" xml:space="preserve">
     <value>🪪 Ism</value>
@@ -219,13 +222,25 @@ Telefon raqamingizni yuboring</value>
     <value>🪪 Familiya</value>
   </data>
   <data name="Male" xml:space="preserve">
-    <value>Erkak</value>
+    <value>♂ Erkak</value>
   </data>
   <data name="MenuChangePersonalInfo" xml:space="preserve">
-    <value>Shaxsiy ma'lumotlarni o'zgartirish</value>
+    <value>Shaxsiy ma'lumotlarni o'zgartirish:
+Ism: {0}
+Familiya: {1}
+Tug'ilgan sana: {2}
+Jinsi: {3}
+Telefon raqami: {4}
+Email: {5}</value>
+  </data>
+  <data name="Month" xml:space="preserve">
+    <value>Oy</value>
   </data>
   <data name="MyPrivilegeCard" xml:space="preserve">
     <value>💳 Mening imtiyoz kartam</value>
+  </data>
+  <data name="Next" xml:space="preserve">
+    <value>Keyin ⇒</value>
   </data>
   <data name="OrderOnTheSite" xml:space="preserve">
     <value>🛍 Sayt orqali buyurtma berish</value>
@@ -233,8 +248,12 @@ Telefon raqamingizni yuboring</value>
   <data name="PhoneNumber" xml:space="preserve">
     <value>☎️ Telefon Raqam</value>
   </data>
+  <data name="Previous" xml:space="preserve">
+    <value>⇐ Oldin</value>
+  </data>
   <data name="ReceiveComment" xml:space="preserve">
-    <value>Izohingizni albatta ko'rib chiqamiz. E'tibor uchun rahmat!</value>
+    <value>Izohingizni albatta ko'rib chiqamiz. E'tibor uchun rahmat!
+</value>
   </data>
   <data name="Referral" xml:space="preserve">
     <value>⤴️ Do'stlar bilan ulashish</value>
@@ -267,7 +286,13 @@ Telefon raqamingizni yuboring</value>
     <value>Email: muqimjon.mr@gmail.com
 tel: +998 93 7349808</value>
   </data>
+  <data name="Submit" xml:space="preserve">
+    <value>✅ Tasdiqlash</value>
+  </data>
   <data name="Subscribe" xml:space="preserve">
     <value>➕ Obuna bo'lish</value>
+  </data>
+  <data name="Year" xml:space="preserve">
+    <value>Yil</value>
   </data>
 </root>

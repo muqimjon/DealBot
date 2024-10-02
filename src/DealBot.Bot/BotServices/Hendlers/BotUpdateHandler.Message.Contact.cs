@@ -59,10 +59,23 @@ public partial class BotUpdateHandler
     {
         ArgumentNullException.ThrowIfNull(message.Contact);
 
-        await botClient.DeleteMessageAsync(
-            chatId: message.Chat.Id,
-            messageId: user.MessageId,
-            cancellationToken: cancellationToken);
+        try
+        {
+            await botClient.DeleteMessageAsync(
+                chatId: message.Chat.Id,
+                messageId: user.MessageId,
+                cancellationToken: cancellationToken);
+        }
+        catch { }
+
+        try
+        {
+            await botClient.DeleteMessageAsync(
+                chatId: message.Chat.Id,
+                messageId: message.MessageId,
+                cancellationToken: cancellationToken);
+        }
+        catch { }
 
         user.Contact.Phone = message.Contact.PhoneNumber;
 

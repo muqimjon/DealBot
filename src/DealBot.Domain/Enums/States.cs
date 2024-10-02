@@ -20,5 +20,13 @@ public enum States
     WaitingForSendLastName,
     WaitingForSendEmail,
     WaitingForSelectGender,
-    WaitingForSelectDateOfBirth
+    CommentReceived,
+    WaitingForSelectDateOfBirth,
+    WaitingForSelectDateOfBirthYear1,
+    WaitingForSelectDateOfBirthYear2,
+    WaitingForSelectDateOfBirthYear3,
+    WaitingForSelectDateOfBirthYear4,
+    WaitingForSelectDateOfBirthYear5,
+    WaitingForSelectDateOfBirthMonth,
+    WaitingForSelectDateOfBirthDay
 }

@@ -23,7 +23,6 @@ public partial class BotUpdateHandler(
 
     public async Task HandleUpdateAsync(ITelegramBotClient botClient, Update update, CancellationToken cancellationToken)
     {
-
         using var scope = serviceScopeFactory.CreateScope();
         localizer = scope.ServiceProvider.GetRequiredService<IStringLocalizer<BotLocalizer>>();
         appDbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
@@ -85,6 +84,7 @@ public partial class BotUpdateHandler(
         UpdateType.Message => update.Message!,
         UpdateType.ChatMember => update.ChatMember!,
         UpdateType.CallbackQuery => update.CallbackQuery!,
+        UpdateType.MyChatMember => update.MyChatMember!,
         _ => update.Message!,
     };
 

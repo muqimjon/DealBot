@@ -48,14 +48,15 @@ public class Text
     public const string AskFirstName = nameof(AskFirstName);
     public const string AskLastNameInPlaceHolder = nameof(AskLastNameInPlaceHolder);
     public const string AskLastName = nameof(AskLastName);
-    public const string AskEmailInPlaceHolder = nameof(AskLastNameInPlaceHolder);
+    public const string AskEmailInPlaceHolder = nameof(AskEmailInPlaceHolder);
     public const string AskEmail = nameof(AskEmail);
-    public const string Male = nameof(Male); 
+    public const string Male = nameof(Male);
     public const string Female = nameof(Female);
     public const string AskGender = nameof(AskGender);
     public const string Year = nameof(Year);
     public const string Month = nameof(Month);
     public const string Day = nameof(Day);
-    public const string Submit = nameof(Submit);
     public const string AskDateOfBirth = nameof(AskDateOfBirth);
+    public static string Previous = nameof(Previous);
+    public const string Next = nameof(Next);
 }
