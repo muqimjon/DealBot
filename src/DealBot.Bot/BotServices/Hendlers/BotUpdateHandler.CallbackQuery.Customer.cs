@@ -192,6 +192,38 @@ public partial class BotUpdateHandler
         user.State = States.WaitingForSelectStoreContactOption;
     }
 
+    private async Task SendCustomerSettingsAsync(ITelegramBotClient botClient, Message message, CancellationToken cancellationToken)
+    {
+        InlineKeyboardMarkup keyboard = new(new InlineKeyboardButton[][]
+        {
+            [InlineKeyboardButton.WithCallbackData(localizer[Text.ChangeLanguage], CallbackData.ChangeLanguage)],
+            [InlineKeyboardButton.WithCallbackData(localizer[Text.ChangePersonalInfo], CallbackData.ChangePersonalInfo)],
+            [InlineKeyboardButton.WithCallbackData(localizer[Text.Back], CallbackData.Back)],
+        });
+
+        var sentMessage = await botClient.EditMessageTextAsync(
+            chatId: message.Chat.Id,
+            messageId: message.MessageId,
+            text: localizer[Text.SelectSettings],
+            replyMarkup: keyboard,
+            cancellationToken: cancellationToken);
+
+        user.MessageId = sentMessage.MessageId;
+        user.State = States.WaitingForSelectSettings;
+    }
+
+    private async Task HandleSelectedCustomerSettingsAsync(ITelegramBotClient botClient, CallbackQuery callbackQuery, CancellationToken cancellationToken)
+    {
+        ArgumentNullException.ThrowIfNull(callbackQuery.Message, nameof(Message));
+
+        await (callbackQuery.Data switch
+        {
+            CallbackData.ChangeLanguage => SendMenuLanguagesAsync(botClient, callbackQuery.Message, cancellationToken),
+            CallbackData.ChangePersonalInfo => SendMenuChangePersonalInfoAsync(botClient, callbackQuery.Message, cancellationToken),
+            _ => HandleUnknownCallbackQueryAsync(botClient, callbackQuery, cancellationToken),
+        });
+    }
+
     private async Task<bool> CheckSubscription(ITelegramBotClient botClient, CallbackQuery callbackQuery, CancellationToken cancellationToken)
     {
         var member = await botClient.GetChatMemberAsync(

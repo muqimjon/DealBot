@@ -17,25 +17,20 @@ public partial class BotUpdateHandler
 
         var userState = message.Text.Equals("/start") && !user.State.Equals(States.None) ? States.Restart : user.State;
 
-        var handler = user.Role switch
+        var handler = userState switch
         {
-            Roles.Customer => userState switch
+            States.None => SendFirstMenuLanguagesAsync(botClient, message, cancellationToken),
+            States.Restart => user.Role switch
             {
-                States.None => SendFirstMenuLanguagesAsync(botClient, message, cancellationToken),
-                States.Restart => SendCustomerMenuAsync(botClient, message, cancellationToken),
-                States.WaitingForSendComment => HandleCommentMessageAsync(botClient, message, cancellationToken),
-                States.WaitingForSendEmail => HandleEmailAsync(botClient, message, cancellationToken),
-                States.WaitingForSendFirstName => HandleFirstNameAsync(botClient, message, cancellationToken),
-                States.WaitingForSendLastName => HandleLastNameAsync(botClient, message, cancellationToken),
-                _ => HandleUnknownMessageAsync(botClient, message, cancellationToken)
+                Roles.Customer => SendCustomerMenuAsync(botClient, message, cancellationToken),
+                Roles.Seller => SendSellerMenuAsync(botClient, message, cancellationToken),
+                _ => default!
             },
-            Roles.Seller => userState switch
-            {
-                States.None => SendFirstMenuLanguagesAsync(botClient, message, cancellationToken),
-                States.Restart => SendSellerMenuAsync(botClient, message, cancellationToken),
-                _ => HandleUnknownMessageAsync(botClient, message, cancellationToken)
-            },
-            _ => default!
+            States.WaitingForSendComment => HandleCommentMessageAsync(botClient, message, cancellationToken),
+            States.WaitingForSendEmail => HandleEmailAsync(botClient, message, cancellationToken),
+            States.WaitingForSendFirstName => HandleFirstNameAsync(botClient, message, cancellationToken),
+            States.WaitingForSendLastName => HandleLastNameAsync(botClient, message, cancellationToken),
+            _ => HandleUnknownMessageAsync(botClient, message, cancellationToken)
         };
 
         try { await handler; }

@@ -110,7 +110,7 @@ public partial class BotUpdateHandler
 
         await (callbackQuery.Data switch
         {
-            CallbackData.ChangePersonalInfo => SendMenuChangeCustomerInfoAsync(botClient, callbackQuery.Message, cancellationToken),
+            CallbackData.ChangePersonalInfo => SendMenuChangePersonalInfoAsync(botClient, callbackQuery.Message, cancellationToken),
             CallbackData.ChangeCompanySettings => SendMenuChangeCompanyInfoAsync(botClient, callbackQuery.Message, cancellationToken),
             CallbackData.ChangeLanguage => SendMenuLanguagesAsync(botClient, callbackQuery.Message, cancellationToken),
             _ => HandleUnknownCallbackQueryAsync(botClient, callbackQuery, cancellationToken),
@@ -119,26 +119,41 @@ public partial class BotUpdateHandler
 
     private async Task SendMenuChangeCompanyInfoAsync(ITelegramBotClient botClient, Message message, CancellationToken cancellationToken)
     {
-        throw new NotImplementedException();
+        await botClient.SendChatActionAsync(
+            chatAction: ChatAction.Typing,
+            chatId: message.Chat.Id,
+            cancellationToken: cancellationToken);
     }
 
     private async Task SendMessageMenuAsync(ITelegramBotClient botClient, Message message, CancellationToken cancellationToken)
     {
-        throw new NotImplementedException();
+        await botClient.SendChatActionAsync(
+            chatAction: ChatAction.Typing,
+            chatId: message.Chat.Id,
+            cancellationToken: cancellationToken);
     }
 
     private async Task SendStatisticsAsync(ITelegramBotClient botClient, Message message, CancellationToken cancellationToken)
     {
-        throw new NotImplementedException();
+        await botClient.SendChatActionAsync(
+            chatAction: ChatAction.Typing,
+            chatId: message.Chat.Id,
+            cancellationToken: cancellationToken);
     }
 
     private async Task SendGiveCashbackAsync(ITelegramBotClient botClient, Message message, CancellationToken cancellationToken)
     {
-        throw new NotImplementedException();
+        await botClient.SendChatActionAsync(
+            chatAction: ChatAction.Typing,
+            chatId: message.Chat.Id,
+            cancellationToken: cancellationToken);
     }
 
     private async Task SendCustomerListAsync(ITelegramBotClient botClient, Message message, CancellationToken cancellationToken)
     {
-        throw new NotImplementedException();
+        await botClient.SendChatActionAsync(
+            chatAction: ChatAction.Typing,
+            chatId: message.Chat.Id,
+            cancellationToken: cancellationToken);
     }
 }

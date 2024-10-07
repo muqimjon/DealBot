@@ -1,15 +1,15 @@
-﻿namespace DealBot.Bot.BotServices;
-
-using DealBot.Bot.Resources;
+﻿using DealBot.Bot.Resources;
 using DealBot.Domain.Enums;
 using System.Globalization;
-using Telegram.Bot;
-using Telegram.Bot.Types;
 using Telegram.Bot.Types.ReplyMarkups;
+using Telegram.Bot.Types;
+using Telegram.Bot;
+
+namespace DealBot.Bot.BotServices;
 
 public partial class BotUpdateHandler
 {
-    private const int minAge = 14;
+    private const int minAge = 12;
     private const int count = 16;
     private async Task SendRequestDateOfBirthAsync(ITelegramBotClient botClient, Message message, CancellationToken cancellationToken)
     {

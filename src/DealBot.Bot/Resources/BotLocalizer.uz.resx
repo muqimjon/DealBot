@@ -172,11 +172,14 @@ Hisob: {0}
 Turi: {1}
 Holati: {2}</value>
   </data>
+  <data name="ChangeCompanySettings" xml:space="preserve">
+    <value>🏪 Do'kon ma'lumotlari</value>
+  </data>
   <data name="ChangeLanguage" xml:space="preserve">
     <value>🌐 Tilni o'zgartirish</value>
   </data>
   <data name="ChangePersonalInfo" xml:space="preserve">
-    <value>🔖 Shaxsiy ma'lumotlarni tahrirlash</value>
+    <value>🔖 Shaxsiy ma'lumotlar</value>
   </data>
   <data name="Check" xml:space="preserve">
     <value>✔️ Tekchirish</value>

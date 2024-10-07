@@ -14,19 +14,29 @@ public partial class BotUpdateHandler
         ArgumentNullException.ThrowIfNull(callbackQuery.Data);
         ArgumentNullException.ThrowIfNull(callbackQuery.Message);
 
-        if (callbackQuery.Data.Equals(CallbackData.Back))
-            await NavigateToPreviousPageAsync(botClient, callbackQuery.Message, cancellationToken);
+        Task handler;
 
-        var handler = user.Role switch
-        {
-            Roles.Customer => user.State switch
+        if (callbackQuery.Data.Equals(CallbackData.Back))
+            handler = NavigateToPreviousPageAsync(botClient, callbackQuery.Message, cancellationToken);
+        else
+            handler = user.State switch
             {
                 States.WaitingForFirstSelectLanguage => HandleSelectedLanguageAsync(botClient, callbackQuery, cancellationToken),
                 States.WaitingForSelectLanguage => HandleSelectedLanguageAsync(botClient, callbackQuery, cancellationToken),
-                States.WaitingForSelectMenu => HandleSelectedCustomerMenuAsync(botClient, callbackQuery, cancellationToken),
+                States.WaitingForSelectMenu => user.Role switch
+                {
+                    Roles.Customer => HandleSelectedCustomerMenuAsync(botClient, callbackQuery, cancellationToken),
+                    Roles.Seller => HandleSelectedSellerMenuAsync(botClient, callbackQuery, cancellationToken),
+                    _ => default!,
+                },
+                States.WaitingForSelectSettings => user.Role switch
+                {
+                    Roles.Customer => HandleSelectedCustomerSettingsAsync(botClient, callbackQuery, cancellationToken),
+                    Roles.Seller => HandleSelectedSellerSettings(botClient, callbackQuery, cancellationToken),
+                    _ => default!,
+                },
                 States.WaitingForSubscribeToChannel => HandleSubscribeToChannel(botClient, callbackQuery, cancellationToken),
-                States.WaitingForSelectSettings => HandleSelectedCustomerSettingsAsync(botClient, callbackQuery, cancellationToken),
-                States.WaitingForSelectMenuChangePersonalInfo => HandleSelectedMenuChangePersonalInfoAsync(botClient, callbackQuery, cancellationToken),
+                States.WaitingForSelectChangePersonalInfo => HandleSelectedChangePersonalInfoAsync(botClient, callbackQuery, cancellationToken),
                 States.WaitingForSelectGender => HandleSelectedGenderAsync(botClient, callbackQuery, cancellationToken),
                 States.WaitingForSelectDateOfBirth => HandleDateOfBirthAsync(botClient, callbackQuery, cancellationToken),
                 States.WaitingForSelectDateOfBirthYear1 => HandleYearAsync(botClient, callbackQuery, cancellationToken),
@@ -36,16 +46,8 @@ public partial class BotUpdateHandler
                 States.WaitingForSelectDateOfBirthYear5 => HandleYearAsync(botClient, callbackQuery, cancellationToken),
                 States.WaitingForSelectDateOfBirthMonth => HandleMonthAsync(botClient, callbackQuery, cancellationToken),
                 States.WaitingForSelectDateOfBirthDay => HandleDayAsync(botClient, callbackQuery, cancellationToken),
-                _ => HandleUnknownCallbackQueryAsync(botClient, callbackQuery, cancellationToken)
-            },
-            Roles.Seller => user.State switch
-            {
-                States.WaitingForSelectMenu => HandleSelectedSellerMenuAsync(botClient, callbackQuery, cancellationToken),
-                States.WaitingForSelectSettings => HandleSelectedSellerSettings(botClient, callbackQuery, cancellationToken),
-                _ => HandleUnknownCallbackQueryAsync(botClient, callbackQuery, cancellationToken)
-            },
-            _ => HandleUnknownCallbackQueryAsync(botClient, callbackQuery, cancellationToken),
-        };
+                _ => HandleUnknownCallbackQueryAsync(botClient, callbackQuery, cancellationToken),
+            };
 
         try { await handler; }
         catch (Exception ex) { logger.LogError(ex, "Error handling callback query: {callbackQuery.Data}", callbackQuery); }
@@ -53,37 +55,43 @@ public partial class BotUpdateHandler
 
     private async Task NavigateToPreviousPageAsync(ITelegramBotClient botClient, Message message, CancellationToken cancellationToken)
     {
-        var handler = user.Role switch
+        var handler = user.State switch
         {
-            Roles.Customer => user.State switch
+            States.WaitingForSubscribeToChannel => SendCustomerMenuAsync(botClient, message, cancellationToken),
+            States.WaitingForSelectCardOption => SendCustomerMenuAsync(botClient, message, cancellationToken),
+            States.WaitingForSelectAddressOption => SendCustomerMenuAsync(botClient, message, cancellationToken),
+            States.WaitingForSelectStoreContactOption => SendCustomerMenuAsync(botClient, message, cancellationToken),
+            States.WaitingForSendComment => SendCustomerMenuAsync(botClient, message, cancellationToken),
+            States.WaitingForSelectSettings => user.Role switch
             {
-                States.WaitingForSubscribeToChannel => SendCustomerMenuAsync(botClient, message, cancellationToken),
-                States.WaitingForSelectCardOption => SendCustomerMenuAsync(botClient, message, cancellationToken),
-                States.WaitingForSelectAddressOption => SendCustomerMenuAsync(botClient, message, cancellationToken),
-                States.WaitingForSelectStoreContactOption => SendCustomerMenuAsync(botClient, message, cancellationToken),
-                States.WaitingForSendComment => SendCustomerMenuAsync(botClient, message, cancellationToken),
-                States.WaitingForSelectSettings => SendCustomerMenuAsync(botClient, message, cancellationToken),
-                States.WaitingForSelectMenuChangePersonalInfo => SendCustomerSettingsAsync(botClient, message, cancellationToken),
-                States.WaitingForSelectLanguage => SendCustomerMenuAsync(botClient, message, cancellationToken),
-                States.WaitingForSelectGender => SendMenuChangeCustomerInfoAsync(botClient, message, cancellationToken),
-                States.WaitingForSelectDateOfBirth => SendMenuChangeCustomerInfoAsync(botClient, message, cancellationToken),
-                States.WaitingForSendEmail => SendMenuChangeCustomerInfoAsync(botClient, message, cancellationToken),
-                States.WaitingForSendLastName => SendMenuChangeCustomerInfoAsync(botClient, message, cancellationToken),
-                States.WaitingForSendFirstName => SendMenuChangeCustomerInfoAsync(botClient, message, cancellationToken),
-                States.WaitingForSelectDateOfBirthYear1 => SendRequestDateOfBirthAsync(botClient, message, cancellationToken),
-                States.WaitingForSelectDateOfBirthYear2 => SendRequestDateOfBirthAsync(botClient, message, cancellationToken),
-                States.WaitingForSelectDateOfBirthYear3 => SendRequestDateOfBirthAsync(botClient, message, cancellationToken),
-                States.WaitingForSelectDateOfBirthYear4 => SendRequestDateOfBirthAsync(botClient, message, cancellationToken),
-                States.WaitingForSelectDateOfBirthYear5 => SendRequestDateOfBirthAsync(botClient, message, cancellationToken),
-                States.WaitingForSelectDateOfBirthMonth => SendRequestDateOfBirthAsync(botClient, message, cancellationToken),
-                States.WaitingForSelectDateOfBirthDay => SendRequestDateOfBirthAsync(botClient, message, cancellationToken),
-                _ => HandleUnknownMessageAsync(botClient, message, cancellationToken),
+                Roles.Customer => SendCustomerMenuAsync(botClient, message, cancellationToken),
+                Roles.Seller => SendSellerMenuAsync(botClient, message, cancellationToken),
+                _ => default!,
             },
-            Roles.Seller => user.State switch
+            States.WaitingForSelectLanguage => user.Role switch
             {
-                States.WaitingForSelectSettings => SendSellerMenuAsync(botClient, message, cancellationToken),
-                _ => HandleUnknownMessageAsync(botClient, message, cancellationToken),
+                Roles.Customer => SendCustomerMenuAsync(botClient, message, cancellationToken),
+                Roles.Seller => SendSellerSettingsAsync(botClient, message, cancellationToken),
+                _ => default!,
             },
+            States.WaitingForSelectChangePersonalInfo => user.Role switch
+            {
+                Roles.Customer => SendCustomerSettingsAsync(botClient, message, cancellationToken),
+                Roles.Seller => SendSellerSettingsAsync(botClient, message, cancellationToken),
+                _ => default!,
+            },
+            States.WaitingForSelectGender => SendMenuChangePersonalInfoAsync(botClient, message, cancellationToken),
+            States.WaitingForSelectDateOfBirth => SendMenuChangePersonalInfoAsync(botClient, message, cancellationToken),
+            States.WaitingForSendEmail => SendMenuChangePersonalInfoAsync(botClient, message, cancellationToken),
+            States.WaitingForSendLastName => SendMenuChangePersonalInfoAsync(botClient, message, cancellationToken),
+            States.WaitingForSendFirstName => SendMenuChangePersonalInfoAsync(botClient, message, cancellationToken),
+            States.WaitingForSelectDateOfBirthYear1 => SendRequestDateOfBirthAsync(botClient, message, cancellationToken),
+            States.WaitingForSelectDateOfBirthYear2 => SendRequestDateOfBirthAsync(botClient, message, cancellationToken),
+            States.WaitingForSelectDateOfBirthYear3 => SendRequestDateOfBirthAsync(botClient, message, cancellationToken),
+            States.WaitingForSelectDateOfBirthYear4 => SendRequestDateOfBirthAsync(botClient, message, cancellationToken),
+            States.WaitingForSelectDateOfBirthYear5 => SendRequestDateOfBirthAsync(botClient, message, cancellationToken),
+            States.WaitingForSelectDateOfBirthMonth => SendRequestDateOfBirthAsync(botClient, message, cancellationToken),
+            States.WaitingForSelectDateOfBirthDay => SendRequestDateOfBirthAsync(botClient, message, cancellationToken),
             _ => HandleUnknownMessageAsync(botClient, message, cancellationToken),
         };
 

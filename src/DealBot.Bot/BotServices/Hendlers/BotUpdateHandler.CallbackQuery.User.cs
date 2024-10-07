@@ -3,45 +3,13 @@
 using DealBot.Bot.Resources;
 using DealBot.Domain.Enums;
 using System.Globalization;
-using Telegram.Bot;
-using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
 using Telegram.Bot.Types.ReplyMarkups;
+using Telegram.Bot.Types;
+using Telegram.Bot;
 
 public partial class BotUpdateHandler
 {
-    private async Task SendCustomerSettingsAsync(ITelegramBotClient botClient, Message message, CancellationToken cancellationToken)
-    {
-        InlineKeyboardMarkup keyboard = new(new InlineKeyboardButton[][]
-        {
-            [InlineKeyboardButton.WithCallbackData(localizer[Text.ChangeLanguage], CallbackData.ChangeLanguage)],
-            [InlineKeyboardButton.WithCallbackData(localizer[Text.ChangePersonalInfo], CallbackData.ChangePersonalInfo)],
-            [InlineKeyboardButton.WithCallbackData(localizer[Text.Back], CallbackData.Back)],
-        });
-
-        var sentMessage = await botClient.EditMessageTextAsync(
-            chatId: message.Chat.Id,
-            messageId: message.MessageId,
-            text: localizer[Text.SelectSettings],
-            replyMarkup: keyboard,
-            cancellationToken: cancellationToken);
-
-        user.MessageId = sentMessage.MessageId;
-        user.State = States.WaitingForSelectSettings;
-    }
-
-    private async Task HandleSelectedCustomerSettingsAsync(ITelegramBotClient botClient, CallbackQuery callbackQuery, CancellationToken cancellationToken)
-    {
-        ArgumentNullException.ThrowIfNull(callbackQuery.Message, nameof(Message));
-
-        await (callbackQuery.Data switch
-        {
-            CallbackData.ChangeLanguage => SendMenuLanguagesAsync(botClient, callbackQuery.Message, cancellationToken),
-            CallbackData.ChangePersonalInfo => SendMenuChangeCustomerInfoAsync(botClient, callbackQuery.Message, cancellationToken),
-            _ => HandleUnknownCallbackQueryAsync(botClient, callbackQuery, cancellationToken),
-        });
-    }
-
     private async Task SendMenuLanguagesAsync(ITelegramBotClient botClient, Message message, CancellationToken cancellationToken)
     {
         InlineKeyboardMarkup keyboard = new(new InlineKeyboardButton[][]
@@ -85,7 +53,7 @@ public partial class BotUpdateHandler
         });
     }
 
-    private async Task SendMenuChangeCustomerInfoAsync(ITelegramBotClient botClient, Message message, CancellationToken cancellationToken)
+    private async Task SendMenuChangePersonalInfoAsync(ITelegramBotClient botClient, Message message, CancellationToken cancellationToken)
     {
         InlineKeyboardMarkup keyboard = new(new InlineKeyboardButton[][]
         {
@@ -150,10 +118,10 @@ public partial class BotUpdateHandler
         }
 
         user.MessageId = sentMessage.MessageId;
-        user.State = States.WaitingForSelectMenuChangePersonalInfo;
+        user.State = States.WaitingForSelectChangePersonalInfo;
     }
 
-    private async Task HandleSelectedMenuChangePersonalInfoAsync(ITelegramBotClient botClient, CallbackQuery callbackQuery, CancellationToken cancellationToken)
+    private async Task HandleSelectedChangePersonalInfoAsync(ITelegramBotClient botClient, CallbackQuery callbackQuery, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(callbackQuery.Message, nameof(Message));
 
@@ -200,6 +168,6 @@ public partial class BotUpdateHandler
             _ => Genders.Unknown,
         };
 
-        await SendMenuChangeCustomerInfoAsync(botClient, callbackQuery.Message, cancellationToken);
+        await SendMenuChangePersonalInfoAsync(botClient, callbackQuery.Message, cancellationToken);
     }
 }
