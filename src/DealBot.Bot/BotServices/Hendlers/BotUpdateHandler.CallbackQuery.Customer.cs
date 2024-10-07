@@ -10,12 +10,12 @@ using Telegram.Bot.Types.ReplyMarkups;
 
 public partial class BotUpdateHandler
 {
-    private async Task SendCustomerMenuAsync(ITelegramBotClient botClient, Message message, CancellationToken cancellationToken, string messageText = "")
+    private async Task SendCustomerMenuAsync(ITelegramBotClient botClient, Message message, CancellationToken cancellationToken, string messageText = Text.Empty)
     {
         InlineKeyboardMarkup keyboard = new(new InlineKeyboardButton[][]
         {
             [InlineKeyboardButton.WithCallbackData(localizer[Text.MyPrivilegeCard], CallbackData.MyPrivilegeCard)],
-            [InlineKeyboardButton.WithWebApp(localizer[Text.OrderOnTheSite], new WebAppInfo() { Url = "https://google.uz"})],
+            [InlineKeyboardButton.WithWebApp(localizer[Text.OrderOnTheSite], new WebAppInfo() { Url = "https://idea-up.uz"})],
             [InlineKeyboardButton.WithCallbackData(localizer[Text.Settings], CallbackData.Settings),
                 InlineKeyboardButton.WithCallbackData(localizer[Text.StoreAddress], CallbackData.StoreAddress)],
             [InlineKeyboardButton.WithCallbackData(localizer[Text.ContactUs], CallbackData.ContactUs),
@@ -24,13 +24,16 @@ public partial class BotUpdateHandler
         });
 
         Message sentMessage = default!;
+        var text = string.Concat(messageText,
+            localizer[Text.UserInfo, user.FirstName, user.LastName, user.Card.Type],
+            localizer[Text.SelectMenu]);
 
         try
         {
             sentMessage = await botClient.EditMessageTextAsync(
                 chatId: message.Chat.Id,
                 messageId: message.MessageId,
-                text: string.Concat(messageText, localizer[Text.SelectMenu]),
+                text: text,
                 replyMarkup: keyboard,
                 cancellationToken: cancellationToken);
         }
@@ -45,7 +48,7 @@ public partial class BotUpdateHandler
 
                 sentMessage = await botClient.SendTextMessageAsync(
                     chatId: message.Chat.Id,
-                    text: string.Concat(messageText, localizer[Text.SelectMenu]),
+                    text: text,
                     replyMarkup: keyboard,
                     cancellationToken: cancellationToken);
 
@@ -66,7 +69,7 @@ public partial class BotUpdateHandler
         }
 
         user.MessageId = sentMessage.MessageId;
-        user.State = States.WaitingForSelecCustomertMenu;
+        user.State = States.WaitingForSelectMenu;
     }
 
     private async Task HandleSelectedCustomerMenuAsync(ITelegramBotClient botClient, CallbackQuery callbackQuery, CancellationToken cancellationToken)

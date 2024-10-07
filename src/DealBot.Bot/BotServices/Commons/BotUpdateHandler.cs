@@ -32,8 +32,9 @@ public partial class BotUpdateHandler(
 
         var handlerTask = update.Type switch
         {
-            UpdateType.Message => HandleMessageAsync(botClient, update.Message, cancellationToken),
+            UpdateType.Message => HandleMessageAsync(botClient, update.Message!, cancellationToken),
             UpdateType.CallbackQuery => HandleCallbackQueryAsync(botClient, update.CallbackQuery!, cancellationToken),
+            UpdateType.InlineQuery => HandleInlineQueryAsync(botClient, update.InlineQuery!, cancellationToken),
             _ => HandleUnknownUpdateAsync(botClient, update, cancellationToken)
         };
 
@@ -61,6 +62,7 @@ public partial class BotUpdateHandler(
             .Include(user => user.Reviews)
             .Include(user => user.Card)
             .Include(user => user.ReferralsInitiated)
+            .AsSingleQuery()
             .FirstOrDefaultAsync(user
                 => user.TelegramId.Equals(telegramId), cancellationToken);
 
@@ -85,6 +87,7 @@ public partial class BotUpdateHandler(
         UpdateType.ChatMember => update.ChatMember!,
         UpdateType.CallbackQuery => update.CallbackQuery!,
         UpdateType.MyChatMember => update.MyChatMember!,
+        UpdateType.InlineQuery => update.InlineQuery!,
         _ => update.Message!,
     };
 

@@ -187,8 +187,8 @@ Holati: {2}</value>
   <data name="ContactUs" xml:space="preserve">
     <value>☎️ Biz bilan a'loqa</value>
   </data>
-  <data name="CustomerSettings" xml:space="preserve">
-    <value>Sozlamalar</value>
+  <data name="CustomersList" xml:space="preserve">
+    <value>📋 Mijozlar ro'yxati</value>
   </data>
   <data name="DateOfBirth" xml:space="preserve">
     <value>🔢 Tug'ilgan sana</value>
@@ -207,6 +207,9 @@ Holati: {2}</value>
   </data>
   <data name="Gender" xml:space="preserve">
     <value>🚻 Jins</value>
+  </data>
+  <data name="GiveCashBack" xml:space="preserve">
+    <value>💸 Keshbek berish</value>
   </data>
   <data name="Greeting" xml:space="preserve">
     <value>Assalomu alaykum {0} {1}!
@@ -267,6 +270,12 @@ Email: {5}</value>
   <data name="SelectRole" xml:space="preserve">
     <value>Ro'lingizni tanlang</value>
   </data>
+  <data name="SelectSettings" xml:space="preserve">
+    <value>Sozlamalar</value>
+  </data>
+  <data name="SendMessage" xml:space="preserve">
+    <value>✉️ Xabar yuborish</value>
+  </data>
   <data name="SendPhoneNumber" xml:space="preserve">
     <value>Telefon raqamni yuborish</value>
   </data>
@@ -275,6 +284,9 @@ Email: {5}</value>
   </data>
   <data name="ShortInfo" xml:space="preserve">
     <value>Online shop...</value>
+  </data>
+  <data name="Statistics" xml:space="preserve">
+    <value>📊 Statistika</value>
   </data>
   <data name="StoreAddress" xml:space="preserve">
     <value>📍 Do'konimiz</value>
@@ -291,6 +303,11 @@ tel: +998 93 7349808</value>
   </data>
   <data name="Subscribe" xml:space="preserve">
     <value>➕ Obuna bo'lish</value>
+  </data>
+  <data name="UserInfo" xml:space="preserve">
+    <value>👤 {0}  {1}
+💎 {2}
+</value>
   </data>
   <data name="Year" xml:space="preserve">
     <value>Yil</value>

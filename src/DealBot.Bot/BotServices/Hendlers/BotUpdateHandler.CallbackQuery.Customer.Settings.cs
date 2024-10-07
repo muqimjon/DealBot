@@ -22,12 +22,12 @@ public partial class BotUpdateHandler
         var sentMessage = await botClient.EditMessageTextAsync(
             chatId: message.Chat.Id,
             messageId: message.MessageId,
-            text: localizer[Text.CustomerSettings],
+            text: localizer[Text.SelectSettings],
             replyMarkup: keyboard,
             cancellationToken: cancellationToken);
 
         user.MessageId = sentMessage.MessageId;
-        user.State = States.WaitingForSelectCustomerSettings;
+        user.State = States.WaitingForSelectSettings;
     }
 
     private async Task HandleSelectedCustomerSettingsAsync(ITelegramBotClient botClient, CallbackQuery callbackQuery, CancellationToken cancellationToken)
@@ -150,7 +150,7 @@ public partial class BotUpdateHandler
         }
 
         user.MessageId = sentMessage.MessageId;
-        user.State = States.WaitingForSelectMenuChangeCustomerInfo;
+        user.State = States.WaitingForSelectMenuChangePersonalInfo;
     }
 
     private async Task HandleSelectedMenuChangePersonalInfoAsync(ITelegramBotClient botClient, CallbackQuery callbackQuery, CancellationToken cancellationToken)

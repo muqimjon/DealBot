@@ -36,7 +36,7 @@ public class Text
     public const string PersonalInfo = nameof(PersonalInfo);
     public const string ChangeLanguage = nameof(ChangeLanguage);
     public const string ChangePersonalInfo = nameof(ChangePersonalInfo);
-    public const string CustomerSettings = nameof(CustomerSettings);
+    public const string SelectSettings = nameof(SelectSettings);
     public const string FirstName = nameof(FirstName);
     public const string LastName = nameof(LastName);
     public const string DateOfBirth = nameof(DateOfBirth);
@@ -57,6 +57,13 @@ public class Text
     public const string Month = nameof(Month);
     public const string Day = nameof(Day);
     public const string AskDateOfBirth = nameof(AskDateOfBirth);
-    public static string Previous = nameof(Previous);
+    public const string Previous = nameof(Previous);
     public const string Next = nameof(Next);
+    public const string Empty = "";
+    public const string UserInfo = nameof(UserInfo);
+    public const string CustomersList = nameof(CustomersList);
+    public const string GiveCashBack = nameof(GiveCashBack);
+    public const string Statistics = nameof(Statistics);
+    public const string SendMessage = nameof(SendMessage);
+    public const string ChangeCompanySettings = nameof(ChangeCompanySettings);
 }

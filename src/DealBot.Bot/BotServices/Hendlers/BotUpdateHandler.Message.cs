@@ -6,10 +6,8 @@ using Telegram.Bot.Types.Enums;
 
 public partial class BotUpdateHandler
 {
-    private async Task HandleMessageAsync(ITelegramBotClient botClient, Message? message, CancellationToken cancellationToken)
+    private async Task HandleMessageAsync(ITelegramBotClient botClient, Message message, CancellationToken cancellationToken)
     {
-        ArgumentNullException.ThrowIfNull(message);
-
         var handler = message.Type switch
         {
             MessageType.Text => HandleTextMessageAsync(botClient, message, cancellationToken),
