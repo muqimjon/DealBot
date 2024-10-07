@@ -117,6 +117,9 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="About" xml:space="preserve">
+    <value>Haqida</value>
+  </data>
   <data name="AskComment" xml:space="preserve">
     <value>Taklif va shikoyatlar uchun izoh qoldiring va biz albatta buni e'tiborga olamiz!</value>
   </data>
@@ -166,20 +169,17 @@ Iltimos, davom ettirish uchun kanalga a'zo bo'ling!</value>
   <data name="Back" xml:space="preserve">
     <value>⇚ Ortga</value>
   </data>
+  <data name="BotSettings" xml:space="preserve">
+    <value>🤖 Botni sozlash</value>
+  </data>
   <data name="CardInfo" xml:space="preserve">
     <value>Imtiyoz karta ma'lumotlari:
 Hisob: {0}
 Turi: {1}
 Holati: {2}</value>
   </data>
-  <data name="ChangeCompanySettings" xml:space="preserve">
-    <value>🏪 Do'kon ma'lumotlari</value>
-  </data>
   <data name="ChangeLanguage" xml:space="preserve">
     <value>🌐 Tilni o'zgartirish</value>
-  </data>
-  <data name="ChangePersonalInfo" xml:space="preserve">
-    <value>🔖 Shaxsiy ma'lumotlar</value>
   </data>
   <data name="Check" xml:space="preserve">
     <value>✔️ Tekchirish</value>
@@ -198,6 +198,12 @@ Holati: {2}</value>
   </data>
   <data name="Day" xml:space="preserve">
     <value>Kun</value>
+  </data>
+  <data name="Description" xml:space="preserve">
+    <value>Tafsilot</value>
+  </data>
+  <data name="DescriptionPicture" xml:space="preserve">
+    <value>Tafsilot surati</value>
   </data>
   <data name="Email" xml:space="preserve">
     <value>📧 Email</value>
@@ -239,11 +245,17 @@ Jinsi: {3}
 Telefon raqami: {4}
 Email: {5}</value>
   </data>
+  <data name="MiniAppUrl" xml:space="preserve">
+    <value>Mini app havolasi</value>
+  </data>
   <data name="Month" xml:space="preserve">
     <value>Oy</value>
   </data>
   <data name="MyPrivilegeCard" xml:space="preserve">
     <value>💳 Mening imtiyoz kartam</value>
+  </data>
+  <data name="Name" xml:space="preserve">
+    <value>Nom</value>
   </data>
   <data name="Next" xml:space="preserve">
     <value>Keyin ⇒</value>
@@ -251,8 +263,14 @@ Email: {5}</value>
   <data name="OrderOnTheSite" xml:space="preserve">
     <value>🛍 Sayt orqali buyurtma berish</value>
   </data>
+  <data name="PersonalInfo" xml:space="preserve">
+    <value>🔖 Shaxsiy ma'lumotlar</value>
+  </data>
   <data name="PhoneNumber" xml:space="preserve">
     <value>☎️ Telefon Raqam</value>
+  </data>
+  <data name="Picture" xml:space="preserve">
+    <value>Surat</value>
   </data>
   <data name="Previous" xml:space="preserve">
     <value>⇐ Oldin</value>

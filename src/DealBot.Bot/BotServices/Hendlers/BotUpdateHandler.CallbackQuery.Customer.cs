@@ -197,7 +197,7 @@ public partial class BotUpdateHandler
         InlineKeyboardMarkup keyboard = new(new InlineKeyboardButton[][]
         {
             [InlineKeyboardButton.WithCallbackData(localizer[Text.ChangeLanguage], CallbackData.ChangeLanguage)],
-            [InlineKeyboardButton.WithCallbackData(localizer[Text.ChangePersonalInfo], CallbackData.ChangePersonalInfo)],
+            [InlineKeyboardButton.WithCallbackData(localizer[Text.PersonalInfo], CallbackData.PersonalInfo)],
             [InlineKeyboardButton.WithCallbackData(localizer[Text.Back], CallbackData.Back)],
         });
 
@@ -219,7 +219,7 @@ public partial class BotUpdateHandler
         await (callbackQuery.Data switch
         {
             CallbackData.ChangeLanguage => SendMenuLanguagesAsync(botClient, callbackQuery.Message, cancellationToken),
-            CallbackData.ChangePersonalInfo => SendMenuChangePersonalInfoAsync(botClient, callbackQuery.Message, cancellationToken),
+            CallbackData.PersonalInfo => SendMenuChangePersonalInfoAsync(botClient, callbackQuery.Message, cancellationToken),
             _ => HandleUnknownCallbackQueryAsync(botClient, callbackQuery, cancellationToken),
         });
     }

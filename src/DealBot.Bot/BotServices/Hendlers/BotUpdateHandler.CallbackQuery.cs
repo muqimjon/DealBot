@@ -92,6 +92,7 @@ public partial class BotUpdateHandler
             States.WaitingForSelectDateOfBirthYear5 => SendRequestDateOfBirthAsync(botClient, message, cancellationToken),
             States.WaitingForSelectDateOfBirthMonth => SendRequestDateOfBirthAsync(botClient, message, cancellationToken),
             States.WaitingForSelectDateOfBirthDay => SendRequestDateOfBirthAsync(botClient, message, cancellationToken),
+            States.WaitingForSelectBotSettings => SendSellerSettingsAsync(botClient, message, cancellationToken),
             _ => HandleUnknownMessageAsync(botClient, message, cancellationToken),
         };
 

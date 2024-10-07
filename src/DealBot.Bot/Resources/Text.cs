@@ -35,7 +35,6 @@ public class Text
     public const string AskPhoneNumberInPlaceHolder = nameof(AskPhoneNumberInPlaceHolder);
     public const string PersonalInfo = nameof(PersonalInfo);
     public const string ChangeLanguage = nameof(ChangeLanguage);
-    public const string ChangePersonalInfo = nameof(ChangePersonalInfo);
     public const string SelectSettings = nameof(SelectSettings);
     public const string FirstName = nameof(FirstName);
     public const string LastName = nameof(LastName);
@@ -65,5 +64,11 @@ public class Text
     public const string GiveCashBack = nameof(GiveCashBack);
     public const string Statistics = nameof(Statistics);
     public const string SendMessage = nameof(SendMessage);
-    public const string ChangeCompanySettings = nameof(ChangeCompanySettings);
+    public const string BotSettings = nameof(BotSettings);
+    public const string Picture = nameof(Picture);
+    public const string Name = nameof(Name);
+    public const string About = nameof(About);
+    public const string Description = nameof(Description);
+    public const string DescriptionPicture = nameof(DescriptionPicture);
+    public const string MiniAppUrl = nameof(MiniAppUrl);
 }

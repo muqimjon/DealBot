@@ -28,4 +28,5 @@ public enum States
     WaitingForSelectDateOfBirthYear5,
     WaitingForSelectDateOfBirthMonth,
     WaitingForSelectDateOfBirthDay,
+    WaitingForSelectBotSettings,
 }

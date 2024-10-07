@@ -87,8 +87,8 @@ public partial class BotUpdateHandler
     {
         InlineKeyboardMarkup keyboard = new(new InlineKeyboardButton[][]
         {
-            [InlineKeyboardButton.WithCallbackData(localizer[Text.ChangePersonalInfo], CallbackData.ChangePersonalInfo),
-                InlineKeyboardButton.WithCallbackData(localizer[Text.ChangeCompanySettings], CallbackData.ChangeCompanySettings)],
+            [InlineKeyboardButton.WithCallbackData(localizer[Text.PersonalInfo], CallbackData.PersonalInfo),
+                InlineKeyboardButton.WithCallbackData(localizer[Text.BotSettings], CallbackData.BotSettings)],
             [InlineKeyboardButton.WithCallbackData(localizer[Text.ChangeLanguage], CallbackData.ChangeLanguage)],
             [InlineKeyboardButton.WithCallbackData(localizer[Text.Back], CallbackData.Back)],
         });
@@ -110,19 +110,35 @@ public partial class BotUpdateHandler
 
         await (callbackQuery.Data switch
         {
-            CallbackData.ChangePersonalInfo => SendMenuChangePersonalInfoAsync(botClient, callbackQuery.Message, cancellationToken),
-            CallbackData.ChangeCompanySettings => SendMenuChangeCompanyInfoAsync(botClient, callbackQuery.Message, cancellationToken),
+            CallbackData.PersonalInfo => SendMenuChangePersonalInfoAsync(botClient, callbackQuery.Message, cancellationToken),
+            CallbackData.BotSettings => SendBotSettingsAsync(botClient, callbackQuery.Message, cancellationToken),
             CallbackData.ChangeLanguage => SendMenuLanguagesAsync(botClient, callbackQuery.Message, cancellationToken),
             _ => HandleUnknownCallbackQueryAsync(botClient, callbackQuery, cancellationToken),
         });
     }
 
-    private async Task SendMenuChangeCompanyInfoAsync(ITelegramBotClient botClient, Message message, CancellationToken cancellationToken)
+    private async Task SendBotSettingsAsync(ITelegramBotClient botClient, Message message, CancellationToken cancellationToken)
     {
-        await botClient.SendChatActionAsync(
-            chatAction: ChatAction.Typing,
+        InlineKeyboardMarkup keyboard = new(new InlineKeyboardButton[][]
+        {
+            [InlineKeyboardButton.WithCallbackData(localizer[Text.Picture], CallbackData.Picture),
+                InlineKeyboardButton.WithCallbackData(localizer[Text.Name], CallbackData.Name)],
+            [InlineKeyboardButton.WithCallbackData(localizer[Text.Description], CallbackData.Description),
+                InlineKeyboardButton.WithCallbackData(localizer[Text.About], CallbackData.About)],
+            [InlineKeyboardButton.WithCallbackData(localizer[Text.DescriptionPicture], CallbackData.DescriptionPicture),
+                InlineKeyboardButton.WithCallbackData(localizer[Text.MiniAppUrl], CallbackData.MiniAppUrl)],
+            [InlineKeyboardButton.WithCallbackData(localizer[Text.Back], CallbackData.Back)],
+        });
+
+        var sentMessage = await botClient.EditMessageTextAsync(
             chatId: message.Chat.Id,
+            messageId: message.MessageId,
+            text: localizer[Text.SelectSettings],
+            replyMarkup: keyboard,
             cancellationToken: cancellationToken);
+
+        user.MessageId = sentMessage.MessageId;
+        user.State = States.WaitingForSelectBotSettings;
     }
 
     private async Task SendMessageMenuAsync(ITelegramBotClient botClient, Message message, CancellationToken cancellationToken)
