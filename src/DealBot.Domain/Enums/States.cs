@@ -29,4 +29,7 @@ public enum States
     WaitingForSelectDateOfBirthMonth,
     WaitingForSelectDateOfBirthDay,
     WaitingForSelectBotSettings,
+    WaitingForSendName,
+    WaitingForSendBotPic,
+    WaitingForSendAbout,
 }

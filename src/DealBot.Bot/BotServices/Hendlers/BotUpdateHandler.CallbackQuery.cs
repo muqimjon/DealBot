@@ -46,6 +46,7 @@ public partial class BotUpdateHandler
                 States.WaitingForSelectDateOfBirthYear5 => HandleYearAsync(botClient, callbackQuery, cancellationToken),
                 States.WaitingForSelectDateOfBirthMonth => HandleMonthAsync(botClient, callbackQuery, cancellationToken),
                 States.WaitingForSelectDateOfBirthDay => HandleDayAsync(botClient, callbackQuery, cancellationToken),
+                States.WaitingForSelectBotSettings => HandleBotSettings(botClient, callbackQuery, cancellationToken),
                 _ => HandleUnknownCallbackQueryAsync(botClient, callbackQuery, cancellationToken),
             };
 
@@ -93,6 +94,9 @@ public partial class BotUpdateHandler
             States.WaitingForSelectDateOfBirthMonth => SendRequestDateOfBirthAsync(botClient, message, cancellationToken),
             States.WaitingForSelectDateOfBirthDay => SendRequestDateOfBirthAsync(botClient, message, cancellationToken),
             States.WaitingForSelectBotSettings => SendSellerSettingsAsync(botClient, message, cancellationToken),
+            States.WaitingForSendName => SendBotSettingsAsync(botClient, message, cancellationToken),
+            States.WaitingForSendBotPic => SendBotSettingsAsync(botClient, message, cancellationToken),
+            States.WaitingForSendAbout => SendBotSettingsAsync(botClient, message, cancellationToken),
             _ => HandleUnknownMessageAsync(botClient, message, cancellationToken),
         };
 

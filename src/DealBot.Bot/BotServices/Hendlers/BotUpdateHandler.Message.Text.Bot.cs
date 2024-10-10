@@ -1,16 +1,15 @@
 ﻿namespace DealBot.Bot.BotServices;
 
-using DealBot.Domain.Enums;
-using Telegram.Bot.Types.Enums;
-using Telegram.Bot.Types.ReplyMarkups;
 using Telegram.Bot.Types;
 using Telegram.Bot;
+using Telegram.Bot.Types.ReplyMarkups;
+using DealBot.Domain.Enums;
+using Telegram.Bot.Types.Enums;
 using DealBot.Bot.Resources;
 
 public partial class BotUpdateHandler
 {
-
-    private async Task SendRequestFirstNameAsync(ITelegramBotClient botClient, Message message, CancellationToken cancellationToken)
+    private async Task SendRequestForNameAsync(ITelegramBotClient botClient, Message message, CancellationToken cancellationToken)
     {
         await botClient.SendChatActionAsync(
             chatId: message.Chat.Id,
@@ -23,12 +22,14 @@ public partial class BotUpdateHandler
         })
         {
             ResizeKeyboard = true,
-            InputFieldPlaceholder = localizer[Text.AskFirstNameInPlaceHolder],
+            InputFieldPlaceholder = localizer[Text.AskNameInPlaceHolder],
         };
+
+        var bot = await botClient.GetMeAsync(cancellationToken);
 
         var sentMessage = await botClient.SendTextMessageAsync(
             chatId: message.Chat.Id,
-            text: localizer[Text.AskFirstName, user.FirstName],
+            text: localizer[Text.AskName, bot.FirstName],
             replyMarkup: keyboard,
             cancellationToken: cancellationToken);
 
@@ -38,17 +39,21 @@ public partial class BotUpdateHandler
             cancellationToken: cancellationToken);
 
         user.MessageId = sentMessage.MessageId;
-        user.State = States.WaitingForSendFirstName;
+        user.State = States.WaitingForSendName;
     }
 
-    private async Task HandleFirstNameAsync(ITelegramBotClient botClient, Message message, CancellationToken cancellationToken)
+    private async Task HandleNameAsync(ITelegramBotClient botClient, Message message, CancellationToken cancellationToken)
     {
-        // TO DO Need validation
-        user.FirstName = message.Text!;
-        await SendMenuChangePersonalInfoAsync(botClient, message, cancellationToken);
+        // TO DO need Validation
+        await botClient.SetMyNameAsync(
+            name: message.Text,
+            languageCode: user.LanguageCode,
+            cancellationToken: cancellationToken);
+
+        await SendBotSettingsAsync(botClient, message, cancellationToken);
     }
 
-    private async Task SendRequestLastNameAsync(ITelegramBotClient botClient, Message message, CancellationToken cancellationToken)
+    private async Task SendRequestForAboutAsync(ITelegramBotClient botClient, Message message, CancellationToken cancellationToken)
     {
         await botClient.SendChatActionAsync(
             chatId: message.Chat.Id,
@@ -61,12 +66,14 @@ public partial class BotUpdateHandler
         })
         {
             ResizeKeyboard = true,
-            InputFieldPlaceholder = localizer[Text.AskLastNameInPlaceHolder],
+            InputFieldPlaceholder = localizer[Text.ActionNotAvailable],
         };
+
+        //var bot = await botClient.GetMeAsync(cancellationToken);
 
         var sentMessage = await botClient.SendTextMessageAsync(
             chatId: message.Chat.Id,
-            text: localizer[Text.AskLastName, user.LastName],
+            text: localizer[Text.AskAbout],
             replyMarkup: keyboard,
             cancellationToken: cancellationToken);
 
@@ -76,17 +83,21 @@ public partial class BotUpdateHandler
             cancellationToken: cancellationToken);
 
         user.MessageId = sentMessage.MessageId;
-        user.State = States.WaitingForSendLastName;
+        user.State = States.WaitingForSendAbout;
     }
 
-    private async Task HandleLastNameAsync(ITelegramBotClient botClient, Message message, CancellationToken cancellationToken)
+    private async Task HandleAboutAsync(ITelegramBotClient botClient, Message message, CancellationToken cancellationToken)
     {
-        // TO DO Need validation
-        user.LastName = message.Text!;
-        await SendMenuChangePersonalInfoAsync(botClient, message, cancellationToken);
+        // TO DO need Validation
+        await botClient.SetMyShortDescriptionAsync(
+            shortDescription: message.Text,
+            languageCode: user.LanguageCode,
+            cancellationToken: cancellationToken);
+
+        await SendBotSettingsAsync(botClient, message, cancellationToken);
     }
 
-    private async Task SendRequestEmailAsync(ITelegramBotClient botClient, Message message, CancellationToken cancellationToken)
+    private async Task SendRequestForDescriptionAsync(ITelegramBotClient botClient, Message message, CancellationToken cancellationToken)
     {
         await botClient.SendChatActionAsync(
             chatId: message.Chat.Id,
@@ -99,12 +110,14 @@ public partial class BotUpdateHandler
         })
         {
             ResizeKeyboard = true,
-            InputFieldPlaceholder = localizer[Text.AskEmailInPlaceHolder],
+            InputFieldPlaceholder = localizer[Text.ActionNotAvailable],
         };
+
+        //var bot = await botClient.GetMeAsync(cancellationToken);
 
         var sentMessage = await botClient.SendTextMessageAsync(
             chatId: message.Chat.Id,
-            text: localizer[Text.AskEmail, user.Contact.Email!],
+            text: localizer[Text.AskDescription],
             replyMarkup: keyboard,
             cancellationToken: cancellationToken);
 
@@ -114,13 +127,14 @@ public partial class BotUpdateHandler
             cancellationToken: cancellationToken);
 
         user.MessageId = sentMessage.MessageId;
-        user.State = States.WaitingForSendEmail;
+        user.State = States.WaitingForSendAbout;
     }
 
-    private async Task HandleEmailAsync(ITelegramBotClient botClient, Message message, CancellationToken cancellationToken)
+    private async Task SendRequestForMiniAppUrlAsync(ITelegramBotClient botClient, Message message, CancellationToken cancellationToken)
     {
-        // TO DO Need validation
-        user.Contact.Email = message.Text;
-        await SendMenuChangePersonalInfoAsync(botClient, message, cancellationToken);
+        await botClient.SendChatActionAsync(
+            chatId: message.Chat.Id,
+            chatAction: ChatAction.Typing,
+            cancellationToken: cancellationToken);
     }
 }

@@ -12,6 +12,7 @@ public partial class BotUpdateHandler
         {
             MessageType.Text => HandleTextMessageAsync(botClient, message, cancellationToken),
             MessageType.Contact => HandleContactMessageAsync(botClient, message, cancellationToken),
+            MessageType.Photo => HandlePhotoMessageAsync(botClient, message, cancellationToken),
             _ => HandleUnknownMessageAsync(botClient, message, cancellationToken),
         };
 

@@ -120,6 +120,12 @@
   <data name="About" xml:space="preserve">
     <value>Haqida</value>
   </data>
+  <data name="ActionNotAvailable" xml:space="preserve">
+    <value>Ushbu amalni bajarish vaqtincha imkonsiz...</value>
+  </data>
+  <data name="AskAboutInPlaceHolder" xml:space="preserve">
+    <value>Bot haqida qisqa ma'lumot yozing...</value>
+  </data>
   <data name="AskComment" xml:space="preserve">
     <value>Taklif va shikoyatlar uchun izoh qoldiring va biz albatta buni e'tiborga olamiz!</value>
   </data>
@@ -159,6 +165,12 @@ Iltimos, davom ettirish uchun kanalga a'zo bo'ling!</value>
   </data>
   <data name="AskLastNameInPlaceHolder" xml:space="preserve">
     <value>Familiyangizni kiriting...</value>
+  </data>
+  <data name="AskName" xml:space="preserve">
+    <value>Joriy nom: {0}</value>
+  </data>
+  <data name="AskNameInPlaceHolder" xml:space="preserve">
+    <value>Bot uchun nom yozing..</value>
   </data>
   <data name="AskPhoneNumber" xml:space="preserve">
     <value>Telefon raqamingizni yuboring</value>

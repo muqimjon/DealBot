@@ -71,4 +71,11 @@ public class Text
     public const string Description = nameof(Description);
     public const string DescriptionPicture = nameof(DescriptionPicture);
     public const string MiniAppUrl = nameof(MiniAppUrl);
+    public const string AskNameInPlaceHolder = nameof(AskNameInPlaceHolder);
+    public const string AskName = nameof(AskName);
+    public const string AskAbout = nameof(AskAbout);
+    public const string AskAboutInPlaceHolder = nameof(AskAboutInPlaceHolder);
+    public const string ActionNotAvailable = nameof(ActionNotAvailable);
+    public const string AskDescription = nameof(AskDescription);
+    public const string AskPhoto = nameof(AskPhoto);
 }

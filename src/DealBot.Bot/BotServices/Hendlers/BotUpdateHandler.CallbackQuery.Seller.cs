@@ -117,30 +117,6 @@ public partial class BotUpdateHandler
         });
     }
 
-    private async Task SendBotSettingsAsync(ITelegramBotClient botClient, Message message, CancellationToken cancellationToken)
-    {
-        InlineKeyboardMarkup keyboard = new(new InlineKeyboardButton[][]
-        {
-            [InlineKeyboardButton.WithCallbackData(localizer[Text.Picture], CallbackData.Picture),
-                InlineKeyboardButton.WithCallbackData(localizer[Text.Name], CallbackData.Name)],
-            [InlineKeyboardButton.WithCallbackData(localizer[Text.Description], CallbackData.Description),
-                InlineKeyboardButton.WithCallbackData(localizer[Text.About], CallbackData.About)],
-            [InlineKeyboardButton.WithCallbackData(localizer[Text.DescriptionPicture], CallbackData.DescriptionPicture),
-                InlineKeyboardButton.WithCallbackData(localizer[Text.MiniAppUrl], CallbackData.MiniAppUrl)],
-            [InlineKeyboardButton.WithCallbackData(localizer[Text.Back], CallbackData.Back)],
-        });
-
-        var sentMessage = await botClient.EditMessageTextAsync(
-            chatId: message.Chat.Id,
-            messageId: message.MessageId,
-            text: localizer[Text.SelectSettings],
-            replyMarkup: keyboard,
-            cancellationToken: cancellationToken);
-
-        user.MessageId = sentMessage.MessageId;
-        user.State = States.WaitingForSelectBotSettings;
-    }
-
     private async Task SendMessageMenuAsync(ITelegramBotClient botClient, Message message, CancellationToken cancellationToken)
     {
         await botClient.SendChatActionAsync(
