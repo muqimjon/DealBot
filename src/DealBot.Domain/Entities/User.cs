@@ -35,4 +35,7 @@ public sealed class User : Auditable
     public ICollection<Transaction> Transactions { get; set; }
     public ICollection<StoreReview> Reviews { get; set; }
     public ICollection<Referral> ReferralsInitiated { get; set; }
+
+    public string GetFullName()
+        => $"{FirstName.Trim()} {LastName.Trim()}";
 }

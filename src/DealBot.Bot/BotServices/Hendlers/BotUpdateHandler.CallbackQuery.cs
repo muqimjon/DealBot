@@ -97,6 +97,7 @@ public partial class BotUpdateHandler
             States.WaitingForSendName => SendBotSettingsAsync(botClient, message, cancellationToken),
             States.WaitingForSendBotPic => SendBotSettingsAsync(botClient, message, cancellationToken),
             States.WaitingForSendAbout => SendBotSettingsAsync(botClient, message, cancellationToken),
+            States.WaitingForSendUserId => SendSellerMenuAsync(botClient, message, cancellationToken),
             _ => HandleUnknownMessageAsync(botClient, message, cancellationToken),
         };
 

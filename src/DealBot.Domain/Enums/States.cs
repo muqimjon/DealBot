@@ -32,4 +32,5 @@ public enum States
     WaitingForSendName,
     WaitingForSendBotPic,
     WaitingForSendAbout,
+    WaitingForSendUserId,
 }

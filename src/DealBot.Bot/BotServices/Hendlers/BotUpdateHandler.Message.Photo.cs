@@ -1,9 +1,9 @@
 ﻿namespace DealBot.Bot.BotServices;
 
-using Telegram.Bot.Types;
-using Telegram.Bot;
-using DealBot.Domain.Enums;
 using DealBot.Bot.Resources;
+using DealBot.Domain.Enums;
+using Telegram.Bot;
+using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
 using Telegram.Bot.Types.ReplyMarkups;
 

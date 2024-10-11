@@ -1,12 +1,12 @@
 ﻿namespace DealBot.Bot.BotServices;
 
-using Telegram.Bot.Types;
-using Telegram.Bot;
 using DealBot.Bot.Resources;
 using DealBot.Domain.Enums;
-using Telegram.Bot.Types.ReplyMarkups;
 using System;
+using Telegram.Bot;
+using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
+using Telegram.Bot.Types.ReplyMarkups;
 
 public partial class BotUpdateHandler
 {
@@ -89,7 +89,7 @@ public partial class BotUpdateHandler
     {
         await botClient.SendChatActionAsync(
             chatId: message.Chat.Id,
-            chatAction: Telegram.Bot.Types.Enums.ChatAction.Typing,
+            chatAction: ChatAction.Typing,
             cancellationToken: cancellationToken);
     }
 }

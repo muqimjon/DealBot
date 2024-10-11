@@ -178,6 +178,9 @@ Iltimos, davom ettirish uchun kanalga a'zo bo'ling!</value>
   <data name="AskPhoneNumberInPlaceHolder" xml:space="preserve">
     <value>Telefon raqamingizni kiriting..</value>
   </data>
+  <data name="AskUserId" xml:space="preserve">
+    <value>Inline usulda user ma'lumotlarini yuboring</value>
+  </data>
   <data name="Back" xml:space="preserve">
     <value>⇚ Ortga</value>
   </data>
@@ -189,6 +192,9 @@ Iltimos, davom ettirish uchun kanalga a'zo bo'ling!</value>
 Hisob: {0}
 Turi: {1}
 Holati: {2}</value>
+  </data>
+  <data name="CashBackTransfer" xml:space="preserve">
+    <value>💸 Keshbek ayirboshlash</value>
   </data>
   <data name="ChangeLanguage" xml:space="preserve">
     <value>🌐 Tilni o'zgartirish</value>
@@ -228,9 +234,6 @@ Holati: {2}</value>
   </data>
   <data name="Gender" xml:space="preserve">
     <value>🚻 Jins</value>
-  </data>
-  <data name="GiveCashBack" xml:space="preserve">
-    <value>💸 Keshbek berish</value>
   </data>
   <data name="Greeting" xml:space="preserve">
     <value>Assalomu alaykum {0} {1}!

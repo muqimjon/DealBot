@@ -33,7 +33,7 @@ public class CallbackData
     public const string Previous = nameof(Previous);
     public const string Next = nameof(Next);
     public const string CustomersList = nameof(CustomersList);
-    public const string GiveCashBack = nameof(GiveCashBack);
+    public const string CashBackTransfer = nameof(CashBackTransfer);
     public const string Statistics = nameof(Statistics);
     public const string SendMessage = nameof(SendMessage);
     public const string BotSettings = nameof(BotSettings);

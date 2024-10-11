@@ -13,10 +13,10 @@ public partial class BotUpdateHandler
     {
         InlineKeyboardMarkup keyboard = new(new InlineKeyboardButton[][]
         {
+            [InlineKeyboardButton.WithCallbackData(localizer[Text.CashBackTransfer], CallbackData.CashBackTransfer)],
+            [InlineKeyboardButton.WithCallbackData(localizer[Text.CustomersList], CallbackData.CustomersList)],
             [InlineKeyboardButton.WithCallbackData(localizer[Text.SendMessage], CallbackData.SendMessage),
-                InlineKeyboardButton.WithCallbackData(localizer[Text.GiveCashBack], CallbackData.GiveCashBack)],
-            [InlineKeyboardButton.WithCallbackData(localizer[Text.Statistics], CallbackData.Statistics),
-                InlineKeyboardButton.WithCallbackData(localizer[Text.CustomersList], CallbackData.CustomersList)],
+                InlineKeyboardButton.WithCallbackData(localizer[Text.Statistics], CallbackData.Statistics)],
             [InlineKeyboardButton.WithCallbackData(localizer[Text.Settings], CallbackData.Settings)],
         });
 
@@ -75,7 +75,7 @@ public partial class BotUpdateHandler
         await (callbackQuery.Data switch
         {
             CallbackData.CustomersList => SendCustomerListAsync(botClient, callbackQuery.Message, cancellationToken),
-            CallbackData.GiveCashBack => SendGiveCashbackAsync(botClient, callbackQuery.Message, cancellationToken),
+            CallbackData.CashBackTransfer => SendGiveCashbackAsync(botClient, callbackQuery.Message, cancellationToken),
             CallbackData.Statistics => SendStatisticsAsync(botClient, callbackQuery.Message, cancellationToken),
             CallbackData.SendMessage => SendMessageMenuAsync(botClient, callbackQuery.Message, cancellationToken),
             CallbackData.Settings => SendSellerSettingsAsync(botClient, callbackQuery.Message, cancellationToken),
@@ -88,7 +88,8 @@ public partial class BotUpdateHandler
         InlineKeyboardMarkup keyboard = new(new InlineKeyboardButton[][]
         {
             [InlineKeyboardButton.WithCallbackData(localizer[Text.PersonalInfo], CallbackData.PersonalInfo),
-                InlineKeyboardButton.WithCallbackData(localizer[Text.BotSettings], CallbackData.BotSettings)],
+                //InlineKeyboardButton.WithCallbackData(localizer[Text.BotSettings], CallbackData.BotSettings)
+                ],
             [InlineKeyboardButton.WithCallbackData(localizer[Text.ChangeLanguage], CallbackData.ChangeLanguage)],
             [InlineKeyboardButton.WithCallbackData(localizer[Text.Back], CallbackData.Back)],
         });
@@ -139,6 +140,28 @@ public partial class BotUpdateHandler
             chatAction: ChatAction.Typing,
             chatId: message.Chat.Id,
             cancellationToken: cancellationToken);
+
+        ReplyKeyboardMarkup keyboard = new(new KeyboardButton[][]
+        {
+            [new(localizer[Text.Back])]
+        })
+        {
+            ResizeKeyboard = true,
+            InputFieldPlaceholder = localizer[Text.AskUserIdInPlaceHolder],
+        };
+
+        Message sentMessage = await botClient.SendTextMessageAsync(
+            chatId: message.Chat.Id,
+            text: localizer[Text.AskUserId],
+            replyMarkup: keyboard,
+            parseMode: ParseMode.MarkdownV2,
+            cancellationToken: cancellationToken);
+
+        var bot = await botClient.GetMeAsync(cancellationToken: cancellationToken);
+        bot.SupportsInlineQueries = true;
+
+        user.State = States.WaitingForSendUserId;
+        user.MessageId = sentMessage.MessageId;
     }
 
     private async Task SendCustomerListAsync(ITelegramBotClient botClient, Message message, CancellationToken cancellationToken)

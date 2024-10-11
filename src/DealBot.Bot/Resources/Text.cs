@@ -2,10 +2,11 @@
 
 public class Text
 {
-    public const string Greeting = nameof(Greeting);
+    public const string Empty = "";
     public const string LanguageEn = "🇬🇧 english 🇬🇧";
     public const string LanguageUz = "🇺🇿 o'zbekcha 🇺🇿";
     public const string LanguageRu = "🇷🇺 русский 🇷🇺";
+    public const string Greeting = nameof(Greeting);
     public const string Settings = nameof(Settings);
     public const string Contacts = nameof(Contacts);
     public const string SelectLanguage = nameof(SelectLanguage);
@@ -58,10 +59,9 @@ public class Text
     public const string AskDateOfBirth = nameof(AskDateOfBirth);
     public const string Previous = nameof(Previous);
     public const string Next = nameof(Next);
-    public const string Empty = "";
     public const string UserInfo = nameof(UserInfo);
     public const string CustomersList = nameof(CustomersList);
-    public const string GiveCashBack = nameof(GiveCashBack);
+    public const string CashBackTransfer = nameof(CashBackTransfer);
     public const string Statistics = nameof(Statistics);
     public const string SendMessage = nameof(SendMessage);
     public const string BotSettings = nameof(BotSettings);
@@ -78,4 +78,6 @@ public class Text
     public const string ActionNotAvailable = nameof(ActionNotAvailable);
     public const string AskDescription = nameof(AskDescription);
     public const string AskPhoto = nameof(AskPhoto);
+    public const string AskUserId = nameof(AskUserId);
+    public const string AskUserIdInPlaceHolder = nameof(AskUserIdInPlaceHolder);
 }

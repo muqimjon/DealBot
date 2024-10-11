@@ -1,11 +1,11 @@
 ﻿namespace DealBot.Bot.BotServices;
 
+using DealBot.Bot.Resources;
 using DealBot.Domain.Enums;
+using Telegram.Bot;
+using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
 using Telegram.Bot.Types.ReplyMarkups;
-using Telegram.Bot.Types;
-using Telegram.Bot;
-using DealBot.Bot.Resources;
 
 public partial class BotUpdateHandler
 {
