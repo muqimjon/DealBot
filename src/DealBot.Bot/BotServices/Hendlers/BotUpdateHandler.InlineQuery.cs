@@ -28,7 +28,7 @@ public partial class BotUpdateHandler
         var users = appDbContext.Users
             .Where(user => user.Contact.Phone != null
                 && user.Contact.Phone.Contains(inlineQuery.Query)
-                && this.user.Role.Equals(Roles.Customer))
+                && user.Role.Equals(Roles.Customer))
             .Include(user => user.Contact)
             .Include(user => user.Image)
             .Take(10)

@@ -50,9 +50,8 @@ public class UpdateUserCommandHandler(IAppDbContext context, IMapper mapper)
             .Include(user => user.Contact)
             .Include(user => user.Image)
             .Include(user => user.ReferredBy)
-            .Include(user => user.Store)
-            .Include(user => user.Transactions)
-            .Include(user => user.Reviews)
+            //.Include(user => user.Store)
+            //.Include(user => user.Reviews)
             .Include(user => user.ReferralsInitiated)
             .FirstOrDefaultAsync(user
                 => user.Id.Equals(request.Id), cancellationToken);

@@ -53,7 +53,7 @@ public partial class BotUpdateHandler
         });
     }
 
-    private async Task SendMenuChangePersonalInfoAsync(ITelegramBotClient botClient, Message message, CancellationToken cancellationToken)
+    private async Task SendMenuPersonalInfoAsync(ITelegramBotClient botClient, Message message, CancellationToken cancellationToken, string actionMessage = Text.Empty)
     {
         InlineKeyboardMarkup keyboard = new(new InlineKeyboardButton[][]
         {
@@ -67,19 +67,20 @@ public partial class BotUpdateHandler
         });
 
         Message sentMessage = default!;
+        var text = string.Concat(actionMessage, localizer[Text.MenuChangePersonalInfo,
+                    user.FirstName,
+                    user.LastName,
+                    user.DateOfBirth.ToString("yyyy-MM-dd"),
+                    user.Gender,
+                    user.Contact.Phone!,
+                    user.Contact.Email!]);
 
         try
         {
             sentMessage = await botClient.EditMessageTextAsync(
                 chatId: message.Chat.Id,
                 messageId: message.MessageId,
-                text: localizer[Text.MenuChangePersonalInfo,
-                    user.FirstName,
-                    user.LastName,
-                    user.DateOfBirth.ToString("yyyy-MM-dd"),
-                    user.Gender,
-                    user.Contact.Phone!,
-                    user.Contact.Email!],
+                text: text,
                 replyMarkup: keyboard,
                 cancellationToken: cancellationToken);
         }
@@ -94,13 +95,7 @@ public partial class BotUpdateHandler
 
                 sentMessage = await botClient.SendTextMessageAsync(
                     chatId: message.Chat.Id,
-                    text: localizer[Text.MenuChangePersonalInfo,
-                        user.FirstName,
-                        user.LastName,
-                        user.DateOfBirth.ToString("yyyy-MM-dd"),
-                        user.Gender,
-                        user.Contact.Phone!,
-                        user.Contact.Email!],
+                    text: text,
                     replyMarkup: keyboard,
                     cancellationToken: cancellationToken);
 
@@ -137,7 +132,7 @@ public partial class BotUpdateHandler
         });
     }
 
-    private async Task SendRequestGenderAsync(ITelegramBotClient botClient, Message message, CancellationToken cancellationToken)
+    private async Task SendRequestGenderAsync(ITelegramBotClient botClient, Message message, CancellationToken cancellationToken, string actionMessage = Text.Empty)
     {
         InlineKeyboardMarkup keyboard = new(new InlineKeyboardButton[][]
         {
@@ -146,12 +141,13 @@ public partial class BotUpdateHandler
             [InlineKeyboardButton.WithCallbackData(localizer[Text.Back], CallbackData.Back)],
         });
 
-        Message sentMessage = await botClient.EditMessageTextAsync(
-                chatId: message.Chat.Id,
-                messageId: message.MessageId,
-                text: localizer[Text.AskGender, localizer[user.Gender.ToString()]],
-                replyMarkup: keyboard,
-                cancellationToken: cancellationToken);
+        var text = string.Concat(actionMessage, localizer[Text.AskGender, localizer[user.Gender.ToString()]]);
+        var sentMessage = await botClient.EditMessageTextAsync(
+            chatId: message.Chat.Id,
+            messageId: message.MessageId,
+            text: text,
+            replyMarkup: keyboard,
+            cancellationToken: cancellationToken);
 
         user.MessageId = sentMessage.MessageId;
         user.State = States.WaitingForSelectGender;
@@ -168,6 +164,6 @@ public partial class BotUpdateHandler
             _ => Genders.Unknown,
         };
 
-        await SendMenuChangePersonalInfoAsync(botClient, callbackQuery.Message, cancellationToken);
+        await SendMenuPersonalInfoAsync(botClient, callbackQuery.Message, cancellationToken);
     }
 }

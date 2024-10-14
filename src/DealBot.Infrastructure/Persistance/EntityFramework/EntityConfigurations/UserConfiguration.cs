@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 public class UserConfiguration : IEntityTypeConfiguration<User>
 {
-    public void Configure(EntityTypeBuilder<Domain.Entities.User> builder)
+    public void Configure(EntityTypeBuilder<User> builder)
     {
         // Table name
         builder.ToTable("Users");
@@ -46,29 +46,14 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
 
     private static void ConfigureRelationships(EntityTypeBuilder<User> builder)
     {
-        //builder.HasOne(u => u.Contact)
-        //       .WithOne()
-        //       .HasForeignKey<User>(u => u.ContactId);
+        builder.HasMany(u => u.CustomerTransactions)
+               .WithOne(t => t.Customer)
+               .HasForeignKey(t => t.CustomerId)
+               .OnDelete(DeleteBehavior.Restrict);
 
-        //builder.HasOne(u => u.Address)
-        //       .WithOne()
-        //       .HasForeignKey<User>(u => u.AddressId);
-
-        //builder.HasOne(u => u.Image)
-        //       .WithOne()
-        //       .HasForeignKey<User>(u => u.AssetId);
-
-        builder.HasMany(u => u.Transactions)
-               .WithOne(t => t.User)
-               .HasForeignKey(t => t.UserId);
-
-        builder.HasMany(u => u.Reviews)
-               .WithOne(r => r.User)
-               .HasForeignKey(r => r.UserId);
-
-        builder.HasOne(u => u.Store)
-               .WithOne(s => s.Owner)
-               .HasForeignKey<Store>(s => s.OwnerId)
-               .OnDelete(DeleteBehavior.NoAction);
+        builder.HasMany(u => u.SellerTransactions)
+               .WithOne(t => t.Seller)
+               .HasForeignKey(t => t.SellerId)
+               .OnDelete(DeleteBehavior.Restrict);
     }
 }

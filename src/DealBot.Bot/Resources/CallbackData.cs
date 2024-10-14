@@ -1,4 +1,5 @@
 ﻿
+
 namespace DealBot.Bot.Resources;
 
 public class CallbackData
@@ -33,14 +34,21 @@ public class CallbackData
     public const string Previous = nameof(Previous);
     public const string Next = nameof(Next);
     public const string CustomersList = nameof(CustomersList);
-    public const string CashBackTransfer = nameof(CashBackTransfer);
+    public const string UserMamager = nameof(UserMamager);
     public const string Statistics = nameof(Statistics);
     public const string SendMessage = nameof(SendMessage);
-    public const string BotSettings = nameof(BotSettings);
+    public const string CompanyInfo = nameof(CompanyInfo);
     public const string Picture = nameof(Picture);
     public const string Name = nameof(Name);
     public const string About = nameof(About);
     public const string Description = nameof(Description);
     public const string DescriptionPicture = nameof(DescriptionPicture);
     public const string MiniAppUrl = nameof(MiniAppUrl);
+    public const string Get = nameof(Get);
+    public const string Give = nameof(Give);
+    public const string Cancel = nameof(Cancel);
+    public const string Submit = nameof(Submit);
+    public const string Remind = nameof(Remind);
+    public const string MessageToDeveloper = nameof(MessageToDeveloper);
+    public const string Transaction = nameof(MessageToDeveloper);
 }

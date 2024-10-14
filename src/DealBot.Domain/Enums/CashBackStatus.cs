@@ -2,6 +2,7 @@
 
 public enum CashBackStatus
 {
+    None,
     Pending,
     Completed,
     Cancelled,

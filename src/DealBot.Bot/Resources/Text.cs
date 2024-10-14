@@ -61,10 +61,10 @@ public class Text
     public const string Next = nameof(Next);
     public const string UserInfo = nameof(UserInfo);
     public const string CustomersList = nameof(CustomersList);
-    public const string CashBackTransfer = nameof(CashBackTransfer);
+    public const string UserManager = nameof(UserManager);
     public const string Statistics = nameof(Statistics);
     public const string SendMessage = nameof(SendMessage);
-    public const string BotSettings = nameof(BotSettings);
+    public const string CompanyInfo = nameof(CompanyInfo);
     public const string Picture = nameof(Picture);
     public const string Name = nameof(Name);
     public const string About = nameof(About);
@@ -80,4 +80,20 @@ public class Text
     public const string AskPhoto = nameof(AskPhoto);
     public const string AskUserId = nameof(AskUserId);
     public const string AskUserIdInPlaceHolder = nameof(AskUserIdInPlaceHolder);
+    public const string Give = nameof(Give);
+    public const string Get = nameof(Get);
+    public const string AskProductPriceInPlaceHolder = nameof(AskProductPriceInPlaceHolder);
+    public const string AskProductPrice = nameof(AskProductPrice);
+    public const string AskSalesAmountInPlaceHolder = nameof(AskSalesAmountInPlaceHolder);
+    public const string AskMessageInPlaceHolder = nameof(AskMessageInPlaceHolder);
+    public const string AskMessage = nameof(AskMessage);
+    public const string TransactionInfo = nameof(TransactionInfo);
+    public const string Cancel = nameof(Cancel);
+    public const string Submit = nameof(Submit);
+    public const string Remind = nameof(Remind);
+    public const string MessageToDeveloper = nameof(MessageToDeveloper);
+    public const string Transaction = nameof(Transaction);
+    public const string CustomerCardInfo = nameof(CustomerCardInfo);
+    public const string RemindMessage = nameof(RemindMessage);
+    public const string MessageSent = nameof(MessageSent);
 }

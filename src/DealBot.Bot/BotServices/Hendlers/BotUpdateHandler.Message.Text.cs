@@ -35,6 +35,10 @@ public partial class BotUpdateHandler
             States.WaitingForSendLastName => HandleLastNameAsync(botClient, message, cancellationToken),
             States.WaitingForSendName => HandleNameAsync(botClient, message, cancellationToken),
             States.WaitingForSendAbout => HandleAboutAsync(botClient, message, cancellationToken),
+            States.WaitingForSendUserId => HandleUserIdAsync(botClient, message, cancellationToken),
+            States.WaitingForSendProductPrice => HandleProductPriceAsync(botClient, message, cancellationToken),
+            States.WaitingForSendSalesAmount => HandleSalesAmountAsync(botClient, message, cancellationToken),
+            States.WaitingForSendMessageToDeveloper => HandleMessageToDeveloperAsync(botClient, message, cancellationToken),
             _ => HandleUnknownMessageAsync(botClient, message, cancellationToken)
         };
 

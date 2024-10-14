@@ -76,7 +76,7 @@ public partial class BotUpdateHandler
             messageId: message.MessageId,
             cancellationToken: cancellationToken);
 
-        await SendBotSettingsAsync(botClient, message, cancellationToken);
+        await SendMenuCompanyInfoAsync(botClient, message, cancellationToken);
     }
 
 }

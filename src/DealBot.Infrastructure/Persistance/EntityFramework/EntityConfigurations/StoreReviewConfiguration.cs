@@ -34,9 +34,5 @@ public class StoreReviewConfiguration : IEntityTypeConfiguration<StoreReview>
         builder.HasOne(sr => sr.Store)
                        .WithMany(s => s.Reviews)
                        .HasForeignKey(sr => sr.StoreId);
-
-        builder.HasOne(sr => sr.User)
-               .WithMany(u => u.Reviews)
-               .HasForeignKey(sr => sr.UserId);
     }
 }

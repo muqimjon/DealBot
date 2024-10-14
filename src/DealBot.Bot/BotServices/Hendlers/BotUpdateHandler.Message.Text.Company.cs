@@ -50,7 +50,7 @@ public partial class BotUpdateHandler
             languageCode: user.LanguageCode,
             cancellationToken: cancellationToken);
 
-        await SendBotSettingsAsync(botClient, message, cancellationToken);
+        await SendMenuCompanyInfoAsync(botClient, message, cancellationToken);
     }
 
     private async Task SendRequestForAboutAsync(ITelegramBotClient botClient, Message message, CancellationToken cancellationToken)
@@ -68,8 +68,6 @@ public partial class BotUpdateHandler
             ResizeKeyboard = true,
             InputFieldPlaceholder = localizer[Text.ActionNotAvailable],
         };
-
-        //var bot = await botClient.GetMeAsync(cancellationToken);
 
         var sentMessage = await botClient.SendTextMessageAsync(
             chatId: message.Chat.Id,
@@ -94,7 +92,7 @@ public partial class BotUpdateHandler
             languageCode: user.LanguageCode,
             cancellationToken: cancellationToken);
 
-        await SendBotSettingsAsync(botClient, message, cancellationToken);
+        await SendMenuCompanyInfoAsync(botClient, message, cancellationToken);
     }
 
     private async Task SendRequestForDescriptionAsync(ITelegramBotClient botClient, Message message, CancellationToken cancellationToken)
@@ -112,8 +110,6 @@ public partial class BotUpdateHandler
             ResizeKeyboard = true,
             InputFieldPlaceholder = localizer[Text.ActionNotAvailable],
         };
-
-        //var bot = await botClient.GetMeAsync(cancellationToken);
 
         var sentMessage = await botClient.SendTextMessageAsync(
             chatId: message.Chat.Id,

@@ -33,4 +33,10 @@ public enum States
     WaitingForSendBotPic,
     WaitingForSendAbout,
     WaitingForSendUserId,
+    WaitingForSelectUserMenu,
+    WaitingForSendProductPrice,
+    WaitingForSendSalesAmount,
+    WaitingForSendMessage,
+    WaitingForSelectTransaction,
+    WaitingForSendMessageToDeveloper,
 }

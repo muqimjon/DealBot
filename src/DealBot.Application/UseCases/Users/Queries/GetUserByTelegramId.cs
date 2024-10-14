@@ -21,9 +21,9 @@ public class GetUserByTelegramIdQueryHandler(IAppDbContext dbContext, IMapper ma
             .Include(user => user.Contact)
             .Include(user => user.Image)
             .Include(user => user.ReferredBy)
-            .Include(user => user.Store)
-            .Include(user => user.Transactions)
-            .Include(user => user.Reviews)
+            //.Include(user => user.Store)
+            //.Include(user => user.Transactions)
+            //.Include(user => user.Reviews)
             .Include(user => user.ReferralsInitiated)
             .FirstOrDefaultAsync(user
                 => user.TelegramId.Equals(request.TelegramId), cancellationToken);

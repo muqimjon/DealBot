@@ -20,8 +20,7 @@ public class ContactConfiguration : IEntityTypeConfiguration<Contact>
     private static void ConfigureProperties(EntityTypeBuilder<Contact> builder)
     {
         builder.Property(c => c.Phone)
-                       .HasMaxLength(20)
-                       .IsRequired();
+                       .HasMaxLength(20);
 
         builder.Property(c => c.Email)
                .HasMaxLength(76);

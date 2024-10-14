@@ -10,7 +10,7 @@ using Telegram.Bot.Types.ReplyMarkups;
 
 public partial class BotUpdateHandler
 {
-    private async Task SendBotSettingsAsync(ITelegramBotClient botClient, Message message, CancellationToken cancellationToken, string actionMessage = Text.Empty)
+    private async Task SendMenuCompanyInfoAsync(ITelegramBotClient botClient, Message message, CancellationToken cancellationToken, string actionMessage = Text.Empty)
     {
         InlineKeyboardMarkup keyboard = new(new InlineKeyboardButton[][]
         {
@@ -69,7 +69,7 @@ public partial class BotUpdateHandler
         user.State = States.WaitingForSelectBotSettings;
     }
 
-    private async Task HandleBotSettings(ITelegramBotClient botClient, CallbackQuery callbackQuery, CancellationToken cancellationToken)
+    private async Task HandleBotSettingsAsync(ITelegramBotClient botClient, CallbackQuery callbackQuery, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(callbackQuery.Message, nameof(Message));
 

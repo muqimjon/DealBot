@@ -219,7 +219,7 @@ public partial class BotUpdateHandler
         await (callbackQuery.Data switch
         {
             CallbackData.ChangeLanguage => SendMenuLanguagesAsync(botClient, callbackQuery.Message, cancellationToken),
-            CallbackData.PersonalInfo => SendMenuChangePersonalInfoAsync(botClient, callbackQuery.Message, cancellationToken),
+            CallbackData.PersonalInfo => SendMenuPersonalInfoAsync(botClient, callbackQuery.Message, cancellationToken),
             _ => HandleUnknownCallbackQueryAsync(botClient, callbackQuery, cancellationToken),
         });
     }

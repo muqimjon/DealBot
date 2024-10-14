@@ -23,21 +23,22 @@ public class TransactionConfiguration : IEntityTypeConfiguration<Transaction>
     private static void ConfigureProperties(EntityTypeBuilder<Transaction> builder)
     {
         builder.Property(t => t.Amount)
-                       .HasColumnType("decimal(18,2)")
-                       .IsRequired();
+            .HasColumnType("decimal(18,2)");
 
         builder.Property(t => t.Status)
-               .IsRequired();
+            .IsRequired();
     }
 
     private static void ConfigureRelationships(EntityTypeBuilder<Transaction> builder)
     {
-        builder.HasOne(t => t.User)
-                       .WithMany(u => u.Transactions)
-                       .HasForeignKey(t => t.UserId);
+        builder.HasOne(t => t.Customer)
+            .WithMany(u => u.CustomerTransactions)
+            .HasForeignKey(t => t.CustomerId)
+            .OnDelete(DeleteBehavior.Restrict);
 
-        builder.HasOne(t => t.Store)
-               .WithMany(s => s.Transactions)
-               .HasForeignKey(t => t.StoreId);
+        builder.HasOne(t => t.Seller)
+            .WithMany(u => u.SellerTransactions)
+            .HasForeignKey(t => t.SellerId)
+            .OnDelete(DeleteBehavior.Restrict);
     }
 }

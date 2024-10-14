@@ -166,6 +166,12 @@ Iltimos, davom ettirish uchun kanalga a'zo bo'ling!</value>
   <data name="AskLastNameInPlaceHolder" xml:space="preserve">
     <value>Familiyangizni kiriting...</value>
   </data>
+  <data name="AskMessage" xml:space="preserve">
+    <value>Xabarni kiriting:</value>
+  </data>
+  <data name="AskMessageInPlaceHolder" xml:space="preserve">
+    <value>Xabar matnini yozing...</value>
+  </data>
   <data name="AskName" xml:space="preserve">
     <value>Joriy nom: {0}</value>
   </data>
@@ -178,6 +184,12 @@ Iltimos, davom ettirish uchun kanalga a'zo bo'ling!</value>
   <data name="AskPhoneNumberInPlaceHolder" xml:space="preserve">
     <value>Telefon raqamingizni kiriting..</value>
   </data>
+  <data name="AskProductPriceInPlaceHolder" xml:space="preserve">
+    <value>Mahsulot narxini kiriting...</value>
+  </data>
+  <data name="AskSalesAmountInPlaceHolder" xml:space="preserve">
+    <value>Savdo summasini kiriting...</value>
+  </data>
   <data name="AskUserId" xml:space="preserve">
     <value>Inline usulda user ma'lumotlarini yuboring</value>
   </data>
@@ -187,14 +199,14 @@ Iltimos, davom ettirish uchun kanalga a'zo bo'ling!</value>
   <data name="BotSettings" xml:space="preserve">
     <value>🤖 Botni sozlash</value>
   </data>
+  <data name="Cancel" xml:space="preserve">
+    <value>Bekor qilish</value>
+  </data>
   <data name="CardInfo" xml:space="preserve">
     <value>Imtiyoz karta ma'lumotlari:
 Hisob: {0}
 Turi: {1}
 Holati: {2}</value>
-  </data>
-  <data name="CashBackTransfer" xml:space="preserve">
-    <value>💸 Keshbek ayirboshlash</value>
   </data>
   <data name="ChangeLanguage" xml:space="preserve">
     <value>🌐 Tilni o'zgartirish</value>
@@ -207,6 +219,11 @@ Holati: {2}</value>
   </data>
   <data name="ContactUs" xml:space="preserve">
     <value>☎️ Biz bilan a'loqa</value>
+  </data>
+  <data name="CustomerCardInfo" xml:space="preserve">
+    <value>Name: {0}
+Hisob: {1}
+Type: {2}</value>
   </data>
   <data name="CustomersList" xml:space="preserve">
     <value>📋 Mijozlar ro'yxati</value>
@@ -235,6 +252,12 @@ Holati: {2}</value>
   <data name="Gender" xml:space="preserve">
     <value>🚻 Jins</value>
   </data>
+  <data name="Get" xml:space="preserve">
+    <value>Olish</value>
+  </data>
+  <data name="Give" xml:space="preserve">
+    <value>Berish</value>
+  </data>
   <data name="Greeting" xml:space="preserve">
     <value>Assalomu alaykum {0} {1}!
 Bot haqida ma'lumot...
@@ -259,6 +282,12 @@ Tug'ilgan sana: {2}
 Jinsi: {3}
 Telefon raqami: {4}
 Email: {5}</value>
+  </data>
+  <data name="MessageSent" xml:space="preserve">
+    <value>Xabar muvaffaqqiyatli yuborildi.</value>
+  </data>
+  <data name="MessageToDeveloper" xml:space="preserve">
+    <value>Ishlab chiquvchiga taklif yuborish</value>
   </data>
   <data name="MiniAppUrl" xml:space="preserve">
     <value>Mini app havolasi</value>
@@ -296,6 +325,12 @@ Email: {5}</value>
   </data>
   <data name="Referral" xml:space="preserve">
     <value>⤴️ Do'stlar bilan ulashish</value>
+  </data>
+  <data name="Remind" xml:space="preserve">
+    <value>Eslatish</value>
+  </data>
+  <data name="RemindMessage" xml:space="preserve">
+    <value>Bu transactionni yakunlashkerak</value>
   </data>
   <data name="SelectLanguage" xml:space="preserve">
     <value>O'zingizga qulay tinlni tanlang</value>
@@ -340,10 +375,24 @@ tel: +998 93 7349808</value>
   <data name="Subscribe" xml:space="preserve">
     <value>➕ Obuna bo'lish</value>
   </data>
+  <data name="Transaction" xml:space="preserve">
+    <value>Ayirboshlash</value>
+  </data>
+  <data name="TransactionInfo" xml:space="preserve">
+    <value>Tranzaksiya ma'lumoti:
+Qiymati: {0}
+Holati: {1}
+Mijoz: {2}
+Sotuvchi: {3}
+Sana: {4}</value>
+  </data>
   <data name="UserInfo" xml:space="preserve">
     <value>👤 {0}  {1}
 💎 {2}
 </value>
+  </data>
+  <data name="UserManager" xml:space="preserve">
+    <value>Mijoz sozlamalari</value>
   </data>
   <data name="Year" xml:space="preserve">
     <value>Yil</value>

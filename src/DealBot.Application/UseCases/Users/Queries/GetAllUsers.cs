@@ -19,9 +19,8 @@ public class GetAllUsersQueryHandler(IAppDbContext dbContext, IMapper mapper)
             .Include(user => user.Contact)
             .Include(user => user.Image)
             .Include(user => user.ReferredBy)
-            .Include(user => user.Store)
-            .Include(user => user.Transactions)
-            .Include(user => user.Reviews)
+            //.Include(user => user.Store)
+            //.Include(user => user.Reviews)
             .Include(user => user.ReferralsInitiated)
             .ToListAsync(cancellationToken: cancellationToken);
 

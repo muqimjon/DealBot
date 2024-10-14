@@ -16,13 +16,13 @@ public sealed class User : Auditable
     public States State { get; set; }
     public int MessageId { get; set; }
     public bool IsActive { get; set; }
+    public long PlaceId { get; set; }
 
     public Card Card { get; set; }
     public long? CardId { get; set; }
 
     public Contact Contact { get; set; }
     public long? ContactId { get; set; }
-
 
     public Address Address { get; set; }
     public long? AddressId { get; set; }
@@ -31,9 +31,8 @@ public sealed class User : Auditable
     public long? AssetId { get; set; }
 
     public Referral? ReferredBy { get; set; }
-    public Store Store { get; set; }
-    public ICollection<Transaction> Transactions { get; set; }
-    public ICollection<StoreReview> Reviews { get; set; }
+    public ICollection<Transaction> SellerTransactions { get; set; }
+    public ICollection<Transaction> CustomerTransactions { get; set; }
     public ICollection<Referral> ReferralsInitiated { get; set; }
 
     public string GetFullName()

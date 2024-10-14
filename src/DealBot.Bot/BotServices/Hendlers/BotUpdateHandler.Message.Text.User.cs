@@ -45,7 +45,7 @@ public partial class BotUpdateHandler
     {
         // TO DO Need validation
         user.FirstName = message.Text!;
-        await SendMenuChangePersonalInfoAsync(botClient, message, cancellationToken);
+        await SendMenuPersonalInfoAsync(botClient, message, cancellationToken);
     }
 
     private async Task SendRequestLastNameAsync(ITelegramBotClient botClient, Message message, CancellationToken cancellationToken)
@@ -83,7 +83,7 @@ public partial class BotUpdateHandler
     {
         // TO DO Need validation
         user.LastName = message.Text!;
-        await SendMenuChangePersonalInfoAsync(botClient, message, cancellationToken);
+        await SendMenuPersonalInfoAsync(botClient, message, cancellationToken);
     }
 
     private async Task SendRequestEmailAsync(ITelegramBotClient botClient, Message message, CancellationToken cancellationToken)
@@ -121,6 +121,6 @@ public partial class BotUpdateHandler
     {
         // TO DO Need validation
         user.Contact.Email = message.Text;
-        await SendMenuChangePersonalInfoAsync(botClient, message, cancellationToken);
+        await SendMenuPersonalInfoAsync(botClient, message, cancellationToken);
     }
 }

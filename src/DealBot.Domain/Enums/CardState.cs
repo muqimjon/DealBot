@@ -6,5 +6,5 @@ using System.Text.Json.Serialization;
 public enum CardState
 {
     Block,
-    Active
+    Active,
 }

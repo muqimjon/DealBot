@@ -44,17 +44,9 @@ public class StoreConfiguration : IEntityTypeConfiguration<Store>
                .WithOne()
                .HasForeignKey<Store>(s => s.AddressId);
 
-        builder.HasOne(s => s.Owner)
-               .WithOne(u => u.Store)
-               .HasForeignKey<Store>(s => s.OwnerId);
-
         builder.HasOne(s => s.Image)
                .WithOne()
                .HasForeignKey<Store>(s => s.AssetId);
-
-        builder.HasMany(s => s.Transactions)
-               .WithOne(t => t.Store)
-               .HasForeignKey(t => t.StoreId);
 
         builder.HasMany(s => s.Reviews)
                .WithOne(r => r.Store)
