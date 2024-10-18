@@ -32,15 +32,19 @@ public partial class BotUpdateHandler
     {
         InlineKeyboardMarkup keyboard = new(new InlineKeyboardButton[][]
         {
-            [InlineKeyboardButton.WithCallbackData(localizer[Text.Give], CallbackData.Give),
-                InlineKeyboardButton.WithCallbackData(localizer[Text.Get], CallbackData.Get)],
+            [InlineKeyboardButton.WithCallbackData(localizer[Text.Give], CallbackData.Take),
+                InlineKeyboardButton.WithCallbackData(localizer[Text.Get], CallbackData.Give)],
             [InlineKeyboardButton.WithCallbackData(localizer[Text.Back], CallbackData.Back)]
         });
+        var customer = await appDbContext.Users
+            .Include(c => c.Card)
+            .FirstAsync(c => c.Id.Equals(user.PlaceId), cancellationToken);
+        var text = localizer[Text.CustomerCardInfo, customer.GetFullName(), customer.Card.Ballance, customer.Card.Type];
 
         var sentMessage = await botClient.EditMessageTextAsync(
             chatId: message.Chat.Id,
             messageId: message.MessageId,
-            text: localizer[Text.CustomerCardInfo],
+            text: text,
             replyMarkup: keyboard,
             cancellationToken: cancellationToken);
 
@@ -54,8 +58,8 @@ public partial class BotUpdateHandler
 
         await (callbackQuery.Data switch
         {
+            CallbackData.Take => SendProductPriceInquiryAsync(botClient, callbackQuery.Message, cancellationToken),
             CallbackData.Give => SendSalesAmountInquiryAsync(botClient, callbackQuery.Message, cancellationToken),
-            CallbackData.Get => SendProductPriceInquiryAsync(botClient, callbackQuery.Message, cancellationToken),
             _ => default!
         });
     }
@@ -100,6 +104,7 @@ public partial class BotUpdateHandler
             CallbackData.Remind => SendRemindTransactionAsync(botClient, callbackQuery.Message, cancellationToken),
             CallbackData.Cancel => CancelTransactionAsync(botClient, callbackQuery.Message, cancellationToken),
             CallbackData.Check => CheckMissionTransactionAsync(botClient, callbackQuery.Message, cancellationToken),
+            CallbackData.Take => SendProductPriceInquiryAsync(botClient, callbackQuery.Message, cancellationToken),
             _ => default!
         });
     }

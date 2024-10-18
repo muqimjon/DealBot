@@ -39,4 +39,5 @@ public enum States
     WaitingForSendMessage,
     WaitingForSelectTransaction,
     WaitingForSendMessageToDeveloper,
+    WaitingForConfirmation,
 }

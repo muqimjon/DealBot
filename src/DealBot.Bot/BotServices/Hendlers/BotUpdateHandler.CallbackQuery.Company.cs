@@ -22,48 +22,15 @@ public partial class BotUpdateHandler
                 InlineKeyboardButton.WithCallbackData(localizer[Text.MiniAppUrl], CallbackData.MiniAppUrl)],
             [InlineKeyboardButton.WithCallbackData(localizer[Text.Back], CallbackData.Back)],
         });
-        Message sentMessage = default!;
+
         var text = string.Concat(actionMessage, localizer[Text.SelectSettings]);
 
-        try
-        {
-            sentMessage = await botClient.EditMessageTextAsync(
-                chatId: message.Chat.Id,
-                messageId: message.MessageId,
-                text: text,
-                replyMarkup: keyboard,
-                cancellationToken: cancellationToken);
-        }
-        catch
-        {
-            try
-            {
-                await botClient.SendChatActionAsync(
-                    chatId: message.Chat.Id,
-                    chatAction: ChatAction.Typing,
-                    cancellationToken: cancellationToken);
-
-                sentMessage = await botClient.SendTextMessageAsync(
-                    chatId: message.Chat.Id,
-                    text: text,
-                    replyMarkup: keyboard,
-                    cancellationToken: cancellationToken);
-
-                await botClient.DeleteMessageAsync(
-                    messageId: user.MessageId,
-                    chatId: message.Chat.Id,
-                    cancellationToken: cancellationToken);
-            }
-            catch { }
-            try
-            {
-                await botClient.DeleteMessageAsync(
-                    chatId: message.Chat.Id,
-                    messageId: message.MessageId,
-                    cancellationToken: cancellationToken);
-            }
-            catch { }
-        }
+        var sentMessage = await EditOrSendMessageAsync(
+            botClient: botClient,
+            message: message,
+            text: text,
+            keyboard: keyboard,
+            cancellationToken: cancellationToken);
 
         user.MessageId = sentMessage.MessageId;
         user.State = States.WaitingForSelectBotSettings;

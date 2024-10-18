@@ -3,6 +3,7 @@
 using DealBot.Bot.Resources;
 using DealBot.Domain.Enums;
 using Microsoft.EntityFrameworkCore;
+using System.Threading;
 using Telegram.Bot;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
@@ -20,50 +21,14 @@ public partial class BotUpdateHandler
                 InlineKeyboardButton.WithCallbackData(localizer[Text.Statistics], CallbackData.Statistics)],
             [InlineKeyboardButton.WithCallbackData(localizer[Text.Settings], CallbackData.Settings)],
         });
+        var text = string.Concat(messageText, localizer[Text.SelectMenu]);
 
-        Message sentMessage = default!;
-        var text = string.Concat(messageText,
-            localizer[Text.SelectMenu]);
-
-        try
-        {
-            sentMessage = await botClient.EditMessageTextAsync(
-                chatId: message.Chat.Id,
-                messageId: message.MessageId,
-                text: text,
-                replyMarkup: keyboard,
-                cancellationToken: cancellationToken);
-        }
-        catch
-        {
-            try
-            {
-                await botClient.SendChatActionAsync(
-                    chatId: message.Chat.Id,
-                    chatAction: ChatAction.Typing,
-                    cancellationToken: cancellationToken);
-
-                sentMessage = await botClient.SendTextMessageAsync(
-                    chatId: message.Chat.Id,
-                    text: text,
-                    replyMarkup: keyboard,
-                    cancellationToken: cancellationToken);
-
-                await botClient.DeleteMessageAsync(
-                    messageId: user.MessageId,
-                    chatId: message.Chat.Id,
-                    cancellationToken: cancellationToken);
-            }
-            catch { }
-            try
-            {
-                await botClient.DeleteMessageAsync(
-                    chatId: message.Chat.Id,
-                    messageId: message.MessageId,
-                    cancellationToken: cancellationToken);
-            }
-            catch { }
-        }
+        var sentMessage = await EditOrSendMessageAsync(
+            botClient: botClient,
+            message: message,
+            text: text,
+            keyboard: keyboard,
+            cancellationToken: cancellationToken);
 
         user.MessageId = sentMessage.MessageId;
         user.State = States.WaitingForSelectMenu;
@@ -199,20 +164,6 @@ public partial class BotUpdateHandler
 
     private async Task HandleUserIdAsync(ITelegramBotClient botClient, Message message, CancellationToken cancellationToken)
     {
-        await botClient.DeleteMessageAsync(
-            chatId: message.Chat.Id,
-            messageId: message.MessageId,
-            cancellationToken: cancellationToken);
-
-        try
-        {
-            await botClient.DeleteMessageAsync(
-                messageId: user.MessageId,
-                chatId: message.Chat.Id,
-                cancellationToken: cancellationToken);
-        }
-        catch { }
-
         var bot = await botClient.GetMeAsync(cancellationToken: cancellationToken);
         bot.SupportsInlineQueries = false;
         Domain.Entities.User customer = default!;
@@ -232,7 +183,7 @@ public partial class BotUpdateHandler
         await SendUserManagerMenuAsync(botClient, message, cancellationToken);
     }
 
-    private async Task SendUserManagerMenuAsync(ITelegramBotClient botClient, Message message, CancellationToken cancellationToken)
+    private async Task SendUserManagerMenuAsync(ITelegramBotClient botClient, Message message, CancellationToken cancellationToken, string actionMessage = Text.Empty)
     {
         InlineKeyboardMarkup keyboard = new(new InlineKeyboardButton[][]
         {
@@ -241,12 +192,13 @@ public partial class BotUpdateHandler
             [InlineKeyboardButton.WithCallbackData(localizer[Text.Settings], CallbackData.Settings)],
             [InlineKeyboardButton.WithCallbackData(localizer[Text.Back], CallbackData.Back)]
         });
+        var text = string.Concat(actionMessage, localizer[Text.SelectMenu]);
 
-        var sentMessage = await botClient.SendTextMessageAsync(
-            chatId: message.Chat.Id,
-            text: localizer[Text.SelectMenu],
-            replyMarkup: keyboard,
-            parseMode: ParseMode.MarkdownV2,
+        var sentMessage = await EditOrSendMessageAsync(
+            botClient: botClient,
+            message: message,
+            text: text,
+            keyboard: keyboard,
             cancellationToken: cancellationToken);
 
         user.MessageId = sentMessage.MessageId;

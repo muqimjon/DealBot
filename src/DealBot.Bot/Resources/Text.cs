@@ -96,4 +96,5 @@ public class Text
     public const string CustomerCardInfo = nameof(CustomerCardInfo);
     public const string RemindMessage = nameof(RemindMessage);
     public const string MessageSent = nameof(MessageSent);
+    public const string Confirmation = nameof(Confirmation);
 }

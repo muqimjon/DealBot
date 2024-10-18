@@ -1,6 +1,7 @@
 ﻿namespace DealBot.Bot.BotServices;
 
 using DealBot.Bot.Resources;
+using DealBot.Domain.Entities;
 using DealBot.Domain.Enums;
 using Microsoft.EntityFrameworkCore;
 using Telegram.Bot;
@@ -45,22 +46,72 @@ public partial class BotUpdateHandler
 
         if (decimal.TryParse(message.Text, out var price) && price <= customer.Card.Ballance)
         {
-            var transaction = await appDbContext.Transactions
-                .Include(t => t.Seller)
-                .Include(t => t.Customer)
-                .LastOrDefaultAsync(t
-                    => t.CustomerId.Equals(user.PlaceId)
-                    && t.Status.Equals(CashBackStatus.None),
-                cancellationToken: cancellationToken);
-
-            if (transaction is not null)
+            Transaction transaction = new()
             {
-                await SendMissingTransactionAsync(transaction, botClient, message, cancellationToken);
-                return;
-            }
+                Amount = -price,
+                Customer = customer,
+                Seller = user,
+            };
+
+            await SendRequestCustomerConfirmationAsync(transaction, botClient, message, cancellationToken);
         }
         else
             await SendUserManagerMenuAsync(botClient, message, cancellationToken);
+    }
+
+    private async Task SendRequestCustomerConfirmationAsync(Transaction transaction, ITelegramBotClient botClient, Message message, CancellationToken cancellationToken)
+    {
+        InlineKeyboardMarkup keyboard = new(new InlineKeyboardButton[][]
+        {
+            [InlineKeyboardButton.WithCallbackData(localizer[Text.Submit], CallbackData.Submit),
+                InlineKeyboardButton.WithCallbackData(localizer[Text.Cancel], CallbackData.Cancel)],
+        });
+        Message sentMessage = default!;
+        var text = localizer[Text.Confirmation];
+
+        try
+        {
+            sentMessage = await botClient.EditMessageTextAsync(
+                chatId: message.Chat.Id,
+                messageId: transaction.Customer.MessageId,
+                text: text,
+                replyMarkup: keyboard,
+                parseMode: ParseMode.MarkdownV2,
+                cancellationToken: cancellationToken);
+        }
+        catch
+        {
+            await botClient.SendChatActionAsync(
+                chatId: transaction.Customer.TelegramId,
+                chatAction: ChatAction.Typing,
+                cancellationToken: cancellationToken);
+
+            sentMessage = await botClient.SendTextMessageAsync(
+                chatId: message.Chat.Id,
+                text: text,
+                replyMarkup: keyboard,
+                parseMode: ParseMode.MarkdownV2,
+                cancellationToken: cancellationToken);
+            try
+            {
+                await botClient.DeleteMessageAsync(
+                    messageId: user.MessageId,
+                    chatId: message.Chat.Id,
+                    cancellationToken: cancellationToken);
+            }
+            catch { }
+            try
+            {
+                await botClient.DeleteMessageAsync(
+                    chatId: message.Chat.Id,
+                    messageId: message.MessageId,
+                    cancellationToken: cancellationToken);
+            }
+            catch { }
+        }
+
+        transaction.Customer.MessageId = sentMessage.MessageId;
+        transaction.Customer.State = States.WaitingForConfirmation;
     }
 
     private async Task SendSalesAmountInquiryAsync(ITelegramBotClient botClient, Message message, CancellationToken cancellationToken)
@@ -102,7 +153,6 @@ public partial class BotUpdateHandler
                 CardType.Premium => 0.4m,
                 _ => 0
             };
-
         }
 
         await SendRequestForUserIdAsync(botClient, message, cancellationToken);

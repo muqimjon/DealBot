@@ -102,21 +102,15 @@ public partial class BotUpdateHandler
             States.WaitingForSendAbout => SendMenuCompanyInfoAsync(botClient, message, cancellationToken),
             States.WaitingForSendUserId => SendSellerMenuAsync(botClient, message, cancellationToken),
             States.WaitingForSelectUserMenu => SendSellerMenuAsync(botClient, message, cancellationToken),
-            States.WaitingForSendProductPrice => SendRequestForUserIdAsync(botClient, message, cancellationToken),
             States.WaitingForSendSalesAmount => SendRequestForUserIdAsync(botClient, message, cancellationToken),
             States.WaitingForSendMessage => SendSellerMenuAsync(botClient, message, cancellationToken),
             States.WaitingForSelectTransaction => SendUserManagerMenuAsync(botClient, message, cancellationToken),
+            States.WaitingForSendProductPrice => SendTransactionAsync(botClient, message, cancellationToken),
             _ => HandleUnknownMessageAsync(botClient, message, cancellationToken),
         };
 
         try { await handler; }
         catch (Exception ex) { logger.LogError(ex, "Error handling callback query: {message.Text}", message); }
-    }
-
-    private Task HandleUnknownCallbackQueryAsync(ITelegramBotClient _, CallbackQuery callbackQuery, CancellationToken cancellationToken)
-    {
-        logger.LogInformation("Received unknown callback query: {callbackQuery.Data}", callbackQuery?.Data);
-        return Task.CompletedTask;
     }
 
     private async Task SendFirstMenuLanguagesAsync(ITelegramBotClient botClient, Message message, CancellationToken cancellationToken)
@@ -180,6 +174,61 @@ public partial class BotUpdateHandler
 
         user.MessageId = sentMessage.MessageId;
         user.State = States.WaitingForSendPhoneNumber;
+    }
+
+    private async Task<Message> EditOrSendMessageAsync(ITelegramBotClient botClient, Message message, string text, InlineKeyboardMarkup keyboard, CancellationToken cancellationToken)
+    {
+        Message sentMessage;
+
+        try
+        {
+            sentMessage = await botClient.EditMessageTextAsync(
+                chatId: message.Chat.Id,
+                messageId: message.MessageId,
+                text: text,
+                parseMode: ParseMode.MarkdownV2,
+            replyMarkup: keyboard,
+                cancellationToken: cancellationToken);
+        }
+        catch
+        {
+            await botClient.SendChatActionAsync(
+                chatId: message.Chat.Id,
+                chatAction: ChatAction.Typing,
+                cancellationToken: cancellationToken);
+
+            sentMessage = await botClient.SendTextMessageAsync(
+                chatId: message.Chat.Id,
+                text: localizer[Text.SelectMenu],
+                replyMarkup: keyboard,
+                parseMode: ParseMode.MarkdownV2,
+                cancellationToken: cancellationToken);
+
+            try
+            {
+                await botClient.DeleteMessageAsync(
+                    chatId: message.Chat.Id,
+                    messageId: message.MessageId,
+                    cancellationToken: cancellationToken);
+            }
+            catch { }
+            try
+            {
+                await botClient.DeleteMessageAsync(
+                    chatId: message.Chat.Id,
+                    messageId: user.MessageId,
+                    cancellationToken: cancellationToken);
+            }
+            catch { }
+        }
+
+        return sentMessage;
+    }
+
+    private Task HandleUnknownCallbackQueryAsync(ITelegramBotClient _, CallbackQuery callbackQuery, CancellationToken cancellationToken)
+    {
+        logger.LogInformation("Received unknown callback query: {callbackQuery.Data}", callbackQuery?.Data);
+        return Task.CompletedTask;
     }
 }
 

@@ -44,8 +44,8 @@ public class CallbackData
     public const string Description = nameof(Description);
     public const string DescriptionPicture = nameof(DescriptionPicture);
     public const string MiniAppUrl = nameof(MiniAppUrl);
-    public const string Get = nameof(Get);
     public const string Give = nameof(Give);
+    public const string Take = nameof(Take);
     public const string Cancel = nameof(Cancel);
     public const string Submit = nameof(Submit);
     public const string Remind = nameof(Remind);

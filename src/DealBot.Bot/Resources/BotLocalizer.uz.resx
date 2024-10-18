@@ -184,6 +184,9 @@ Iltimos, davom ettirish uchun kanalga a'zo bo'ling!</value>
   <data name="AskPhoneNumberInPlaceHolder" xml:space="preserve">
     <value>Telefon raqamingizni kiriting..</value>
   </data>
+  <data name="AskProductPrice" xml:space="preserve">
+    <value>Mahsulot narxini kiriting</value>
+  </data>
   <data name="AskProductPriceInPlaceHolder" xml:space="preserve">
     <value>Mahsulot narxini kiriting...</value>
   </data>
@@ -216,6 +219,9 @@ Holati: {2}</value>
   </data>
   <data name="Comment" xml:space="preserve">
     <value>✍️ Sharx qoldirish</value>
+  </data>
+  <data name="Confirmation" xml:space="preserve">
+    <value>Savdoni tasdiqlash uchun xabar. va to'lov ma'lumotlari</value>
   </data>
   <data name="ContactUs" xml:space="preserve">
     <value>☎️ Biz bilan a'loqa</value>
@@ -251,9 +257,6 @@ Type: {2}</value>
   </data>
   <data name="Gender" xml:space="preserve">
     <value>🚻 Jins</value>
-  </data>
-  <data name="Get" xml:space="preserve">
-    <value>Olish</value>
   </data>
   <data name="Give" xml:space="preserve">
     <value>Berish</value>
@@ -356,6 +359,9 @@ Email: {5}</value>
   <data name="ShortInfo" xml:space="preserve">
     <value>Online shop...</value>
   </data>
+  <data name="Simple" xml:space="preserve">
+    <value>Oddiy</value>
+  </data>
   <data name="Statistics" xml:space="preserve">
     <value>📊 Statistika</value>
   </data>
@@ -374,6 +380,9 @@ tel: +998 93 7349808</value>
   </data>
   <data name="Subscribe" xml:space="preserve">
     <value>➕ Obuna bo'lish</value>
+  </data>
+  <data name="Take" xml:space="preserve">
+    <value>Olish</value>
   </data>
   <data name="Transaction" xml:space="preserve">
     <value>Ayirboshlash</value>

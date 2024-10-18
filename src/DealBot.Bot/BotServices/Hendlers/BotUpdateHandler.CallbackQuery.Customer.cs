@@ -10,7 +10,7 @@ using Telegram.Bot.Types.ReplyMarkups;
 
 public partial class BotUpdateHandler
 {
-    private async Task SendCustomerMenuAsync(ITelegramBotClient botClient, Message message, CancellationToken cancellationToken, string messageText = Text.Empty)
+    private async Task SendCustomerMenuAsync(ITelegramBotClient botClient, Message message, CancellationToken cancellationToken, string actionMessage = Text.Empty)
     {
         InlineKeyboardMarkup keyboard = new(new InlineKeyboardButton[][]
         {
@@ -23,50 +23,16 @@ public partial class BotUpdateHandler
             [InlineKeyboardButton.WithUrl(localizer[Text.Referral], await GetShareLink(botClient, cancellationToken))],
         });
 
-        Message sentMessage = default!;
-        var text = string.Concat(messageText,
+        var text = string.Concat(actionMessage,
             localizer[Text.UserInfo, user.FirstName, user.LastName, user.Card.Type],
             localizer[Text.SelectMenu]);
 
-        try
-        {
-            sentMessage = await botClient.EditMessageTextAsync(
-                chatId: message.Chat.Id,
-                messageId: message.MessageId,
-                text: text,
-                replyMarkup: keyboard,
-                cancellationToken: cancellationToken);
-        }
-        catch
-        {
-            try
-            {
-                await botClient.SendChatActionAsync(
-                    chatId: message.Chat.Id,
-                    chatAction: ChatAction.Typing,
-                    cancellationToken: cancellationToken);
-
-                sentMessage = await botClient.SendTextMessageAsync(
-                    chatId: message.Chat.Id,
-                    text: text,
-                    replyMarkup: keyboard,
-                    cancellationToken: cancellationToken);
-
-                await botClient.DeleteMessageAsync(
-                    messageId: user.MessageId,
-                    chatId: message.Chat.Id,
-                    cancellationToken: cancellationToken);
-            }
-            catch { }
-            try
-            {
-                await botClient.DeleteMessageAsync(
-                    chatId: message.Chat.Id,
-                    messageId: message.MessageId,
-                    cancellationToken: cancellationToken);
-            }
-            catch { }
-        }
+        var sentMessage = await EditOrSendMessageAsync(
+            botClient: botClient,
+            message: message,
+            text: text,
+            keyboard: keyboard,
+            cancellationToken: cancellationToken);
 
         user.MessageId = sentMessage.MessageId;
         user.State = States.WaitingForSelectMenu;
