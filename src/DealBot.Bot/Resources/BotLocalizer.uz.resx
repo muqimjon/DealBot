@@ -132,6 +132,10 @@
   <data name="AskCommentInPlaceHolder" xml:space="preserve">
     <value>Izoh yozing...</value>
   </data>
+  <data name="AskCorrectNumber" xml:space="preserve">
+    <value>To'g'ri qiymat kiritayotganingizga ishonch hosil qiling
+</value>
+  </data>
   <data name="AskDateOfBirth" xml:space="preserve">
     <value>Tug'ilgan sanangiz: {0}</value>
   </data>
@@ -196,6 +200,9 @@ Iltimos, davom ettirish uchun kanalga a'zo bo'ling!</value>
   <data name="AskUserId" xml:space="preserve">
     <value>Inline usulda user ma'lumotlarini yuboring</value>
   </data>
+  <data name="AskUserIdInPlaceHolder" xml:space="preserve">
+    <value>@{0} va telefon raqamni kiriting...</value>
+  </data>
   <data name="Back" xml:space="preserve">
     <value>⇚ Ortga</value>
   </data>
@@ -203,7 +210,7 @@ Iltimos, davom ettirish uchun kanalga a'zo bo'ling!</value>
     <value>🤖 Botni sozlash</value>
   </data>
   <data name="Cancel" xml:space="preserve">
-    <value>Bekor qilish</value>
+    <value>❌ Bekor qilish</value>
   </data>
   <data name="CardInfo" xml:space="preserve">
     <value>Imtiyoz karta ma'lumotlari:
@@ -227,9 +234,10 @@ Holati: {2}</value>
     <value>☎️ Biz bilan a'loqa</value>
   </data>
   <data name="CustomerCardInfo" xml:space="preserve">
-    <value>Name: {0}
-Hisob: {1}
-Type: {2}</value>
+    <value>👤 {0}
+💵 {1}
+💎 {2}
+~~~~~~~~~~</value>
   </data>
   <data name="CustomersList" xml:space="preserve">
     <value>📋 Mijozlar ro'yxati</value>
@@ -259,13 +267,18 @@ Type: {2}</value>
     <value>🚻 Jins</value>
   </data>
   <data name="Give" xml:space="preserve">
-    <value>Berish</value>
+    <value>🎁 Berish</value>
   </data>
   <data name="Greeting" xml:space="preserve">
     <value>Assalomu alaykum {0} {1}!
 Bot haqida ma'lumot...
 Telefon raqamingizni yuboring</value>
     <comment>Salomlashish matni, bir vaqtda foydalanuvchiga qulay bo'lgan tilni belgilashi so'raladi bundan foydalanilayotganda foudalanuvchining ismi va familiyasi talab qilinadi.</comment>
+  </data>
+  <data name="LackOfBalance" xml:space="preserve">
+    <value>⚠️ Hisobda mablag' yetarli emas
+~~~~~~~~~~
+</value>
   </data>
   <data name="LanguageSelected" xml:space="preserve">
     <value>Juda yaxshi, suhbatimizni o'zbek tilida davom ettiramiz!</value>
@@ -335,6 +348,9 @@ Email: {5}</value>
   <data name="RemindMessage" xml:space="preserve">
     <value>Bu transactionni yakunlashkerak</value>
   </data>
+  <data name="SalesAmount" xml:space="preserve">
+    <value>Savdo summasini kiriting</value>
+  </data>
   <data name="SelectLanguage" xml:space="preserve">
     <value>O'zingizga qulay tinlni tanlang</value>
   </data>
@@ -382,10 +398,24 @@ tel: +998 93 7349808</value>
     <value>➕ Obuna bo'lish</value>
   </data>
   <data name="Take" xml:space="preserve">
-    <value>Olish</value>
+    <value>📥 Olish</value>
   </data>
   <data name="Transaction" xml:space="preserve">
-    <value>Ayirboshlash</value>
+    <value>🔃 Ayirboshlash</value>
+  </data>
+  <data name="TransactionCanceled" xml:space="preserve">
+    <value>❌ O'tkazma bekor qilindi
+~~~~~~~~~~
+</value>
+  </data>
+  <data name="TransactionConfirmation" xml:space="preserve">
+    <value>Joriy balans: {0}
+
+O'tkazma ma'lumotlari:
+Qiymati: {1}
+Kim tarafidan: {2}
+Sana: {3}
+</value>
   </data>
   <data name="TransactionInfo" xml:space="preserve">
     <value>Tranzaksiya ma'lumoti:
@@ -395,13 +425,20 @@ Mijoz: {2}
 Sotuvchi: {3}
 Sana: {4}</value>
   </data>
+  <data name="TransactionSucceeded" xml:space="preserve">
+    <value>✅ O'tkazma muvaffaqqiyatli yakunlandi 💸
+~~~~~~~~~~
+</value>
+  </data>
   <data name="UserInfo" xml:space="preserve">
     <value>👤 {0}  {1}
-💎 {2}
+💵 {2}
+💎 {3}
+~~~~~~~~~~
 </value>
   </data>
   <data name="UserManager" xml:space="preserve">
-    <value>Mijoz sozlamalari</value>
+    <value>👤 Mijoz sozlamalari</value>
   </data>
   <data name="Year" xml:space="preserve">
     <value>Yil</value>

@@ -28,22 +28,25 @@ public partial class BotUpdateHandler
             await SendMissingTransactionAsync(transaction, botClient, message, cancellationToken);
     }
 
-    private async Task SendTransactionAsync(ITelegramBotClient botClient, Message message, CancellationToken cancellationToken)
+    private async Task SendTransactionAsync(ITelegramBotClient botClient, Message message, CancellationToken cancellationToken, string actionMessage = Text.Empty)
     {
         InlineKeyboardMarkup keyboard = new(new InlineKeyboardButton[][]
         {
-            [InlineKeyboardButton.WithCallbackData(localizer[Text.Give], CallbackData.Take),
-                InlineKeyboardButton.WithCallbackData(localizer[Text.Get], CallbackData.Give)],
+            [InlineKeyboardButton.WithCallbackData(localizer[Text.Take], CallbackData.Take),
+                InlineKeyboardButton.WithCallbackData(localizer[Text.Give], CallbackData.Give)],
             [InlineKeyboardButton.WithCallbackData(localizer[Text.Back], CallbackData.Back)]
         });
+
         var customer = await appDbContext.Users
             .Include(c => c.Card)
             .FirstAsync(c => c.Id.Equals(user.PlaceId), cancellationToken);
-        var text = localizer[Text.CustomerCardInfo, customer.GetFullName(), customer.Card.Ballance, customer.Card.Type];
 
-        var sentMessage = await botClient.EditMessageTextAsync(
-            chatId: message.Chat.Id,
-            messageId: message.MessageId,
+        var text = string.Concat(actionMessage,
+            localizer[Text.CustomerCardInfo, customer.GetFullName(), customer.Card.Ballance, customer.Card.Type]);
+
+        var sentMessage = await EditOrSendMessageAsync(
+            botClient: botClient,
+            message: message,
             text: text,
             replyMarkup: keyboard,
             cancellationToken: cancellationToken);

@@ -69,6 +69,7 @@ public partial class BotUpdateHandler(
             await appDbContext.Users.AddAsync(entity = new Domain.Entities.User
             {
                 TelegramId = from.Id,
+                ChatId = updateContent.Chat.Id,
                 LastName = from.LastName,
                 Username = from.Username,
                 FirstName = from.FirstName,

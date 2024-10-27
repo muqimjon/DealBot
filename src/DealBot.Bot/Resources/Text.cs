@@ -81,7 +81,7 @@ public class Text
     public const string AskUserId = nameof(AskUserId);
     public const string AskUserIdInPlaceHolder = nameof(AskUserIdInPlaceHolder);
     public const string Give = nameof(Give);
-    public const string Get = nameof(Get);
+    public const string Take = nameof(Take);
     public const string AskProductPriceInPlaceHolder = nameof(AskProductPriceInPlaceHolder);
     public const string AskProductPrice = nameof(AskProductPrice);
     public const string AskSalesAmountInPlaceHolder = nameof(AskSalesAmountInPlaceHolder);
@@ -92,9 +92,15 @@ public class Text
     public const string Submit = nameof(Submit);
     public const string Remind = nameof(Remind);
     public const string MessageToDeveloper = nameof(MessageToDeveloper);
-    public const string Transaction = nameof(Transaction);
     public const string CustomerCardInfo = nameof(CustomerCardInfo);
     public const string RemindMessage = nameof(RemindMessage);
     public const string MessageSent = nameof(MessageSent);
     public const string Confirmation = nameof(Confirmation);
+    public const string SalesAmount = nameof(SalesAmount);
+    public const string AskCorrectNumber = nameof(AskCorrectNumber);
+    public const string LackOfBalance = nameof(LackOfBalance);
+    public const string Transaction = nameof(Transaction);
+    public const string TransactionConfirmation = nameof(TransactionConfirmation);
+    public const string TransactionSucceeded = nameof(TransactionSucceeded);
+    public const string TransactionCanceled = nameof(TransactionCanceled);
 }

@@ -48,7 +48,8 @@ public partial class BotUpdateHandler
                 States.WaitingForSelectDateOfBirthDay => HandleDayAsync(botClient, callbackQuery, cancellationToken),
                 States.WaitingForSelectBotSettings => HandleBotSettingsAsync(botClient, callbackQuery, cancellationToken),
                 States.WaitingForSelectUserMenu => HandleSelectedUserMenuAsync(botClient, callbackQuery, cancellationToken),
-                States.WaitingForSelectTransaction => HandleSelectedTransactionMenuAsync(botClient, callbackQuery, cancellationToken),
+                States.WaitingForSelectTransaction => HandleSelectedCashbackTransferAsync(botClient, callbackQuery, cancellationToken),
+                States.WaitingForConfirmation => HandleConfirmationAsync(botClient, callbackQuery, cancellationToken),
                 _ => HandleUnknownCallbackQueryAsync(botClient, callbackQuery, cancellationToken),
             };
 
@@ -102,10 +103,11 @@ public partial class BotUpdateHandler
             States.WaitingForSendAbout => SendMenuCompanyInfoAsync(botClient, message, cancellationToken),
             States.WaitingForSendUserId => SendSellerMenuAsync(botClient, message, cancellationToken),
             States.WaitingForSelectUserMenu => SendSellerMenuAsync(botClient, message, cancellationToken),
-            States.WaitingForSendSalesAmount => SendRequestForUserIdAsync(botClient, message, cancellationToken),
             States.WaitingForSendMessage => SendSellerMenuAsync(botClient, message, cancellationToken),
             States.WaitingForSelectTransaction => SendUserManagerMenuAsync(botClient, message, cancellationToken),
+            States.WaitingForSendSalesAmount => SendTransactionAsync(botClient, message, cancellationToken),
             States.WaitingForSendProductPrice => SendTransactionAsync(botClient, message, cancellationToken),
+            States.CheckingCustomerList => SendSellerMenuAsync(botClient, message, cancellationToken),
             _ => HandleUnknownMessageAsync(botClient, message, cancellationToken),
         };
 
@@ -176,8 +178,15 @@ public partial class BotUpdateHandler
         user.State = States.WaitingForSendPhoneNumber;
     }
 
-    private async Task<Message> EditOrSendMessageAsync(ITelegramBotClient botClient, Message message, string text, InlineKeyboardMarkup keyboard, CancellationToken cancellationToken)
+    private async Task<Message> EditOrSendMessageAsync(
+        ITelegramBotClient botClient,
+        Message message,
+        string text,
+        InlineKeyboardMarkup replyMarkup,
+        CancellationToken cancellationToken,
+        int messageId = -1)
     {
+        messageId = messageId == -1 ? user.MessageId : messageId;
         Message sentMessage;
 
         try
@@ -187,7 +196,7 @@ public partial class BotUpdateHandler
                 messageId: message.MessageId,
                 text: text,
                 parseMode: ParseMode.MarkdownV2,
-            replyMarkup: keyboard,
+                replyMarkup: replyMarkup,
                 cancellationToken: cancellationToken);
         }
         catch
@@ -199,8 +208,8 @@ public partial class BotUpdateHandler
 
             sentMessage = await botClient.SendTextMessageAsync(
                 chatId: message.Chat.Id,
-                text: localizer[Text.SelectMenu],
-                replyMarkup: keyboard,
+                text: text,
+                replyMarkup: replyMarkup,
                 parseMode: ParseMode.MarkdownV2,
                 cancellationToken: cancellationToken);
 
@@ -216,7 +225,7 @@ public partial class BotUpdateHandler
             {
                 await botClient.DeleteMessageAsync(
                     chatId: message.Chat.Id,
-                    messageId: user.MessageId,
+                    messageId: messageId,
                     cancellationToken: cancellationToken);
             }
             catch { }

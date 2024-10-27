@@ -2,6 +2,7 @@
 
 using DealBot.Bot.Resources;
 using DealBot.Domain.Enums;
+using Microsoft.EntityFrameworkCore;
 using System.Threading;
 using Telegram.Bot;
 using Telegram.Bot.Types;
@@ -24,14 +25,14 @@ public partial class BotUpdateHandler
         });
 
         var text = string.Concat(actionMessage,
-            localizer[Text.UserInfo, user.FirstName, user.LastName, user.Card.Type],
+            localizer[Text.UserInfo, user.FirstName, user.LastName, user.Card.Ballance, user.Card.Type],
             localizer[Text.SelectMenu]);
 
         var sentMessage = await EditOrSendMessageAsync(
             botClient: botClient,
             message: message,
             text: text,
-            keyboard: keyboard,
+            replyMarkup: keyboard,
             cancellationToken: cancellationToken);
 
         user.MessageId = sentMessage.MessageId;
@@ -205,5 +206,74 @@ public partial class BotUpdateHandler
         var botInfo = await botClient.GetMeAsync(cancellationToken: cancellationToken);
 
         return $"https://t.me/share/url?url=https://t.me/{botInfo.Username}&text={localizer[Text.ShortReferralInfo]}";
+    }
+
+    private async Task SendCustomerConfirmation(ITelegramBotClient botClient, decimal price, Domain.Entities.User customer, CancellationToken cancellationToken)
+    {
+        await appDbContext.Transactions.AddAsync(new()
+        {
+            Amount = -price,
+            Status = CashBackStatus.Pending,
+            Customer = customer,
+            Seller = user,
+        }, cancellationToken);
+
+        var keyboard = new InlineKeyboardMarkup(new InlineKeyboardButton[][]
+        {
+            [InlineKeyboardButton.WithCallbackData(localizer[Text.Submit], CallbackData.Submit),
+                InlineKeyboardButton.WithCallbackData(localizer[Text.Cancel], CallbackData.Cancel)],
+        });
+
+        var text = localizer[
+            Text.TransactionConfirmation,
+            customer.Card.Ballance,
+            price,
+            user.GetFullName(),
+            DateTimeOffset.Now.ToString("dd.MM.yyyy")];
+
+        try
+        {
+            await botClient.DeleteMessageAsync(
+                chatId: customer.TelegramId,
+                messageId: customer.MessageId,
+                cancellationToken: cancellationToken);
+        }
+        catch { }
+
+        var sentMessage = await botClient.SendTextMessageAsync(
+            chatId: customer.ChatId,
+            text: text,
+            replyMarkup: keyboard,
+            //parseMode: ParseMode.MarkdownV2,
+            cancellationToken: cancellationToken);
+
+        customer.MessageId = sentMessage.MessageId;
+        customer.PlaceId = user.Id;
+        customer.State = States.WaitingForConfirmation;
+    }
+
+    private async Task HandleConfirmationAsync(ITelegramBotClient botClient, CallbackQuery callbackQuery, CancellationToken cancellationToken)
+    {
+        ArgumentNullException.ThrowIfNull(callbackQuery.Message, nameof(Message));
+
+        var transaction = await appDbContext.Transactions
+            .OrderBy(t => t.Id)
+            .LastAsync(t
+            => t.SellerId.Equals(user.PlaceId) && t.CustomerId.Equals(user.Id),
+            cancellationToken);
+
+        switch (callbackQuery.Data)
+        {
+            case CallbackData.Submit:
+                transaction.Status = CashBackStatus.Completed;
+                user.Card.Ballance += transaction.Amount;
+                await SendCustomerMenuAsync(botClient, callbackQuery.Message, cancellationToken, localizer[Text.TransactionSucceeded]);
+                break;
+            case CallbackData.Cancel:
+                transaction.Status = CashBackStatus.Cancelled;
+                await SendCustomerMenuAsync(botClient, callbackQuery.Message, cancellationToken, localizer[Text.TransactionCanceled]);
+                break;
+            default: break;
+        }
     }
 }

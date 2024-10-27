@@ -3,6 +3,7 @@
 using DealBot.Bot.Resources;
 using DealBot.Domain.Enums;
 using Microsoft.EntityFrameworkCore;
+using System.Text;
 using System.Threading;
 using Telegram.Bot;
 using Telegram.Bot.Types;
@@ -27,7 +28,7 @@ public partial class BotUpdateHandler
             botClient: botClient,
             message: message,
             text: text,
-            keyboard: keyboard,
+            replyMarkup: keyboard,
             cancellationToken: cancellationToken);
 
         user.MessageId = sentMessage.MessageId;
@@ -127,62 +128,6 @@ public partial class BotUpdateHandler
             cancellationToken: cancellationToken);
     }
 
-    private async Task SendRequestForUserIdAsync(ITelegramBotClient botClient, Message message, CancellationToken cancellationToken)
-    {
-        await botClient.DeleteMessageAsync(
-            chatId: message.Chat.Id,
-            messageId: message.MessageId,
-            cancellationToken: cancellationToken);
-
-        await botClient.SendChatActionAsync(
-            chatAction: ChatAction.Typing,
-            chatId: message.Chat.Id,
-            cancellationToken: cancellationToken);
-
-        ReplyKeyboardMarkup keyboard = new(new KeyboardButton[][]
-        {
-            [new(localizer[Text.Back])]
-        })
-        {
-            ResizeKeyboard = true,
-            InputFieldPlaceholder = localizer[Text.AskUserIdInPlaceHolder],
-        };
-
-        Message sentMessage = await botClient.SendTextMessageAsync(
-            chatId: message.Chat.Id,
-            text: localizer[Text.AskUserId],
-            replyMarkup: keyboard,
-            parseMode: ParseMode.MarkdownV2,
-            cancellationToken: cancellationToken);
-
-        var bot = await botClient.GetMeAsync(cancellationToken: cancellationToken);
-        bot.SupportsInlineQueries = true;
-
-        user.State = States.WaitingForSendUserId;
-        user.MessageId = sentMessage.MessageId;
-    }
-
-    private async Task HandleUserIdAsync(ITelegramBotClient botClient, Message message, CancellationToken cancellationToken)
-    {
-        var bot = await botClient.GetMeAsync(cancellationToken: cancellationToken);
-        bot.SupportsInlineQueries = false;
-        Domain.Entities.User customer = default!;
-
-        if (message.ViaBot is not null && message.ViaBot.Id.Equals(bot.Id) && long.TryParse(message.Text, out var id))
-            customer = (await appDbContext.Users.FirstOrDefaultAsync(user
-                    => user.Id.Equals(id),
-                cancellationToken: cancellationToken))!;
-
-        if (customer is null)
-        {
-            await SendSellerMenuAsync(botClient, message, cancellationToken);
-            return;
-        }
-
-        user.PlaceId = customer.Id;
-        await SendUserManagerMenuAsync(botClient, message, cancellationToken);
-    }
-
     private async Task SendUserManagerMenuAsync(ITelegramBotClient botClient, Message message, CancellationToken cancellationToken, string actionMessage = Text.Empty)
     {
         InlineKeyboardMarkup keyboard = new(new InlineKeyboardButton[][]
@@ -198,7 +143,7 @@ public partial class BotUpdateHandler
             botClient: botClient,
             message: message,
             text: text,
-            keyboard: keyboard,
+            replyMarkup: keyboard,
             cancellationToken: cancellationToken);
 
         user.MessageId = sentMessage.MessageId;
@@ -236,9 +181,31 @@ public partial class BotUpdateHandler
 
     private async Task SendCustomerListAsync(ITelegramBotClient botClient, Message message, CancellationToken cancellationToken)
     {
-        await botClient.SendChatActionAsync(
-            chatAction: ChatAction.Typing,
+        var customers = appDbContext.Users
+            .Include(u => u.Contact)
+            .Where(u => u.Role.Equals(Roles.Customer));
+
+        StringBuilder text = new();
+
+        foreach (var customer in customers)
+            text.Append($"_{customer.GetFullName()}_ \\{customer.Contact.Phone}\n");
+
+        var xabar = string.IsNullOrEmpty(text.ToString()) ? "mijozlar mavjud emas" : text.ToString();
+
+        InlineKeyboardMarkup keyboard = new(new InlineKeyboardButton[][]
+        {
+            [InlineKeyboardButton.WithCallbackData(localizer[Text.Back], CallbackData.Back)]
+        });
+
+        await botClient.EditMessageTextAsync(
             chatId: message.Chat.Id,
+            messageId: message.MessageId,
+            text: xabar,
+            parseMode: ParseMode.MarkdownV2,
+            replyMarkup: keyboard,
             cancellationToken: cancellationToken);
+
+        user.MessageId = message.MessageId;
+        user.State = States.CheckingCustomerList;
     }
 }

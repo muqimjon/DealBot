@@ -29,7 +29,7 @@ public partial class BotUpdateHandler
             botClient: botClient,
             message: message,
             text: text,
-            keyboard: keyboard,
+            replyMarkup: keyboard,
             cancellationToken: cancellationToken);
 
         user.MessageId = sentMessage.MessageId;

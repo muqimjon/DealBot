@@ -37,6 +37,9 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
         builder.Property(u => u.TelegramId)
                .IsRequired();
 
+        builder.Property(u => u.ChatId)
+               .IsRequired();
+
         builder.Property(u => u.State)
                .IsRequired();
 
