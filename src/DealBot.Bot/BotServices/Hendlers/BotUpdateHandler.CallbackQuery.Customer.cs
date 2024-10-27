@@ -46,10 +46,10 @@ public partial class BotUpdateHandler
         await (callbackQuery.Data switch
         {
             CallbackData.MyPrivilegeCard =>
-                await CheckSubscription(botClient, callbackQuery, cancellationToken) switch
+                await CheckSubscription(botClient, callbackQuery.From.Id, cancellationToken) switch
                 {
                     true => SendUserPrivilegeCardAsync(botClient, callbackQuery.Message, cancellationToken),
-                    _ => SendrequestJoinToChannel(botClient, callbackQuery.Message, cancellationToken),
+                    _ => SendRequestJoinToChannel(botClient, callbackQuery.Message, cancellationToken),
                 },
             CallbackData.StoreAddress => SendStoreAddressAsync(botClient, callbackQuery.Message, cancellationToken),
             CallbackData.ContactUs => SendContactInfoAsync(botClient, callbackQuery.Message, cancellationToken),
@@ -59,7 +59,7 @@ public partial class BotUpdateHandler
         });
     }
 
-    private async Task SendrequestJoinToChannel(ITelegramBotClient botClient, Message message, CancellationToken cancellationToken)
+    private async Task SendRequestJoinToChannel(ITelegramBotClient botClient, Message message, CancellationToken cancellationToken, string actionMessage = Text.Empty, Domain.Entities.User customer = default!)
     {
         InlineKeyboardMarkup keyboard = new(new InlineKeyboardButton[][]
         {
@@ -68,12 +68,44 @@ public partial class BotUpdateHandler
             [InlineKeyboardButton.WithCallbackData(localizer[Text.Back], CallbackData.Back)],
         });
 
-        var text = !user.State.Equals(States.WaitingForSubscribeToChannel) ? Text.AskJoinToChannel : Text.AskJoinToChannelAgain;
+        var askToJoin = !user.State.Equals(States.WaitingForSubscribeToChannel)
+            ? Text.AskJoinToChannel : Text.AskJoinToChannelAgain;
 
-        var sentMessage = await botClient.EditMessageTextAsync(
+        var text = string.Concat(actionMessage, localizer[askToJoin]);
+        Message sentMessage = default!;
+
+        if (customer is not null)
+        {
+            await botClient.SendChatActionAsync(
+                chatId: customer.ChatId,
+                chatAction: ChatAction.Typing,
+                cancellationToken: cancellationToken);
+
+            try
+            {
+                await botClient.DeleteMessageAsync(
+                    chatId: customer.ChatId,
+                    messageId: customer.MessageId,
+                    cancellationToken: cancellationToken);
+            }
+            catch { }
+
+            sentMessage = await botClient.SendTextMessageAsync(
+                chatId: customer.ChatId,
+                text: text,
+                //parseMode: ParseMode.MarkdownV2,
+                replyMarkup: keyboard,
+                cancellationToken: cancellationToken);
+
+            customer.MessageId = sentMessage.MessageId;
+            customer.State = States.WaitingForSubscribeToChannel;
+            return;
+        }
+
+        sentMessage = await botClient.EditMessageTextAsync(
             chatId: message.Chat.Id,
             messageId: message.MessageId,
-            text: localizer[text],
+            text: text,
             replyMarkup: keyboard,
             cancellationToken: cancellationToken);
 
@@ -93,10 +125,10 @@ public partial class BotUpdateHandler
         await (callbackQuery.Data switch
         {
             CallbackData.Check =>
-                await CheckSubscription(botClient, callbackQuery, cancellationToken) switch
+                await CheckSubscription(botClient, callbackQuery.From.Id, cancellationToken) switch
                 {
                     true => SendUserPrivilegeCardAsync(botClient, callbackQuery.Message!, cancellationToken),
-                    _ => SendrequestJoinToChannel(botClient, callbackQuery.Message!, cancellationToken),
+                    _ => SendRequestJoinToChannel(botClient, callbackQuery.Message!, cancellationToken),
                 },
             CallbackData.Back => SendCustomerMenuAsync(botClient, callbackQuery.Message, cancellationToken),
             _ => HandleUnknownCallbackQueryAsync(botClient, callbackQuery, cancellationToken)
@@ -159,7 +191,7 @@ public partial class BotUpdateHandler
         user.State = States.WaitingForSelectStoreContactOption;
     }
 
-    private async Task SendCustomerSettingsAsync(ITelegramBotClient botClient, Message message, CancellationToken cancellationToken)
+    private async Task SendCustomerSettingsAsync(ITelegramBotClient botClient, Message message, CancellationToken cancellationToken, string actionMessage = Text.Empty)
     {
         InlineKeyboardMarkup keyboard = new(new InlineKeyboardButton[][]
         {
@@ -168,10 +200,12 @@ public partial class BotUpdateHandler
             [InlineKeyboardButton.WithCallbackData(localizer[Text.Back], CallbackData.Back)],
         });
 
+        var text = string.Concat(actionMessage, localizer[Text.SelectSettings]);
+
         var sentMessage = await botClient.EditMessageTextAsync(
             chatId: message.Chat.Id,
             messageId: message.MessageId,
-            text: localizer[Text.SelectSettings],
+            text: text,
             replyMarkup: keyboard,
             cancellationToken: cancellationToken);
 
@@ -191,11 +225,11 @@ public partial class BotUpdateHandler
         });
     }
 
-    private async Task<bool> CheckSubscription(ITelegramBotClient botClient, CallbackQuery callbackQuery, CancellationToken cancellationToken)
+    private async Task<bool> CheckSubscription(ITelegramBotClient botClient, long userId, CancellationToken cancellationToken)
     {
         var member = await botClient.GetChatMemberAsync(
             chatId: "@Milestonies",
-            callbackQuery.From.Id,
+            userId,
             cancellationToken: cancellationToken);
 
         return (int)member.Status < 4;
@@ -212,10 +246,11 @@ public partial class BotUpdateHandler
     {
         await appDbContext.Transactions.AddAsync(new()
         {
-            Amount = -price,
+            Amount = price,
             Status = CashBackStatus.Pending,
             Customer = customer,
             Seller = user,
+            IsCashback = false,
         }, cancellationToken);
 
         var keyboard = new InlineKeyboardMarkup(new InlineKeyboardButton[][]
@@ -266,7 +301,7 @@ public partial class BotUpdateHandler
         {
             case CallbackData.Submit:
                 transaction.Status = CashBackStatus.Completed;
-                user.Card.Ballance += transaction.Amount;
+                user.Card.Ballance -= transaction.Amount;
                 await SendCustomerMenuAsync(botClient, callbackQuery.Message, cancellationToken, localizer[Text.TransactionSucceeded]);
                 break;
             case CallbackData.Cancel:

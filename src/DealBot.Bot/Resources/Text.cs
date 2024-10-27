@@ -103,4 +103,6 @@ public class Text
     public const string TransactionConfirmation = nameof(TransactionConfirmation);
     public const string TransactionSucceeded = nameof(TransactionSucceeded);
     public const string TransactionCanceled = nameof(TransactionCanceled);
+    public const string IncompleteAccountInfo = nameof(IncompleteAccountInfo);
+    public const string RequiredToSubscribe = nameof(RequiredToSubscribe);
 }

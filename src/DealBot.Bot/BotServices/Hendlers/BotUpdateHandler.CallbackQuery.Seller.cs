@@ -137,6 +137,7 @@ public partial class BotUpdateHandler
             [InlineKeyboardButton.WithCallbackData(localizer[Text.Settings], CallbackData.Settings)],
             [InlineKeyboardButton.WithCallbackData(localizer[Text.Back], CallbackData.Back)]
         });
+
         var text = string.Concat(actionMessage, localizer[Text.SelectMenu]);
 
         var sentMessage = await EditOrSendMessageAsync(

@@ -5,7 +5,6 @@ using DealBot.Domain.Enums;
 using System.Globalization;
 using Telegram.Bot;
 using Telegram.Bot.Types;
-using Telegram.Bot.Types.Enums;
 using Telegram.Bot.Types.ReplyMarkups;
 
 public partial class BotUpdateHandler
@@ -66,7 +65,6 @@ public partial class BotUpdateHandler
             [InlineKeyboardButton.WithCallbackData(localizer[Text.Back], CallbackData.Back)],
         });
 
-        Message sentMessage = default!;
         var text = string.Concat(actionMessage, localizer[Text.MenuChangePersonalInfo,
                     user.FirstName,
                     user.LastName,
@@ -75,42 +73,12 @@ public partial class BotUpdateHandler
                     user.Contact.Phone!,
                     user.Contact.Email!]);
 
-        try
-        {
-            sentMessage = await botClient.EditMessageTextAsync(
-                chatId: message.Chat.Id,
-                messageId: message.MessageId,
-                text: text,
-                replyMarkup: keyboard,
-                cancellationToken: cancellationToken);
-        }
-        catch
-        {
-            try
-            {
-                await botClient.SendChatActionAsync(
-                    chatId: message.Chat.Id,
-                    chatAction: ChatAction.Typing,
-                    cancellationToken: cancellationToken);
-
-                sentMessage = await botClient.SendTextMessageAsync(
-                    chatId: message.Chat.Id,
-                    text: text,
-                    replyMarkup: keyboard,
-                    cancellationToken: cancellationToken);
-
-                await botClient.DeleteMessageAsync(
-                    messageId: message.MessageId,
-                    chatId: message.Chat.Id,
-                    cancellationToken: cancellationToken);
-
-                await botClient.DeleteMessageAsync(
-                    messageId: user.MessageId,
-                    chatId: message.Chat.Id,
-                    cancellationToken: cancellationToken);
-            }
-            catch { }
-        }
+        var sentMessage = await EditOrSendMessageAsync(
+            botClient,
+            message,
+            text,
+            keyboard,
+            cancellationToken);
 
         user.MessageId = sentMessage.MessageId;
         user.State = States.WaitingForSelectChangePersonalInfo;

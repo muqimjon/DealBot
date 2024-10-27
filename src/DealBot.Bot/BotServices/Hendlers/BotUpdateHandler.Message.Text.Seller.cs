@@ -180,6 +180,17 @@ public partial class BotUpdateHandler
                 CardType.Premium => 0.4m,
                 _ => 0,
             };
+
+            var transaction = await appDbContext.Transactions.AddAsync(new()
+            {
+                Amount = price,
+                Customer = customer,
+                IsCashback = true,
+                Seller = user,
+                Status = CashBackStatus.Completed,
+                CustomerId = customer.Id,
+                SellerId = user.Id,
+            });
         }
 
         var text = localizer[Text.TransactionSucceeded];

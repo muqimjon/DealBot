@@ -22,10 +22,18 @@ public partial class BotUpdateHandler
                 && t.Status.Equals(CashBackStatus.None),
             cancellationToken: cancellationToken);
 
-        if (transaction is null)
-            await SendTransactionAsync(botClient, message, cancellationToken);
-        else
+        Domain.Entities.User customer = transaction?.Customer
+            ?? await appDbContext.Users.FirstAsync(c => c.Id.Equals(user.PlaceId), cancellationToken: cancellationToken);
+
+        if (!await CheckSubscription(botClient, customer.TelegramId, cancellationToken))
+        {
+            await SendRequestJoinToChannel(botClient, message, cancellationToken, localizer[Text.RequiredToSubscribe], customer);
+            await SendUserManagerMenuAsync(botClient, message, cancellationToken, localizer[Text.RequiredToSubscribe]);
+        }
+        else if (transaction is not null)
             await SendMissingTransactionAsync(transaction, botClient, message, cancellationToken);
+        else
+            await SendTransactionAsync(botClient, message, cancellationToken);
     }
 
     private async Task SendTransactionAsync(ITelegramBotClient botClient, Message message, CancellationToken cancellationToken, string actionMessage = Text.Empty)
@@ -42,7 +50,7 @@ public partial class BotUpdateHandler
             .FirstAsync(c => c.Id.Equals(user.PlaceId), cancellationToken);
 
         var text = string.Concat(actionMessage,
-            localizer[Text.CustomerCardInfo, customer.GetFullName(), customer.Card.Ballance, customer.Card.Type]);
+            localizer[Text.CustomerCardInfo, customer.GetFullName(), customer.Card.Ballance, localizer[$"{customer.Card.Type}"], user.IsActive ? "faol" : "no faol", user.Card.State]);
 
         var sentMessage = await EditOrSendMessageAsync(
             botClient: botClient,

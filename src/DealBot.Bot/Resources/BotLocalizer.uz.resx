@@ -158,7 +158,8 @@
     <value>Davom ettirish uchun kanalga a'zo bo'ling!</value>
   </data>
   <data name="AskJoinToChannelAgain" xml:space="preserve">
-    <value>Siz hali ham a'zo emassiz!
+    <value>❕ Siz hali ham a'zo emassiz!
+
 Iltimos, davom ettirish uchun kanalga a'zo bo'ling!</value>
   </data>
   <data name="AskLanguage" xml:space="preserve">
@@ -222,7 +223,7 @@ Holati: {2}</value>
     <value>🌐 Tilni o'zgartirish</value>
   </data>
   <data name="Check" xml:space="preserve">
-    <value>✔️ Tekchirish</value>
+    <value>✔️ Tekshirish</value>
   </data>
   <data name="Comment" xml:space="preserve">
     <value>✍️ Sharx qoldirish</value>
@@ -237,7 +238,8 @@ Holati: {2}</value>
     <value>👤 {0}
 💵 {1}
 💎 {2}
-~~~~~~~~~~</value>
+🔐 {3}
+💳 {4}</value>
   </data>
   <data name="CustomersList" xml:space="preserve">
     <value>📋 Mijozlar ro'yxati</value>
@@ -275,9 +277,14 @@ Bot haqida ma'lumot...
 Telefon raqamingizni yuboring</value>
     <comment>Salomlashish matni, bir vaqtda foydalanuvchiga qulay bo'lgan tilni belgilashi so'raladi bundan foydalanilayotganda foudalanuvchining ismi va familiyasi talab qilinadi.</comment>
   </data>
+  <data name="IncompleteAccountInfo" xml:space="preserve">
+    <value>⚠️ Ro'yxatdan o'tish oxiriga yetmagan holda keshbeklardan foydalanish imkoniyati mavjud emas!
+
+</value>
+  </data>
   <data name="LackOfBalance" xml:space="preserve">
     <value>⚠️ Hisobda mablag' yetarli emas
-~~~~~~~~~~
+
 </value>
   </data>
   <data name="LanguageSelected" xml:space="preserve">
@@ -348,6 +355,11 @@ Email: {5}</value>
   <data name="RemindMessage" xml:space="preserve">
     <value>Bu transactionni yakunlashkerak</value>
   </data>
+  <data name="RequiredToSubscribe" xml:space="preserve">
+    <value>⚠️ Keshbek yig'ish uchun kanalga obuna bo'lish talab qilinadi!
+
+</value>
+  </data>
   <data name="SalesAmount" xml:space="preserve">
     <value>Savdo summasini kiriting</value>
   </data>
@@ -405,7 +417,7 @@ tel: +998 93 7349808</value>
   </data>
   <data name="TransactionCanceled" xml:space="preserve">
     <value>❌ O'tkazma bekor qilindi
-~~~~~~~~~~
+
 </value>
   </data>
   <data name="TransactionConfirmation" xml:space="preserve">
@@ -427,14 +439,14 @@ Sana: {4}</value>
   </data>
   <data name="TransactionSucceeded" xml:space="preserve">
     <value>✅ O'tkazma muvaffaqqiyatli yakunlandi 💸
-~~~~~~~~~~
+
 </value>
   </data>
   <data name="UserInfo" xml:space="preserve">
-    <value>👤 {0}  {1}
-💵 {2}
-💎 {3}
-~~~~~~~~~~
+    <value>👤 {0}
+💵 {1}
+💎 {2}
+
 </value>
   </data>
   <data name="UserManager" xml:space="preserve">

@@ -160,7 +160,7 @@ public partial class BotUpdateHandler
         })
         {
             ResizeKeyboard = true,
-            InputFieldPlaceholder = "Telefon raqamingizni kiriting..",
+            InputFieldPlaceholder = Text.AskPhoneNumberInPlaceHolder,
         };
 
         var sentMessage = await botClient.SendTextMessageAsync(
@@ -195,7 +195,7 @@ public partial class BotUpdateHandler
                 chatId: message.Chat.Id,
                 messageId: message.MessageId,
                 text: text,
-                parseMode: ParseMode.MarkdownV2,
+                //parseMode: ParseMode.MarkdownV2,
                 replyMarkup: replyMarkup,
                 cancellationToken: cancellationToken);
         }
@@ -210,7 +210,7 @@ public partial class BotUpdateHandler
                 chatId: message.Chat.Id,
                 text: text,
                 replyMarkup: replyMarkup,
-                parseMode: ParseMode.MarkdownV2,
+                //parseMode: ParseMode.MarkdownV2,
                 cancellationToken: cancellationToken);
 
             try
