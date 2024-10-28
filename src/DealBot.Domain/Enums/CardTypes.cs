@@ -3,7 +3,7 @@
 using System.Text.Json.Serialization;
 
 [JsonConverter(typeof(JsonStringEnumConverter))]
-public enum CardType
+public enum CardTypes
 {
     Simple,
     Premium,

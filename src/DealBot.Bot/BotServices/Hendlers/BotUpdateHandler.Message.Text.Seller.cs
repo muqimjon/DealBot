@@ -107,10 +107,14 @@ public partial class BotUpdateHandler
                 .Include(u => u.Card)
                 .FirstAsync(u => u.Id.Equals(user.PlaceId), cancellationToken);
 
-            if (price < customer.Card.Ballance)
-                await SendCustomerConfirmation(botClient, price, customer, cancellationToken);
-            else
+            if (price > customer.Card.Ballance)
+            {
                 await SendTransactionAsync(botClient, message, cancellationToken, localizer[Text.LackOfBalance]);
+                return;
+            }
+            
+            await SendCustomerConfirmation(botClient, price, customer, cancellationToken);
+            await SendUserManagerMenuAsync(botClient, message, cancellationToken, localizer[Text.SentConfirmation]);
         }
         else
             await SendProductPriceInquiryAsync(botClient, message, cancellationToken, localizer[Text.AskCorrectNumber]);
@@ -176,8 +180,8 @@ public partial class BotUpdateHandler
             customer.Card ??= new();
             customer.Card.Ballance += price * customer.Card.Type switch
             {
-                CardType.Simple => 0.02m,
-                CardType.Premium => 0.4m,
+                CardTypes.Simple => 0.02m,
+                CardTypes.Premium => 0.4m,
                 _ => 0,
             };
 

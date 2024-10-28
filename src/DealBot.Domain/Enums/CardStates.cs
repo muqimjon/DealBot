@@ -3,7 +3,7 @@
 using System.Text.Json.Serialization;
 
 [JsonConverter(typeof(JsonStringEnumConverter))]
-public enum CardState
+public enum CardStates
 {
     Block,
     Active,

@@ -105,4 +105,5 @@ public class Text
     public const string TransactionCanceled = nameof(TransactionCanceled);
     public const string IncompleteAccountInfo = nameof(IncompleteAccountInfo);
     public const string RequiredToSubscribe = nameof(RequiredToSubscribe);
+    public const string SentConfirmation = nameof(SentConfirmation);
 }

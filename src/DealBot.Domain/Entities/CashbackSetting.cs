@@ -5,6 +5,6 @@ using DealBot.Domain.Enums;
 
 public class CashbackSetting : Auditable
 {
-    public CardType Type { get; set; }
+    public CardTypes Type { get; set; }
     public decimal Percentage { get; set; }
 }

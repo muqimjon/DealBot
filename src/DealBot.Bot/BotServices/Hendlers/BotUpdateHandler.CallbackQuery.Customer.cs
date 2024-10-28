@@ -24,8 +24,12 @@ public partial class BotUpdateHandler
             [InlineKeyboardButton.WithUrl(localizer[Text.Referral], await GetShareLink(botClient, cancellationToken))],
         });
 
+        user.Card.State = await IsSubscribed(botClient, user.TelegramId, cancellationToken)
+            ? CardStates.Active : CardStates.Block;
+        user.IsActive = IsAccountComplete(user);
+
         var text = string.Concat(actionMessage,
-            localizer[Text.UserInfo, user.FirstName, user.LastName, user.Card.Ballance, user.Card.Type],
+            localizer[Text.UserInfo, user.GetFullName(), user.Card.Ballance, user.Card.Type],
             localizer[Text.SelectMenu]);
 
         var sentMessage = await EditOrSendMessageAsync(
@@ -46,7 +50,7 @@ public partial class BotUpdateHandler
         await (callbackQuery.Data switch
         {
             CallbackData.MyPrivilegeCard =>
-                await CheckSubscription(botClient, callbackQuery.From.Id, cancellationToken) switch
+                await IsSubscribed(botClient, callbackQuery.From.Id, cancellationToken) switch
                 {
                     true => SendUserPrivilegeCardAsync(botClient, callbackQuery.Message, cancellationToken),
                     _ => SendRequestJoinToChannel(botClient, callbackQuery.Message, cancellationToken),
@@ -125,7 +129,7 @@ public partial class BotUpdateHandler
         await (callbackQuery.Data switch
         {
             CallbackData.Check =>
-                await CheckSubscription(botClient, callbackQuery.From.Id, cancellationToken) switch
+                await IsSubscribed(botClient, callbackQuery.From.Id, cancellationToken) switch
                 {
                     true => SendUserPrivilegeCardAsync(botClient, callbackQuery.Message!, cancellationToken),
                     _ => SendRequestJoinToChannel(botClient, callbackQuery.Message!, cancellationToken),
@@ -225,7 +229,7 @@ public partial class BotUpdateHandler
         });
     }
 
-    private async Task<bool> CheckSubscription(ITelegramBotClient botClient, long userId, CancellationToken cancellationToken)
+    private async Task<bool> IsSubscribed(ITelegramBotClient botClient, long userId, CancellationToken cancellationToken)
     {
         var member = await botClient.GetChatMemberAsync(
             chatId: "@Milestonies",
@@ -233,6 +237,15 @@ public partial class BotUpdateHandler
             cancellationToken: cancellationToken);
 
         return (int)member.Status < 4;
+    }
+    public bool IsAccountComplete(Domain.Entities.User user)
+    {
+        return !string.IsNullOrWhiteSpace(user.FirstName) &&
+               !string.IsNullOrWhiteSpace(user.LastName) &&
+               !string.IsNullOrWhiteSpace(user.Contact.Email) &&
+               !string.IsNullOrWhiteSpace(user.Contact.Phone) &&
+               !user.Gender.Equals(Genders.Unknown) &&
+               user.DateOfBirth != DateTime.MinValue;
     }
 
     private async Task<string> GetShareLink(ITelegramBotClient botClient, CancellationToken cancellationToken)

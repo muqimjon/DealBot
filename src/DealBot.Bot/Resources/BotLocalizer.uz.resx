@@ -299,6 +299,7 @@ Telefon raqamingizni yuboring</value>
   </data>
   <data name="MenuChangePersonalInfo" xml:space="preserve">
     <value>Shaxsiy ma'lumotlarni o'zgartirish:
+
 Ism: {0}
 Familiya: {1}
 Tug'ilgan sana: {2}
@@ -381,6 +382,11 @@ Email: {5}</value>
   <data name="SendPhoneNumber" xml:space="preserve">
     <value>Telefon raqamni yuborish</value>
   </data>
+  <data name="SentConfirmation" xml:space="preserve">
+    <value>✅ Tasdiq xabari muvaffaqiyatli yuborildi
+
+</value>
+  </data>
   <data name="Settings" xml:space="preserve">
     <value>⚙️ Sozlamalar</value>
   </data>
@@ -421,12 +427,12 @@ tel: +998 93 7349808</value>
 </value>
   </data>
   <data name="TransactionConfirmation" xml:space="preserve">
-    <value>Joriy balans: {0}
+    <value>💳 Joriy balans: {0}
 
 O'tkazma ma'lumotlari:
-Qiymati: {1}
-Kim tarafidan: {2}
-Sana: {3}
+💸 Qiymati: {1}
+🪪 Kim tarafidan: {2}
+📆 Sana: {3}
 </value>
   </data>
   <data name="TransactionInfo" xml:space="preserve">
