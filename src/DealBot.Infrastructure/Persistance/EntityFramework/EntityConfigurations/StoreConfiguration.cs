@@ -23,33 +23,30 @@ public class StoreConfiguration : IEntityTypeConfiguration<Store>
     private static void ConfigureProperties(EntityTypeBuilder<Store> builder)
     {
         builder.Property(s => s.Name)
-                       .IsRequired()
-                       .HasMaxLength(200);
+               .IsRequired()
+               .HasMaxLength(200);
 
-        builder.Property(s => s.CashBackPersentage)
-               .HasColumnType("decimal(5,2)")
-               .IsRequired();
-
-        builder.Property(s => s.IsActive)
-               .IsRequired();
+        builder.Property(s => s.Website)
+               .IsRequired(false)
+               .HasMaxLength(200);
     }
 
     private static void ConfigureRelationships(EntityTypeBuilder<Store> builder)
     {
         builder.HasOne(s => s.Contact)
-                       .WithOne()
-                       .HasForeignKey<Store>(s => s.ContactId);
+            .WithOne()
+            .HasForeignKey<Store>(s => s.ContactId);
 
         builder.HasOne(s => s.Address)
-               .WithOne()
-               .HasForeignKey<Store>(s => s.AddressId);
+            .WithOne()
+            .HasForeignKey<Store>(s => s.AddressId);
 
         builder.HasOne(s => s.Image)
-               .WithOne()
-               .HasForeignKey<Store>(s => s.AssetId);
+            .WithOne()
+            .HasForeignKey<Store>(s => s.AssetId);
 
         builder.HasMany(s => s.Reviews)
-               .WithOne(r => r.Store)
-               .HasForeignKey(r => r.StoreId);
+            .WithOne(r => r.Store)
+            .HasForeignKey(r => r.StoreId);
     }
 }

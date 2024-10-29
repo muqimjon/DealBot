@@ -28,10 +28,9 @@ public enum States
     WaitingForSelectDateOfBirthYear5,
     WaitingForSelectDateOfBirthMonth,
     WaitingForSelectDateOfBirthDay,
-    WaitingForSelectBotSettings,
+    WaitingForSelectCompanySettings,
     WaitingForSendName,
     WaitingForSendBotPic,
-    WaitingForSendAbout,
     WaitingForSendUserId,
     WaitingForSelectUserMenu,
     WaitingForSendProductPrice,
@@ -41,4 +40,5 @@ public enum States
     WaitingForSendMessageToDeveloper,
     WaitingForConfirmation,
     CheckingCustomerList,
+    WaitingForSendDescription,
 }

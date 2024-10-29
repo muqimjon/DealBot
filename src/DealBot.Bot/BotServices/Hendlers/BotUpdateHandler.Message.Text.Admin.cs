@@ -53,48 +53,6 @@ public partial class BotUpdateHandler
         await SendMenuCompanyInfoAsync(botClient, message, cancellationToken);
     }
 
-    private async Task SendRequestForAboutAsync(ITelegramBotClient botClient, Message message, CancellationToken cancellationToken)
-    {
-        await botClient.SendChatActionAsync(
-            chatId: message.Chat.Id,
-            chatAction: ChatAction.Typing,
-            cancellationToken: cancellationToken);
-
-        ReplyKeyboardMarkup keyboard = new(new KeyboardButton[][]
-        {
-            [new(localizer[Text.Back])]
-        })
-        {
-            ResizeKeyboard = true,
-            InputFieldPlaceholder = localizer[Text.ActionNotAvailable],
-        };
-
-        var sentMessage = await botClient.SendTextMessageAsync(
-            chatId: message.Chat.Id,
-            text: localizer[Text.AskAbout],
-            replyMarkup: keyboard,
-            cancellationToken: cancellationToken);
-
-        await botClient.DeleteMessageAsync(
-            chatId: message.Chat.Id,
-            messageId: message.MessageId,
-            cancellationToken: cancellationToken);
-
-        user.MessageId = sentMessage.MessageId;
-        user.State = States.WaitingForSendAbout;
-    }
-
-    private async Task HandleAboutAsync(ITelegramBotClient botClient, Message message, CancellationToken cancellationToken)
-    {
-        // TO DO need Validation
-        await botClient.SetMyShortDescriptionAsync(
-            shortDescription: message.Text,
-            languageCode: user.LanguageCode,
-            cancellationToken: cancellationToken);
-
-        await SendMenuCompanyInfoAsync(botClient, message, cancellationToken);
-    }
-
     private async Task SendRequestForDescriptionAsync(ITelegramBotClient botClient, Message message, CancellationToken cancellationToken)
     {
         await botClient.SendChatActionAsync(
@@ -123,7 +81,7 @@ public partial class BotUpdateHandler
             cancellationToken: cancellationToken);
 
         user.MessageId = sentMessage.MessageId;
-        user.State = States.WaitingForSendAbout;
+        user.State = States.WaitingForSendDescription;
     }
 
     private async Task SendRequestForMiniAppUrlAsync(ITelegramBotClient botClient, Message message, CancellationToken cancellationToken)

@@ -25,15 +25,15 @@ public partial class BotUpdateHandler
                 States.WaitingForSelectLanguage => HandleSelectedLanguageAsync(botClient, callbackQuery, cancellationToken),
                 States.WaitingForSelectMenu => user.Role switch
                 {
-                    Roles.Customer => HandleSelectedCustomerMenuAsync(botClient, callbackQuery, cancellationToken),
+                    Roles.Admin => HandleSelectedAdminMenuAsync(botClient, callbackQuery, cancellationToken),
                     Roles.Seller => HandleSelectedSellerMenuAsync(botClient, callbackQuery, cancellationToken),
-                    _ => default!,
+                    _ => HandleSelectedCustomerMenuAsync(botClient, callbackQuery, cancellationToken),
                 },
                 States.WaitingForSelectSettings => user.Role switch
                 {
-                    Roles.Customer => HandleSelectedCustomerSettingsAsync(botClient, callbackQuery, cancellationToken),
+                    Roles.Admin => HandleSelectedAdminSettings(botClient, callbackQuery, cancellationToken),
                     Roles.Seller => HandleSelectedSellerSettings(botClient, callbackQuery, cancellationToken),
-                    _ => default!,
+                    _ => HandleSelectedCustomerSettingsAsync(botClient, callbackQuery, cancellationToken),
                 },
                 States.WaitingForSubscribeToChannel => HandleSubscribeToChannel(botClient, callbackQuery, cancellationToken),
                 States.WaitingForSelectChangePersonalInfo => HandleSelectedChangePersonalInfoAsync(botClient, callbackQuery, cancellationToken),
@@ -46,7 +46,7 @@ public partial class BotUpdateHandler
                 States.WaitingForSelectDateOfBirthYear5 => HandleYearAsync(botClient, callbackQuery, cancellationToken),
                 States.WaitingForSelectDateOfBirthMonth => HandleMonthAsync(botClient, callbackQuery, cancellationToken),
                 States.WaitingForSelectDateOfBirthDay => HandleDayAsync(botClient, callbackQuery, cancellationToken),
-                States.WaitingForSelectBotSettings => HandleBotSettingsAsync(botClient, callbackQuery, cancellationToken),
+                States.WaitingForSelectCompanySettings => HandleCompanySettingsAsync(botClient, callbackQuery, cancellationToken),
                 States.WaitingForSelectUserMenu => HandleSelectedUserMenuAsync(botClient, callbackQuery, cancellationToken),
                 States.WaitingForSelectTransaction => HandleSelectedCashbackTransferAsync(botClient, callbackQuery, cancellationToken),
                 States.WaitingForConfirmation => HandleConfirmationAsync(botClient, callbackQuery, cancellationToken),
@@ -68,21 +68,21 @@ public partial class BotUpdateHandler
             States.WaitingForSendComment => SendCustomerMenuAsync(botClient, message, cancellationToken),
             States.WaitingForSelectSettings => user.Role switch
             {
-                Roles.Customer => SendCustomerMenuAsync(botClient, message, cancellationToken),
+                Roles.Admin => SendAdminMenuAsync(botClient, message, cancellationToken),
                 Roles.Seller => SendSellerMenuAsync(botClient, message, cancellationToken),
-                _ => default!,
+                _ => SendCustomerMenuAsync(botClient, message, cancellationToken),
             },
             States.WaitingForSelectLanguage => user.Role switch
             {
-                Roles.Customer => SendCustomerMenuAsync(botClient, message, cancellationToken),
+                Roles.Admin => SendAdminSettingsAsync(botClient, message, cancellationToken),
                 Roles.Seller => SendSellerSettingsAsync(botClient, message, cancellationToken),
-                _ => default!,
+                _ => SendCustomerSettingsAsync(botClient, message, cancellationToken),
             },
             States.WaitingForSelectChangePersonalInfo => user.Role switch
             {
-                Roles.Customer => SendCustomerSettingsAsync(botClient, message, cancellationToken),
+                Roles.Admin => SendAdminSettingsAsync(botClient, message, cancellationToken),
                 Roles.Seller => SendSellerSettingsAsync(botClient, message, cancellationToken),
-                _ => default!,
+                _ => SendCustomerSettingsAsync(botClient, message, cancellationToken),
             },
             States.WaitingForSelectGender => SendMenuPersonalInfoAsync(botClient, message, cancellationToken),
             States.WaitingForSelectDateOfBirth => SendMenuPersonalInfoAsync(botClient, message, cancellationToken),
@@ -96,11 +96,10 @@ public partial class BotUpdateHandler
             States.WaitingForSelectDateOfBirthYear5 => SendRequestDateOfBirthAsync(botClient, message, cancellationToken),
             States.WaitingForSelectDateOfBirthMonth => SendRequestDateOfBirthAsync(botClient, message, cancellationToken),
             States.WaitingForSelectDateOfBirthDay => SendRequestDateOfBirthAsync(botClient, message, cancellationToken),
-            States.WaitingForSelectBotSettings => SendSellerSettingsAsync(botClient, message, cancellationToken),
+            States.WaitingForSelectCompanySettings => SendSellerSettingsAsync(botClient, message, cancellationToken),
             States.WaitingForSendMessageToDeveloper => SendSellerSettingsAsync(botClient, message, cancellationToken),
             States.WaitingForSendName => SendMenuCompanyInfoAsync(botClient, message, cancellationToken),
             States.WaitingForSendBotPic => SendMenuCompanyInfoAsync(botClient, message, cancellationToken),
-            States.WaitingForSendAbout => SendMenuCompanyInfoAsync(botClient, message, cancellationToken),
             States.WaitingForSendUserId => SendSellerMenuAsync(botClient, message, cancellationToken),
             States.WaitingForSelectUserMenu => SendSellerMenuAsync(botClient, message, cancellationToken),
             States.WaitingForSendMessage => SendSellerMenuAsync(botClient, message, cancellationToken),

@@ -69,7 +69,7 @@ public partial class BotUpdateHandler
                     user.FirstName,
                     user.LastName,
                     user.DateOfBirth.ToString("yyyy-MM-dd"),
-                    user.Gender,
+                    localizer[user.Gender.ToString()],
                     user.Contact.Phone!,
                     user.Contact.Email!]);
 
@@ -78,8 +78,9 @@ public partial class BotUpdateHandler
             message,
             text,
             keyboard,
-            cancellationToken);
+            cancellationToken); 
 
+        user.IsActive = IsAccountComplete(user);
         user.MessageId = sentMessage.MessageId;
         user.State = States.WaitingForSelectChangePersonalInfo;
     }

@@ -26,10 +26,13 @@ public partial class BotUpdateHandler
 
         user.Card.State = await IsSubscribed(botClient, user.TelegramId, cancellationToken)
             ? CardStates.Active : CardStates.Block;
-        user.IsActive = IsAccountComplete(user);
 
         var text = string.Concat(actionMessage,
-            localizer[Text.UserInfo, user.GetFullName(), user.Card.Ballance, user.Card.Type],
+            localizer[
+                Text.UserInfo, 
+                user.GetFullName(),
+                user.Card.Ballance,
+                user.Card.Type],
             localizer[Text.SelectMenu]);
 
         var sentMessage = await EditOrSendMessageAsync(
@@ -238,14 +241,16 @@ public partial class BotUpdateHandler
 
         return (int)member.Status < 4;
     }
+
     public bool IsAccountComplete(Domain.Entities.User user)
     {
         return !string.IsNullOrWhiteSpace(user.FirstName) &&
-               !string.IsNullOrWhiteSpace(user.LastName) &&
-               !string.IsNullOrWhiteSpace(user.Contact.Email) &&
-               !string.IsNullOrWhiteSpace(user.Contact.Phone) &&
-               !user.Gender.Equals(Genders.Unknown) &&
-               user.DateOfBirth != DateTime.MinValue;
+           !string.IsNullOrWhiteSpace(user.LastName) &&
+           !string.IsNullOrWhiteSpace(user.Contact.Email) &&
+           !string.IsNullOrWhiteSpace(user.Contact.Phone) &&
+           !user.Gender.Equals(Genders.Unknown) &&
+           user.DateOfBirth != DateTimeOffset.MinValue &&
+           user.DateOfBirth.Year > 0;
     }
 
     private async Task<string> GetShareLink(ITelegramBotClient botClient, CancellationToken cancellationToken)

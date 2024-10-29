@@ -12,7 +12,7 @@ using Telegram.Bot.Types.ReplyMarkups;
 
 public partial class BotUpdateHandler
 {
-    private async Task SendSellerMenuAsync(ITelegramBotClient botClient, Message message, CancellationToken cancellationToken, string messageText = Text.Empty)
+    private async Task SendSellerMenuAsync(ITelegramBotClient botClient, Message message, CancellationToken cancellationToken, string actionMessage = Text.Empty)
     {
         InlineKeyboardMarkup keyboard = new(new InlineKeyboardButton[][]
         {
@@ -22,7 +22,8 @@ public partial class BotUpdateHandler
                 InlineKeyboardButton.WithCallbackData(localizer[Text.Statistics], CallbackData.Statistics)],
             [InlineKeyboardButton.WithCallbackData(localizer[Text.Settings], CallbackData.Settings)],
         });
-        var text = string.Concat(messageText, localizer[Text.SelectMenu]);
+
+        var text = string.Concat(actionMessage, localizer[Text.SelectMenu]);
 
         var sentMessage = await EditOrSendMessageAsync(
             botClient: botClient,
@@ -56,8 +57,7 @@ public partial class BotUpdateHandler
         {
             [InlineKeyboardButton.WithCallbackData(localizer[Text.ChangeLanguage], CallbackData.ChangeLanguage)],
             [InlineKeyboardButton.WithCallbackData(localizer[Text.PersonalInfo], CallbackData.PersonalInfo)],
-            [InlineKeyboardButton.WithCallbackData(localizer[Text.CompanyInfo], CallbackData.CompanyInfo)],
-            [InlineKeyboardButton.WithCallbackData(localizer[Text.MessageToDeveloper], CallbackData.MessageToDeveloper)],
+            [InlineKeyboardButton.WithCallbackData(localizer[Text.MessageToDeveloper], CallbackData.SendMessage)],
             [InlineKeyboardButton.WithCallbackData(localizer[Text.Back], CallbackData.Back)],
         });
 
@@ -84,7 +84,7 @@ public partial class BotUpdateHandler
             CallbackData.ChangeLanguage => SendMenuLanguagesAsync(botClient, callbackQuery.Message, cancellationToken),
             CallbackData.PersonalInfo => SendMenuPersonalInfoAsync(botClient, callbackQuery.Message, cancellationToken),
             CallbackData.CompanyInfo => SendMenuCompanyInfoAsync(botClient, callbackQuery.Message, cancellationToken),
-            CallbackData.MessageToDeveloper => SendRequestMessageForDeveloperAsync(botClient, callbackQuery.Message, cancellationToken),
+            CallbackData.SendMessage => SendRequestMessageForDeveloperAsync(botClient, callbackQuery.Message, cancellationToken),
             _ => HandleUnknownCallbackQueryAsync(botClient, callbackQuery, cancellationToken),
         });
     }

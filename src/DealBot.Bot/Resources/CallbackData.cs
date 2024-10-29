@@ -40,15 +40,13 @@ public class CallbackData
     public const string CompanyInfo = nameof(CompanyInfo);
     public const string Picture = nameof(Picture);
     public const string Name = nameof(Name);
-    public const string About = nameof(About);
     public const string Description = nameof(Description);
-    public const string DescriptionPicture = nameof(DescriptionPicture);
     public const string MiniAppUrl = nameof(MiniAppUrl);
     public const string Give = nameof(Give);
     public const string Take = nameof(Take);
     public const string Cancel = nameof(Cancel);
     public const string Submit = nameof(Submit);
     public const string Remind = nameof(Remind);
-    public const string MessageToDeveloper = nameof(MessageToDeveloper);
-    public const string Transaction = nameof(MessageToDeveloper);
+    public const string Transaction = nameof(Transaction);
+    public const string EmployeesList = nameof(EmployeesList);
 }

@@ -67,9 +67,8 @@ public class Text
     public const string CompanyInfo = nameof(CompanyInfo);
     public const string Picture = nameof(Picture);
     public const string Name = nameof(Name);
-    public const string About = nameof(About);
+    public const string Website = nameof(Website);
     public const string Description = nameof(Description);
-    public const string DescriptionPicture = nameof(DescriptionPicture);
     public const string MiniAppUrl = nameof(MiniAppUrl);
     public const string AskNameInPlaceHolder = nameof(AskNameInPlaceHolder);
     public const string AskName = nameof(AskName);
@@ -106,4 +105,7 @@ public class Text
     public const string IncompleteAccountInfo = nameof(IncompleteAccountInfo);
     public const string RequiredToSubscribe = nameof(RequiredToSubscribe);
     public const string SentConfirmation = nameof(SentConfirmation);
+    public const string Active = nameof(Active);
+    public const string Inactive = nameof(Inactive);
+    public const string EmployeesList = nameof(EmployeesList);
 }

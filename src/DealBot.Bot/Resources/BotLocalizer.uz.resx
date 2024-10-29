@@ -228,6 +228,9 @@ Holati: {2}</value>
   <data name="Comment" xml:space="preserve">
     <value>✍️ Sharx qoldirish</value>
   </data>
+  <data name="CompanyInfo" xml:space="preserve">
+    <value>🏬 Tashkilot ma'lumotlari</value>
+  </data>
   <data name="Confirmation" xml:space="preserve">
     <value>Savdoni tasdiqlash uchun xabar. va to'lov ma'lumotlari</value>
   </data>
@@ -311,7 +314,7 @@ Email: {5}</value>
     <value>Xabar muvaffaqqiyatli yuborildi.</value>
   </data>
   <data name="MessageToDeveloper" xml:space="preserve">
-    <value>Ishlab chiquvchiga taklif yuborish</value>
+    <value>📬 Dasturchiga xabar</value>
   </data>
   <data name="MiniAppUrl" xml:space="preserve">
     <value>Mini app havolasi</value>

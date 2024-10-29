@@ -5,8 +5,8 @@ using DealBot.Domain.Common;
 public sealed class Store : Auditable
 {
     public string Name { get; set; }
-    public decimal CashBackPersentage { get; set; }
-    public bool IsActive { get; set; }
+    public string Description { get; set; }
+    public string Website { get; set; }
 
     public Contact Contact { get; set; }
     public long ContactId { get; set; }
