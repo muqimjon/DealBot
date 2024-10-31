@@ -13,6 +13,7 @@ public interface IAppDbContext
     DbSet<Store> Stores { get; }
     DbSet<StoreReview> Reviews { get; }
     DbSet<Transaction> Transactions { get; }
+    DbSet<CashbackSetting> CashbackSettings { get; }
 
     Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
 }

@@ -26,7 +26,7 @@ public partial class BotUpdateHandler(
         using var scope = serviceScopeFactory.CreateScope();
         localizer = scope.ServiceProvider.GetRequiredService<IStringLocalizer<BotLocalizer>>();
         appDbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-        
+
         user = await GetUserAsync(update, cancellationToken);
         SetCulture(user.LanguageCode);
 

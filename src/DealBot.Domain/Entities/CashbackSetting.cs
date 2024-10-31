@@ -7,4 +7,5 @@ public class CashbackSetting : Auditable
 {
     public CardTypes Type { get; set; }
     public decimal Percentage { get; set; }
+    public bool IsActive { get; set; }
 }

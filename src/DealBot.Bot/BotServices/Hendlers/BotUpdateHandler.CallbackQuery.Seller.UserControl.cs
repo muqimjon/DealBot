@@ -49,13 +49,13 @@ public partial class BotUpdateHandler
             .Include(c => c.Card)
             .FirstAsync(c => c.Id.Equals(user.PlaceId), cancellationToken);
 
-        var text = string.Concat(actionMessage, 
+        var text = string.Concat(actionMessage,
             localizer[
                 Text.CustomerCardInfo,
-                customer.GetFullName(), 
-                customer.Card.Ballance, 
-                localizer[customer.Card.Type.ToString()], 
-                customer.IsActive ? Text.Active : Text.Inactive, 
+                customer.GetFullName(),
+                customer.Card.Ballance,
+                localizer[customer.Card.Type.ToString()],
+                customer.IsActive ? Text.Active : Text.Inactive,
                 customer.Card.State]);
 
         var sentMessage = await EditOrSendMessageAsync(

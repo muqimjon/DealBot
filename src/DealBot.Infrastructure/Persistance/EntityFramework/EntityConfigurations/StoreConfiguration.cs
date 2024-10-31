@@ -23,12 +23,20 @@ public class StoreConfiguration : IEntityTypeConfiguration<Store>
     private static void ConfigureProperties(EntityTypeBuilder<Store> builder)
     {
         builder.Property(s => s.Name)
-               .IsRequired()
-               .HasMaxLength(200);
+               .IsRequired(false)
+               .HasMaxLength(80);
 
         builder.Property(s => s.Website)
                .IsRequired(false)
+               .HasMaxLength(50);
+
+        builder.Property(s => s.MiniAppUrl)
+               .IsRequired(false)
                .HasMaxLength(200);
+
+        builder.Property(s => s.Description)
+               .IsRequired(false)
+               .HasMaxLength(500);
     }
 
     private static void ConfigureRelationships(EntityTypeBuilder<Store> builder)

@@ -7,4 +7,5 @@ public enum CardTypes
 {
     Simple,
     Premium,
+    None,
 }

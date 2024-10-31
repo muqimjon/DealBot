@@ -41,4 +41,9 @@ public enum States
     WaitingForConfirmation,
     CheckingCustomerList,
     WaitingForSendDescription,
+    WaitingForSendMiniAppUrl,
+    WaitingForSendCompanyEmail,
+    WaitingForSendCompanyPhoneNumber,
+    WaitingForSendWebsite,
+    WaitingForSendChannel,
 }

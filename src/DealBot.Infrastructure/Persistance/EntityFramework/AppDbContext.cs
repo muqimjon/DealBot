@@ -17,6 +17,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options)
     public DbSet<Store> Stores { get; set; }
     public DbSet<StoreReview> Reviews { get; set; }
     public DbSet<Transaction> Transactions { get; set; }
+    public DbSet<CashbackSetting> CashbackSettings { get; set; }
 
     public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
         => await base.SaveChangesAsync(cancellationToken);

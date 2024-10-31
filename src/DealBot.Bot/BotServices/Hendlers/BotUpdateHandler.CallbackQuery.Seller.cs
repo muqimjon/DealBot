@@ -63,12 +63,11 @@ public partial class BotUpdateHandler
 
         var text = string.Concat(actionMessage, localizer[Text.SelectSettings]);
 
-        var sentMessage = await botClient.EditMessageTextAsync(
-            chatId: message.Chat.Id,
-            messageId: message.MessageId,
+        var sentMessage = await EditOrSendMessageAsync(
+            botClient: botClient,
+            message: message,
             text: text,
             replyMarkup: keyboard,
-            parseMode: ParseMode.MarkdownV2,
             cancellationToken: cancellationToken);
 
         user.MessageId = sentMessage.MessageId;
@@ -84,7 +83,7 @@ public partial class BotUpdateHandler
             CallbackData.ChangeLanguage => SendMenuLanguagesAsync(botClient, callbackQuery.Message, cancellationToken),
             CallbackData.PersonalInfo => SendMenuPersonalInfoAsync(botClient, callbackQuery.Message, cancellationToken),
             CallbackData.CompanyInfo => SendMenuCompanyInfoAsync(botClient, callbackQuery.Message, cancellationToken),
-            CallbackData.SendMessage => SendRequestMessageForDeveloperAsync(botClient, callbackQuery.Message, cancellationToken),
+            CallbackData.SendMessage => SendRequestMessageToDeveloperAsync(botClient, callbackQuery.Message, cancellationToken),
             _ => HandleUnknownCallbackQueryAsync(botClient, callbackQuery, cancellationToken),
         });
     }

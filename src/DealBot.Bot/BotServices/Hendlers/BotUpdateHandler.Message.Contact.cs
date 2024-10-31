@@ -33,7 +33,7 @@ public partial class BotUpdateHandler
 
         ReplyKeyboardMarkup keyboard = new(new KeyboardButton[][]
         {
-            [new(localizer[Text.SendPhoneNumber]) { RequestContact = true }]
+            [new(localizer[Text.SendContact]) { RequestContact = true }]
         })
         {
             ResizeKeyboard = true,

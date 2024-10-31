@@ -1,5 +1,6 @@
 ﻿
 
+
 namespace DealBot.Bot.Resources;
 
 public class CallbackData
@@ -49,4 +50,9 @@ public class CallbackData
     public const string Remind = nameof(Remind);
     public const string Transaction = nameof(Transaction);
     public const string EmployeesList = nameof(EmployeesList);
+    public const string Cashback = nameof(Cashback);
+    public const string Roles = nameof(Roles);
+    public const string Website = nameof(Website);
+    public const string Channel = nameof(Channel);
+    public const string Company = nameof(Company);
 }

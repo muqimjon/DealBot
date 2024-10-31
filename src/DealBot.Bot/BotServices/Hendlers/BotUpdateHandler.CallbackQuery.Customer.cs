@@ -29,7 +29,7 @@ public partial class BotUpdateHandler
 
         var text = string.Concat(actionMessage,
             localizer[
-                Text.UserInfo, 
+                Text.UserInfo,
                 user.GetFullName(),
                 user.Card.Ballance,
                 user.Card.Type],

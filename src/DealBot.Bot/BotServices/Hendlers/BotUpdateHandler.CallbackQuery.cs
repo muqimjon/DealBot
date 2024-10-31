@@ -96,10 +96,8 @@ public partial class BotUpdateHandler
             States.WaitingForSelectDateOfBirthYear5 => SendRequestDateOfBirthAsync(botClient, message, cancellationToken),
             States.WaitingForSelectDateOfBirthMonth => SendRequestDateOfBirthAsync(botClient, message, cancellationToken),
             States.WaitingForSelectDateOfBirthDay => SendRequestDateOfBirthAsync(botClient, message, cancellationToken),
-            States.WaitingForSelectCompanySettings => SendSellerSettingsAsync(botClient, message, cancellationToken),
+            States.WaitingForSelectCompanySettings => SendAdminSettingsAsync(botClient, message, cancellationToken),
             States.WaitingForSendMessageToDeveloper => SendSellerSettingsAsync(botClient, message, cancellationToken),
-            States.WaitingForSendName => SendMenuCompanyInfoAsync(botClient, message, cancellationToken),
-            States.WaitingForSendBotPic => SendMenuCompanyInfoAsync(botClient, message, cancellationToken),
             States.WaitingForSendUserId => SendSellerMenuAsync(botClient, message, cancellationToken),
             States.WaitingForSelectUserMenu => SendSellerMenuAsync(botClient, message, cancellationToken),
             States.WaitingForSendMessage => SendSellerMenuAsync(botClient, message, cancellationToken),
@@ -107,6 +105,14 @@ public partial class BotUpdateHandler
             States.WaitingForSendSalesAmount => SendTransactionAsync(botClient, message, cancellationToken),
             States.WaitingForSendProductPrice => SendTransactionAsync(botClient, message, cancellationToken),
             States.CheckingCustomerList => SendSellerMenuAsync(botClient, message, cancellationToken),
+            States.WaitingForSendBotPic => SendMenuCompanyInfoAsync(botClient, message, cancellationToken),
+            States.WaitingForSendName => SendMenuCompanyInfoAsync(botClient, message, cancellationToken),
+            States.WaitingForSendDescription => SendMenuCompanyInfoAsync(botClient, message, cancellationToken),
+            States.WaitingForSendMiniAppUrl => SendMenuCompanyInfoAsync(botClient, message, cancellationToken),
+            States.WaitingForSendWebsite => SendMenuCompanyInfoAsync(botClient, message, cancellationToken),
+            States.WaitingForSendCompanyEmail => SendMenuCompanyInfoAsync(botClient, message, cancellationToken),
+            States.WaitingForSendCompanyPhoneNumber => SendMenuCompanyInfoAsync(botClient, message, cancellationToken),
+            States.WaitingForSendChannel => SendMenuCompanyInfoAsync(botClient, message, cancellationToken),
             _ => HandleUnknownMessageAsync(botClient, message, cancellationToken),
         };
 
@@ -155,7 +161,7 @@ public partial class BotUpdateHandler
 
         ReplyKeyboardMarkup keyboard = new(new KeyboardButton[][]
         {
-            [new(localizer[Text.SendPhoneNumber]) { RequestContact = true }]
+            [new(localizer[Text.SendContact]) { RequestContact = true }]
         })
         {
             ResizeKeyboard = true,

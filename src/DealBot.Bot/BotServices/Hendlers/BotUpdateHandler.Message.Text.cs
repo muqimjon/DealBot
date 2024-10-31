@@ -25,9 +25,9 @@ public partial class BotUpdateHandler
             States.None => SendFirstMenuLanguagesAsync(botClient, message, cancellationToken),
             States.Restart => user.Role switch
             {
-                Roles.Customer => SendCustomerMenuAsync(botClient, message, cancellationToken),
+                Roles.Admin => SendAdminMenuAsync(botClient, message, cancellationToken),
                 Roles.Seller => SendSellerMenuAsync(botClient, message, cancellationToken),
-                _ => default!
+                _ => SendCustomerMenuAsync(botClient, message, cancellationToken),
             },
             States.WaitingForSendComment => HandleCommentMessageAsync(botClient, message, cancellationToken),
             States.WaitingForSendEmail => HandleEmailAsync(botClient, message, cancellationToken),
@@ -38,6 +38,12 @@ public partial class BotUpdateHandler
             States.WaitingForSendProductPrice => HandleProductPriceAsync(botClient, message, cancellationToken),
             States.WaitingForSendSalesAmount => HandleSalesAmountAsync(botClient, message, cancellationToken),
             States.WaitingForSendMessageToDeveloper => HandleMessageToDeveloperAsync(botClient, message, cancellationToken),
+            States.WaitingForSendDescription => HandleDesctiptionAsync(botClient, message, cancellationToken),
+            States.WaitingForSendMiniAppUrl => HandleMiniAppUrlAsync(botClient, message, cancellationToken),
+            States.WaitingForSendWebsite => HandleWebsiteAsync(botClient, message, cancellationToken),
+            States.WaitingForSendCompanyPhoneNumber => HandleCompanyPhoneNumberAsync(botClient, message, cancellationToken),
+            States.WaitingForSendCompanyEmail => HandleCompanyEmailAsync(botClient, message, cancellationToken),
+            States.WaitingForSendChannel => HandleChannelAsync(botClient, message, cancellationToken),
             _ => HandleUnknownMessageAsync(botClient, message, cancellationToken)
         };
 

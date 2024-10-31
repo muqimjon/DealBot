@@ -112,7 +112,7 @@ public partial class BotUpdateHandler
                 await SendTransactionAsync(botClient, message, cancellationToken, localizer[Text.LackOfBalance]);
                 return;
             }
-            
+
             await SendCustomerConfirmation(botClient, price, customer, cancellationToken);
             await SendUserManagerMenuAsync(botClient, message, cancellationToken, localizer[Text.SentConfirmation]);
         }
@@ -202,7 +202,7 @@ public partial class BotUpdateHandler
         await SendUserManagerMenuAsync(botClient, message, cancellationToken, text);
     }
 
-    private async Task SendRequestMessageForDeveloperAsync(ITelegramBotClient botClient, Message message, CancellationToken cancellationToken)
+    private async Task SendRequestMessageToDeveloperAsync(ITelegramBotClient botClient, Message message, CancellationToken cancellationToken)
     {
         await botClient.SendChatActionAsync(
             chatId: message.Chat.Id,
@@ -240,6 +240,6 @@ public partial class BotUpdateHandler
             chatAction: ChatAction.Typing,
             cancellationToken: cancellationToken);
 
-        await SendSellerSettingsAsync(botClient, message, cancellationToken);
+        await SendSellerSettingsAsync(botClient, message, cancellationToken, localizer[Text.MessageSent]);
     }
 }

@@ -126,6 +126,9 @@
   <data name="AskAboutInPlaceHolder" xml:space="preserve">
     <value>Bot haqida qisqa ma'lumot yozing...</value>
   </data>
+  <data name="AskChannel" xml:space="preserve">
+    <value>Joriy kanal foydalanuvchi nomi: {0}</value>
+  </data>
   <data name="AskComment" xml:space="preserve">
     <value>Taklif va shikoyatlar uchun izoh qoldiring va biz albatta buni e'tiborga olamiz!</value>
   </data>
@@ -138,6 +141,16 @@
   </data>
   <data name="AskDateOfBirth" xml:space="preserve">
     <value>Tug'ilgan sanangiz: {0}</value>
+  </data>
+  <data name="AskDescription" xml:space="preserve">
+    <value>Joriy tavsif:
+
+{0}
+
+Quyida yangilangan  matinni yuboring</value>
+  </data>
+  <data name="AskDescriptionInPlaceHolder" xml:space="preserve">
+    <value>Tavsifni kiriting...</value>
   </data>
   <data name="AskEmail" xml:space="preserve">
     <value>Emailingiz: {0}</value>
@@ -219,8 +232,19 @@ Hisob: {0}
 Turi: {1}
 Holati: {2}</value>
   </data>
+  <data name="Cashback" xml:space="preserve">
+    <value>💸 Keshbek</value>
+  </data>
   <data name="ChangeLanguage" xml:space="preserve">
     <value>🌐 Tilni o'zgartirish</value>
+  </data>
+  <data name="Channel" xml:space="preserve">
+    <value>Kanal</value>
+  </data>
+  <data name="ChannelUpdated" xml:space="preserve">
+    <value>✅ Kanal foydalanuvchi nomi Muvaffaqiyatli yangilandi!
+
+</value>
   </data>
   <data name="Check" xml:space="preserve">
     <value>✔️ Tekshirish</value>
@@ -228,8 +252,20 @@ Holati: {2}</value>
   <data name="Comment" xml:space="preserve">
     <value>✍️ Sharx qoldirish</value>
   </data>
+  <data name="Company" xml:space="preserve">
+    <value>🏬 Tashkilot</value>
+  </data>
   <data name="CompanyInfo" xml:space="preserve">
-    <value>🏬 Tashkilot ma'lumotlari</value>
+    <value>Name: {0}
+Tafsilot: {1}
+Surat: {2}
+Raqam: {4}
+Email: {5}
+Veb sayt havolasi: {3}
+Mini app havolasi: {6}
+Kanal foydalanuvchi nomi: {7}
+
+</value>
   </data>
   <data name="Confirmation" xml:space="preserve">
     <value>Savdoni tasdiqlash uchun xabar. va to'lov ma'lumotlari</value>
@@ -245,7 +281,7 @@ Holati: {2}</value>
 💳 {4}</value>
   </data>
   <data name="CustomersList" xml:space="preserve">
-    <value>📋 Mijozlar ro'yxati</value>
+    <value>📋 Mijozlar</value>
   </data>
   <data name="DateOfBirth" xml:space="preserve">
     <value>🔢 Tug'ilgan sana</value>
@@ -253,14 +289,30 @@ Holati: {2}</value>
   <data name="Day" xml:space="preserve">
     <value>Kun</value>
   </data>
+  <data name="Defined" xml:space="preserve">
+    <value>✅</value>
+  </data>
   <data name="Description" xml:space="preserve">
-    <value>Tafsilot</value>
+    <value>📜 Tavsif</value>
   </data>
   <data name="DescriptionPicture" xml:space="preserve">
     <value>Tafsilot surati</value>
   </data>
+  <data name="DescriptionUpdated" xml:space="preserve">
+    <value>✅ Tavsif muvaffaqiyatli yangilandi
+
+</value>
+  </data>
   <data name="Email" xml:space="preserve">
     <value>📧 Email</value>
+  </data>
+  <data name="EmployeesList" xml:space="preserve">
+    <value>👥 Ishchilar</value>
+  </data>
+  <data name="Error" xml:space="preserve">
+    <value>⚠️ Xatolik yuzaga keldi keyinroq qayta urunib ko'ring!
+
+</value>
   </data>
   <data name="Female" xml:space="preserve">
     <value>♀ Ayol</value>
@@ -311,13 +363,20 @@ Telefon raqami: {4}
 Email: {5}</value>
   </data>
   <data name="MessageSent" xml:space="preserve">
-    <value>Xabar muvaffaqqiyatli yuborildi.</value>
+    <value>✅ Xabar muvaffaqqiyatli yuborildi!
+
+</value>
   </data>
   <data name="MessageToDeveloper" xml:space="preserve">
     <value>📬 Dasturchiga xabar</value>
   </data>
   <data name="MiniAppUrl" xml:space="preserve">
-    <value>Mini app havolasi</value>
+    <value>🔗 Mini app</value>
+  </data>
+  <data name="MiniAppUrlUpdated" xml:space="preserve">
+    <value>✅ Sayt linki muvaffaqiyatli yangilandi
+
+</value>
   </data>
   <data name="Month" xml:space="preserve">
     <value>Oy</value>
@@ -326,7 +385,12 @@ Email: {5}</value>
     <value>💳 Mening imtiyoz kartam</value>
   </data>
   <data name="Name" xml:space="preserve">
-    <value>Nom</value>
+    <value>🏷️ Nom</value>
+  </data>
+  <data name="NameUpdated" xml:space="preserve">
+    <value>✅ Nom muvaffaqiyatli yangilandi
+
+</value>
   </data>
   <data name="Next" xml:space="preserve">
     <value>Keyin ⇒</value>
@@ -341,7 +405,7 @@ Email: {5}</value>
     <value>☎️ Telefon Raqam</value>
   </data>
   <data name="Picture" xml:space="preserve">
-    <value>Surat</value>
+    <value>🖼️ Surat</value>
   </data>
   <data name="Previous" xml:space="preserve">
     <value>⇐ Oldin</value>
@@ -364,6 +428,9 @@ Email: {5}</value>
 
 </value>
   </data>
+  <data name="Roles" xml:space="preserve">
+    <value>🧑‍💼 Rollar</value>
+  </data>
   <data name="SalesAmount" xml:space="preserve">
     <value>Savdo summasini kiriting</value>
   </data>
@@ -379,11 +446,11 @@ Email: {5}</value>
   <data name="SelectSettings" xml:space="preserve">
     <value>Sozlamalar</value>
   </data>
+  <data name="SendContact" xml:space="preserve">
+    <value>Telefon raqamni yuborish</value>
+  </data>
   <data name="SendMessage" xml:space="preserve">
     <value>✉️ Xabar yuborish</value>
-  </data>
-  <data name="SendPhoneNumber" xml:space="preserve">
-    <value>Telefon raqamni yuborish</value>
   </data>
   <data name="SentConfirmation" xml:space="preserve">
     <value>✅ Tasdiq xabari muvaffaqiyatli yuborildi
@@ -447,9 +514,12 @@ Sotuvchi: {3}
 Sana: {4}</value>
   </data>
   <data name="TransactionSucceeded" xml:space="preserve">
-    <value>✅ O'tkazma muvaffaqqiyatli yakunlandi 💸
+    <value>✅ O'tkazma muvaffaqiyatli yakunlandi 💸
 
 </value>
+  </data>
+  <data name="Undefined" xml:space="preserve">
+    <value>🚫</value>
   </data>
   <data name="UserInfo" xml:space="preserve">
     <value>👤 {0}
@@ -459,7 +529,10 @@ Sana: {4}</value>
 </value>
   </data>
   <data name="UserManager" xml:space="preserve">
-    <value>👤 Mijoz sozlamalari</value>
+    <value>👤 Mijoz boshqaruvi</value>
+  </data>
+  <data name="Website" xml:space="preserve">
+    <value>🔗 Veb sayt</value>
   </data>
   <data name="Year" xml:space="preserve">
     <value>Yil</value>

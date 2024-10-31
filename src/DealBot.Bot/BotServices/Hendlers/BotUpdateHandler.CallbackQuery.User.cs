@@ -66,19 +66,19 @@ public partial class BotUpdateHandler
         });
 
         var text = string.Concat(actionMessage, localizer[Text.MenuChangePersonalInfo,
-                    user.FirstName,
-                    user.LastName,
-                    user.DateOfBirth.ToString("yyyy-MM-dd"),
-                    localizer[user.Gender.ToString()],
-                    user.Contact.Phone!,
-                    user.Contact.Email!]);
+            user.FirstName,
+            user.LastName,
+            user.DateOfBirth.ToString("yyyy-MM-dd"),
+            localizer[user.Gender.ToString()],
+            user.Contact.Phone!,
+            user.Contact.Email!]);
 
         var sentMessage = await EditOrSendMessageAsync(
-            botClient,
-            message,
-            text,
-            keyboard,
-            cancellationToken); 
+            botClient: botClient,
+            message: message,
+            text: text,
+            replyMarkup: keyboard,
+            cancellationToken: cancellationToken);
 
         user.IsActive = IsAccountComplete(user);
         user.MessageId = sentMessage.MessageId;
