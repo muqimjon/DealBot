@@ -13,10 +13,16 @@ public partial class BotUpdateHandler
 {
     private async Task SendCustomerMenuAsync(ITelegramBotClient botClient, Message message, CancellationToken cancellationToken, string actionMessage = Text.Empty)
     {
+        var store = await appDbContext.Stores
+            .OrderByDescending(s => s.Id)
+            .LastOrDefaultAsync(cancellationToken);
+
+        var miniAppUrl = string.IsNullOrEmpty(store.MiniAppUrl) ? "https://notfound.com" : store.MiniAppUrl;
+
         InlineKeyboardMarkup keyboard = new(new InlineKeyboardButton[][]
         {
             [InlineKeyboardButton.WithCallbackData(localizer[Text.MyPrivilegeCard], CallbackData.MyPrivilegeCard)],
-            [InlineKeyboardButton.WithWebApp(localizer[Text.OrderOnTheSite], new WebAppInfo() { Url = "https://idea-up.uz"})],
+            [InlineKeyboardButton.WithWebApp(localizer[Text.OrderOnTheSite], new WebAppInfo() { Url = miniAppUrl })],
             [InlineKeyboardButton.WithCallbackData(localizer[Text.Settings], CallbackData.Settings),
                 InlineKeyboardButton.WithCallbackData(localizer[Text.StoreAddress], CallbackData.StoreAddress)],
             [InlineKeyboardButton.WithCallbackData(localizer[Text.ContactUs], CallbackData.ContactUs),
@@ -68,9 +74,14 @@ public partial class BotUpdateHandler
 
     private async Task SendRequestJoinToChannel(ITelegramBotClient botClient, Message message, CancellationToken cancellationToken, string actionMessage = Text.Empty, Domain.Entities.User customer = default!)
     {
+        var store = await (from s in appDbContext.Stores
+                           orderby s.Id descending
+                           select s)
+                    .LastAsync(cancellationToken);
+
         InlineKeyboardMarkup keyboard = new(new InlineKeyboardButton[][]
         {
-            [InlineKeyboardButton.WithUrl(localizer[Text.Subscribe], "https://t.me/milestonies")],
+            [InlineKeyboardButton.WithUrl(localizer[Text.Subscribe], store.Channel)],
             [InlineKeyboardButton.WithCallbackData(localizer[Text.Check], CallbackData.Check)],
             [InlineKeyboardButton.WithCallbackData(localizer[Text.Back], CallbackData.Back)],
         });
@@ -234,8 +245,13 @@ public partial class BotUpdateHandler
 
     private async Task<bool> IsSubscribed(ITelegramBotClient botClient, long userId, CancellationToken cancellationToken)
     {
+        var store = await (from s in appDbContext.Stores
+                           orderby s.Id descending
+                           select s)
+                    .LastAsync(cancellationToken);
+
         var member = await botClient.GetChatMemberAsync(
-            chatId: "@Milestonies",
+            chatId: store.Channel,
             userId,
             cancellationToken: cancellationToken);
 

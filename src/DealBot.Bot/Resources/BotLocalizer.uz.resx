@@ -129,6 +129,9 @@
   <data name="AskChannel" xml:space="preserve">
     <value>Joriy kanal foydalanuvchi nomi: {0}</value>
   </data>
+  <data name="AskChannelInPlaceHolder" xml:space="preserve">
+    <value>Kanal foydalanuvchi nomini kiriting...</value>
+  </data>
   <data name="AskComment" xml:space="preserve">
     <value>Taklif va shikoyatlar uchun izoh qoldiring va biz albatta buni e'tiborga olamiz!</value>
   </data>
@@ -190,6 +193,9 @@ Iltimos, davom ettirish uchun kanalga a'zo bo'ling!</value>
   <data name="AskMessageInPlaceHolder" xml:space="preserve">
     <value>Xabar matnini yozing...</value>
   </data>
+  <data name="AskMiniAppUrlInPlaceHolder" xml:space="preserve">
+    <value>Mini app havolasini kiriting...</value>
+  </data>
   <data name="AskName" xml:space="preserve">
     <value>Joriy nom: {0}</value>
   </data>
@@ -201,6 +207,9 @@ Iltimos, davom ettirish uchun kanalga a'zo bo'ling!</value>
   </data>
   <data name="AskPhoneNumberInPlaceHolder" xml:space="preserve">
     <value>Telefon raqamingizni kiriting..</value>
+  </data>
+  <data name="AskPhoto" xml:space="preserve">
+    <value>O'zgartirish uchun yangi surat yuboring</value>
   </data>
   <data name="AskProductPrice" xml:space="preserve">
     <value>Mahsulot narxini kiriting</value>
@@ -216,6 +225,9 @@ Iltimos, davom ettirish uchun kanalga a'zo bo'ling!</value>
   </data>
   <data name="AskUserIdInPlaceHolder" xml:space="preserve">
     <value>@{0} va telefon raqamni kiriting...</value>
+  </data>
+  <data name="AskWebsite" xml:space="preserve">
+    <value>Joriy veb sayt havolasi: {0}</value>
   </data>
   <data name="Back" xml:space="preserve">
     <value>⇚ Ortga</value>
@@ -239,12 +251,7 @@ Holati: {2}</value>
     <value>🌐 Tilni o'zgartirish</value>
   </data>
   <data name="Channel" xml:space="preserve">
-    <value>Kanal</value>
-  </data>
-  <data name="ChannelUpdated" xml:space="preserve">
-    <value>✅ Kanal foydalanuvchi nomi Muvaffaqiyatli yangilandi!
-
-</value>
+    <value>📢 Kanal</value>
   </data>
   <data name="Check" xml:space="preserve">
     <value>✔️ Tekshirish</value>
@@ -259,9 +266,9 @@ Holati: {2}</value>
     <value>Name: {0}
 Tafsilot: {1}
 Surat: {2}
-Raqam: {4}
-Email: {5}
-Veb sayt havolasi: {3}
+Raqam: {3}
+Email: {4}
+Veb sayt havolasi: {5}
 Mini app havolasi: {6}
 Kanal foydalanuvchi nomi: {7}
 
@@ -292,16 +299,19 @@ Kanal foydalanuvchi nomi: {7}
   <data name="Defined" xml:space="preserve">
     <value>✅</value>
   </data>
+  <data name="Delete" xml:space="preserve">
+    <value>🗑️ O'chirish</value>
+  </data>
+  <data name="DeleteSucceeded" xml:space="preserve">
+    <value>✅ Muvaffaqiyatli o'chirildi!
+
+</value>
+  </data>
   <data name="Description" xml:space="preserve">
     <value>📜 Tavsif</value>
   </data>
   <data name="DescriptionPicture" xml:space="preserve">
     <value>Tafsilot surati</value>
-  </data>
-  <data name="DescriptionUpdated" xml:space="preserve">
-    <value>✅ Tavsif muvaffaqiyatli yangilandi
-
-</value>
   </data>
   <data name="Email" xml:space="preserve">
     <value>📧 Email</value>
@@ -373,11 +383,6 @@ Email: {5}</value>
   <data name="MiniAppUrl" xml:space="preserve">
     <value>🔗 Mini app</value>
   </data>
-  <data name="MiniAppUrlUpdated" xml:space="preserve">
-    <value>✅ Sayt linki muvaffaqiyatli yangilandi
-
-</value>
-  </data>
   <data name="Month" xml:space="preserve">
     <value>Oy</value>
   </data>
@@ -386,11 +391,6 @@ Email: {5}</value>
   </data>
   <data name="Name" xml:space="preserve">
     <value>🏷️ Nom</value>
-  </data>
-  <data name="NameUpdated" xml:space="preserve">
-    <value>✅ Nom muvaffaqiyatli yangilandi
-
-</value>
   </data>
   <data name="Next" xml:space="preserve">
     <value>Keyin ⇒</value>
@@ -453,7 +453,12 @@ Email: {5}</value>
     <value>✉️ Xabar yuborish</value>
   </data>
   <data name="SentConfirmation" xml:space="preserve">
-    <value>✅ Tasdiq xabari muvaffaqiyatli yuborildi
+    <value>✅ Tasdiqlash xabari muvaffaqiyatli yuborildi
+
+</value>
+  </data>
+  <data name="SetSucceeded" xml:space="preserve">
+    <value>✅ Muvaffaqiyatli o'rnatildi!
 
 </value>
   </data>
@@ -520,6 +525,11 @@ Sana: {4}</value>
   </data>
   <data name="Undefined" xml:space="preserve">
     <value>🚫</value>
+  </data>
+  <data name="UpdateSucceeded" xml:space="preserve">
+    <value>✅ Muvaffaqiyatli yangilandi!
+
+</value>
   </data>
   <data name="UserInfo" xml:space="preserve">
     <value>👤 {0}

@@ -4,6 +4,7 @@ using DealBot.Bot.Resources;
 using DealBot.Domain.Entities;
 using DealBot.Domain.Enums;
 using Microsoft.EntityFrameworkCore;
+using System.Text;
 using Telegram.Bot;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
@@ -121,7 +122,10 @@ public partial class BotUpdateHandler
     private async Task SendMenuCompanyInfoAsync(ITelegramBotClient botClient, Message message, CancellationToken cancellationToken, string actionMessage = Text.Empty)
     {
         Store store;
-        if ((store = (await appDbContext.Stores.FirstOrDefaultAsync(cancellationToken))!) is null)
+        if ((store = (await appDbContext.Stores
+            .Include(s => s.Image)
+            .Include(s => s.Contact)
+            .FirstOrDefaultAsync(cancellationToken))!) is null)
             await appDbContext.Stores.AddAsync(store = new());
 
         InlineKeyboardMarkup keyboard = new(new InlineKeyboardButton[][]
@@ -141,13 +145,12 @@ public partial class BotUpdateHandler
             Text.CompanyInfo,
             localizer[string.IsNullOrEmpty(store.Name) ? Text.Undefined : Text.Defined],
             localizer[string.IsNullOrEmpty(store.Description) ? Text.Undefined : Text.Defined],
-            localizer[store.Image is null ? Text.Undefined : Text.Defined],
-            localizer[string.IsNullOrEmpty(store.Website) ? Text.Undefined : Text.Defined],
-            localizer[string.IsNullOrEmpty(store.MiniAppUrl) ? Text.Undefined : Text.Defined],
+            localizer[string.IsNullOrEmpty(store.Image?.FileId) ? Text.Undefined : Text.Defined],
             localizer[string.IsNullOrEmpty(store.Contact?.Phone) ? Text.Undefined : Text.Defined],
             localizer[string.IsNullOrEmpty(store.Contact?.Email) ? Text.Undefined : Text.Defined],
-            localizer[string.IsNullOrEmpty(store.Channel) ? Text.Undefined : Text.Defined]
-            ];
+            localizer[string.IsNullOrEmpty(store.Website) ? Text.Undefined : Text.Defined],
+            localizer[string.IsNullOrEmpty(store.MiniAppUrl) ? Text.Undefined : Text.Defined],
+            localizer[string.IsNullOrEmpty(store.Channel) ? Text.Undefined : Text.Defined]];
 
         var text = string.Concat(actionMessage, companyInfo, localizer[Text.SelectSettings]);
 
@@ -180,8 +183,33 @@ public partial class BotUpdateHandler
         });
     }
 
-    private Task SendEmployeesListAsync(ITelegramBotClient botClient, Message message, CancellationToken cancellationToken)
+    private async Task SendEmployeesListAsync(ITelegramBotClient botClient, Message message, CancellationToken cancellationToken)
     {
-        throw new NotImplementedException();
+        var customers = appDbContext.Users
+            .Include(u => u.Contact)
+            .Where(u => u.Role.Equals(Roles.Seller));
+
+        StringBuilder text = new();
+
+        foreach (var customer in customers)
+            text.Append($"_{customer.GetFullName()}_ \\{customer.Contact.Phone}\n");
+
+        var xabar = string.IsNullOrEmpty(text.ToString()) ? "Xodimlar mavjud emas mavjud emas" : text.ToString();
+
+        InlineKeyboardMarkup keyboard = new(new InlineKeyboardButton[][]
+        {
+            [InlineKeyboardButton.WithCallbackData(localizer[Text.Back], CallbackData.Back)]
+        });
+
+        await botClient.EditMessageTextAsync(
+            chatId: message.Chat.Id,
+            messageId: message.MessageId,
+            text: xabar,
+            parseMode: ParseMode.MarkdownV2,
+            replyMarkup: keyboard,
+            cancellationToken: cancellationToken);
+
+        user.MessageId = message.MessageId;
+        user.State = States.EmployeesList;
     }
 }

@@ -50,6 +50,7 @@ public partial class BotUpdateHandler
                 States.WaitingForSelectUserMenu => HandleSelectedUserMenuAsync(botClient, callbackQuery, cancellationToken),
                 States.WaitingForSelectTransaction => HandleSelectedCashbackTransferAsync(botClient, callbackQuery, cancellationToken),
                 States.WaitingForConfirmation => HandleConfirmationAsync(botClient, callbackQuery, cancellationToken),
+                States.WaitingForSendCompanyImage => HandleSelectedCompanyImageAsync(botClient, callbackQuery, cancellationToken),
                 _ => HandleUnknownCallbackQueryAsync(botClient, callbackQuery, cancellationToken),
             };
 
@@ -104,8 +105,8 @@ public partial class BotUpdateHandler
             States.WaitingForSelectTransaction => SendUserManagerMenuAsync(botClient, message, cancellationToken),
             States.WaitingForSendSalesAmount => SendTransactionAsync(botClient, message, cancellationToken),
             States.WaitingForSendProductPrice => SendTransactionAsync(botClient, message, cancellationToken),
-            States.CheckingCustomerList => SendSellerMenuAsync(botClient, message, cancellationToken),
-            States.WaitingForSendBotPic => SendMenuCompanyInfoAsync(botClient, message, cancellationToken),
+            States.CustomersList => SendSellerMenuAsync(botClient, message, cancellationToken),
+            States.WaitingForSendCompanyImage => SendMenuCompanyInfoAsync(botClient, message, cancellationToken),
             States.WaitingForSendName => SendMenuCompanyInfoAsync(botClient, message, cancellationToken),
             States.WaitingForSendDescription => SendMenuCompanyInfoAsync(botClient, message, cancellationToken),
             States.WaitingForSendMiniAppUrl => SendMenuCompanyInfoAsync(botClient, message, cancellationToken),
@@ -113,6 +114,7 @@ public partial class BotUpdateHandler
             States.WaitingForSendCompanyEmail => SendMenuCompanyInfoAsync(botClient, message, cancellationToken),
             States.WaitingForSendCompanyPhoneNumber => SendMenuCompanyInfoAsync(botClient, message, cancellationToken),
             States.WaitingForSendChannel => SendMenuCompanyInfoAsync(botClient, message, cancellationToken),
+            States.EmployeesList => SendAdminMenuAsync(botClient, message, cancellationToken),
             _ => HandleUnknownMessageAsync(botClient, message, cancellationToken),
         };
 

@@ -209,6 +209,11 @@ public partial class BotUpdateHandler
             chatAction: ChatAction.Typing,
             cancellationToken: cancellationToken);
 
+        await botClient.DeleteMessageAsync(
+            chatId: message.Chat.Id,
+            messageId: message.MessageId,
+            cancellationToken: cancellationToken);
+
         ReplyKeyboardMarkup keyboard = new(new KeyboardButton[][]
         {
             [new(localizer[Text.Back])]
@@ -222,11 +227,6 @@ public partial class BotUpdateHandler
             chatId: message.Chat.Id,
             text: localizer[Text.AskMessage],
             replyMarkup: keyboard,
-            cancellationToken: cancellationToken);
-
-        await botClient.DeleteMessageAsync(
-            chatId: message.Chat.Id,
-            messageId: message.MessageId,
             cancellationToken: cancellationToken);
 
         user.MessageId = sentMessage.MessageId;

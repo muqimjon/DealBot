@@ -206,6 +206,6 @@ public partial class BotUpdateHandler
             cancellationToken: cancellationToken);
 
         user.MessageId = message.MessageId;
-        user.State = States.CheckingCustomerList;
+        user.State = States.CustomersList;
     }
 }

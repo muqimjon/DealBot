@@ -55,4 +55,5 @@ public class CallbackData
     public const string Website = nameof(Website);
     public const string Channel = nameof(Channel);
     public const string Company = nameof(Company);
+    public const string Delete = nameof(Delete);
 }

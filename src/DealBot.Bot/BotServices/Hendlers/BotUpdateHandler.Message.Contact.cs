@@ -2,6 +2,7 @@
 
 using DealBot.Bot.Resources;
 using DealBot.Domain.Enums;
+using Microsoft.EntityFrameworkCore;
 using Telegram.Bot;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
@@ -11,12 +12,12 @@ public partial class BotUpdateHandler
 {
     private async Task HandleContactMessageAsync(ITelegramBotClient botClient, Message message, CancellationToken cancellationToken)
     {
-        ArgumentNullException.ThrowIfNull(message);
         logger.LogInformation("Received Contact message query from {FirstName}", user.FirstName);
 
         var handler = user.State switch
         {
             States.WaitingForSendPhoneNumber => HandleSentPhoneNumberAsync(botClient, message, cancellationToken),
+            States.WaitingForSendCompanyPhoneNumber => HandleCompanyPhoneNumberAsync(botClient, message, cancellationToken),
             _ => HandleUnknownMessageAsync(botClient, message, cancellationToken)
         };
 
@@ -59,26 +60,76 @@ public partial class BotUpdateHandler
     {
         ArgumentNullException.ThrowIfNull(message.Contact);
 
-        try
-        {
-            await botClient.DeleteMessageAsync(
-                chatId: message.Chat.Id,
-                messageId: user.MessageId,
-                cancellationToken: cancellationToken);
-        }
-        catch { }
-
-        try
-        {
-            await botClient.DeleteMessageAsync(
-                chatId: message.Chat.Id,
-                messageId: message.MessageId,
-                cancellationToken: cancellationToken);
-        }
-        catch { }
-
+        var actionMessage = localizer[string.IsNullOrEmpty(user.Contact.Phone) ? Text.SetSucceeded : Text.UpdateSucceeded];
         user.Contact.Phone = message.Contact.PhoneNumber;
 
-        await SendCustomerMenuAsync(botClient, message, cancellationToken);
+        await SendCustomerMenuAsync(botClient, message, cancellationToken, actionMessage);
+    }
+
+    private async Task SendRequestForPhoneNumberAsync(ITelegramBotClient botClient, Message message, CancellationToken cancellationToken)
+    {
+        await botClient.SendChatActionAsync(
+            chatId: message.Chat.Id,
+            chatAction: ChatAction.Typing,
+            cancellationToken: cancellationToken);
+
+        ReplyKeyboardMarkup keyboard = new(new KeyboardButton[][]
+        {
+            [new(localizer[Text.SendContact]){ RequestContact = true}],
+            [new(localizer[Text.Back])]
+        })
+        {
+            ResizeKeyboard = true,
+            InputFieldPlaceholder = localizer[Text.AskPhoneNumberInPlaceHolder],
+        };
+
+        var store = await appDbContext.Stores
+            .OrderByDescending(s => s.CreatedAt)
+            .Include(s => s.Contact)
+            .FirstOrDefaultAsync(cancellationToken);
+
+        if (store is null)
+        {
+            await SendMenuCompanyInfoAsync(botClient, message, cancellationToken, localizer[Text.Error]);
+            return;
+        }
+
+        store.Contact ??= new();
+        var phone = string.IsNullOrEmpty(store.Contact.Phone) ? Text.Undefined : store.Contact.Phone;
+
+        var sentMessage = await botClient.SendTextMessageAsync(
+            chatId: message.Chat.Id,
+            text: localizer[Text.AskPhoneNumber, phone],
+            replyMarkup: keyboard,
+            cancellationToken: cancellationToken);
+
+        await botClient.DeleteMessageAsync(
+            chatId: message.Chat.Id,
+            messageId: message.MessageId,
+            cancellationToken: cancellationToken);
+
+        user.MessageId = sentMessage.MessageId;
+        user.State = States.WaitingForSendCompanyPhoneNumber;
+    }
+
+    // TO DO need Validation
+    private async Task HandleCompanyPhoneNumberAsync(ITelegramBotClient botClient, Message message, CancellationToken cancellationToken)
+    {
+        ArgumentNullException.ThrowIfNull(message.Contact);
+
+        var store = await appDbContext.Stores
+            .Include(s => s.Contact)
+            .FirstOrDefaultAsync(cancellationToken);
+
+        if (store is null)
+        {
+            await SendMenuCompanyInfoAsync(botClient, message, cancellationToken, localizer[Text.Error]);
+            return;
+        }
+
+        var actionMessage = localizer[string.IsNullOrEmpty(store.Contact.Phone) ? Text.SetSucceeded : Text.UpdateSucceeded];
+        store.Contact.Phone = message.Contact.PhoneNumber;
+
+        await SendMenuCompanyInfoAsync(botClient, message, cancellationToken, actionMessage);
     }
 }

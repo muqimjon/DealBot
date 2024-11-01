@@ -21,11 +21,15 @@ public class AssetConfiguration : IEntityTypeConfiguration<Asset>
     {
         builder.Property(a => a.FileName)
                .IsRequired()
-               .HasMaxLength(60);
+               .HasMaxLength(100);
 
         builder.Property(a => a.FilePath)
                .IsRequired()
-               .HasMaxLength(80);
+               .HasMaxLength(150);
+
+        builder.Property(a => a.FileId)
+               .IsRequired(false)
+               .HasMaxLength(100);
     }
 }
 

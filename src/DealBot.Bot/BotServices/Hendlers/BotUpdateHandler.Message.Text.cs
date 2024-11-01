@@ -41,7 +41,6 @@ public partial class BotUpdateHandler
             States.WaitingForSendDescription => HandleDesctiptionAsync(botClient, message, cancellationToken),
             States.WaitingForSendMiniAppUrl => HandleMiniAppUrlAsync(botClient, message, cancellationToken),
             States.WaitingForSendWebsite => HandleWebsiteAsync(botClient, message, cancellationToken),
-            States.WaitingForSendCompanyPhoneNumber => HandleCompanyPhoneNumberAsync(botClient, message, cancellationToken),
             States.WaitingForSendCompanyEmail => HandleCompanyEmailAsync(botClient, message, cancellationToken),
             States.WaitingForSendChannel => HandleChannelAsync(botClient, message, cancellationToken),
             _ => HandleUnknownMessageAsync(botClient, message, cancellationToken)

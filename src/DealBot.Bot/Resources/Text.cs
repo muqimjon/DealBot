@@ -111,22 +111,20 @@ public class Text
     public const string Cashback = nameof(Cashback);
     public const string Roles = nameof(Roles);
     public const string Error = nameof(Error);
-    public const string MiniAppUrlUpdated = nameof(MiniAppUrlUpdated);
-    public const string DescriptionUpdated = nameof(DescriptionUpdated);
-    public const string NameUpdated = nameof(NameUpdated);
     public const string AskDescriptionInPlaceHolder = nameof(AskDescriptionInPlaceHolder);
     public const string AskMiniAppUrl = nameof(AskMiniAppUrl);
     public const string AskMiniAppUrlInPlaceHolder = nameof(AskMiniAppUrlInPlaceHolder);
     public const string AskWebsite = nameof(AskWebsite);
     public const string AskWebsiteInPlaceHolder = nameof(AskWebsiteInPlaceHolder);
     public const string Undefined = nameof(Undefined);
-    public const string EmailUpdated = nameof(EmailUpdated);
-    public const string PhoneNumberUpdated = nameof(PhoneNumberUpdated);
-    public const string WebsiteUpdated = nameof(WebsiteUpdated);
     public const string Channel = nameof(Channel);
     public const string Defined = nameof(Defined);
     public const string Company = nameof(Company);
     public const string AskChannelInPlaceHolder = nameof(AskChannelInPlaceHolder);
     public const string AskChannel = nameof(AskChannel);
-    public const string ChannelUpdated = nameof(ChannelUpdated);
+    public const string AskPhotoInPlaceHolder = nameof(AskPhoneNumberInPlaceHolder);
+    public const string Delete = nameof(Delete);
+    public const string DeleteSucceeded = nameof(DeleteSucceeded);
+    public const string SetSucceeded = nameof(SetSucceeded);
+    public const string UpdateSucceeded = nameof(UpdateSucceeded);
 }

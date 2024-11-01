@@ -9,7 +9,6 @@ using Telegram.Bot.Types.ReplyMarkups;
 
 public partial class BotUpdateHandler
 {
-
     private async Task SendRequestFirstNameAsync(ITelegramBotClient botClient, Message message, CancellationToken cancellationToken)
     {
         await botClient.SendChatActionAsync(
@@ -41,9 +40,9 @@ public partial class BotUpdateHandler
         user.State = States.WaitingForSendFirstName;
     }
 
+    // TO DO Need validation
     private async Task HandleFirstNameAsync(ITelegramBotClient botClient, Message message, CancellationToken cancellationToken)
     {
-        // TO DO Need validation
         user.FirstName = message.Text!;
         await SendMenuPersonalInfoAsync(botClient, message, cancellationToken);
     }
@@ -79,9 +78,9 @@ public partial class BotUpdateHandler
         user.State = States.WaitingForSendLastName;
     }
 
+    // TO DO Need validation
     private async Task HandleLastNameAsync(ITelegramBotClient botClient, Message message, CancellationToken cancellationToken)
     {
-        // TO DO Need validation
         user.LastName = message.Text!;
         await SendMenuPersonalInfoAsync(botClient, message, cancellationToken);
     }
@@ -117,9 +116,9 @@ public partial class BotUpdateHandler
         user.State = States.WaitingForSendEmail;
     }
 
+    // TO DO Need validation
     private async Task HandleEmailAsync(ITelegramBotClient botClient, Message message, CancellationToken cancellationToken)
     {
-        // TO DO Need validation
         user.Contact.Email = message.Text;
         await SendMenuPersonalInfoAsync(botClient, message, cancellationToken);
     }

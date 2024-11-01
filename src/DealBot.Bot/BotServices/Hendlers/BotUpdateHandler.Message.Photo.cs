@@ -2,6 +2,9 @@
 
 using DealBot.Bot.Resources;
 using DealBot.Domain.Enums;
+using Microsoft.EntityFrameworkCore;
+using System;
+using System.IO;
 using Telegram.Bot;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
@@ -11,12 +14,14 @@ public partial class BotUpdateHandler
 {
     private async Task HandlePhotoMessageAsync(ITelegramBotClient botClient, Message message, CancellationToken cancellationToken)
     {
+        logger.LogInformation("Received Photo message from {FirstName}", user.FirstName);
+
         if (message is null || message.Photo is null)
             return;
 
         var handler = user.State switch
         {
-            States.WaitingForSendBotPic => HandleBotPicAsync(botClient, message, cancellationToken),
+            States.WaitingForSendCompanyImage => HandleBotPicAsync(botClient, message, cancellationToken),
             _ => HandleUnknownMessageAsync(botClient, message, cancellationToken)
         };
 
@@ -28,24 +33,7 @@ public partial class BotUpdateHandler
     {
         await botClient.SendChatActionAsync(
             chatId: message.Chat.Id,
-            chatAction: ChatAction.Typing,
-            cancellationToken: cancellationToken);
-
-        ReplyKeyboardMarkup keyboard = new(new KeyboardButton[][]
-        {
-            [new(localizer[Text.Back])]
-        })
-        {
-            ResizeKeyboard = true,
-            InputFieldPlaceholder = localizer[Text.ActionNotAvailable],
-        };
-
-        var bot = await botClient.GetMeAsync(cancellationToken);
-
-        var sentMessage = await botClient.SendTextMessageAsync(
-            chatId: message.Chat.Id,
-            text: localizer[Text.AskPhoto],
-            replyMarkup: keyboard,
+            chatAction: ChatAction.UploadPhoto,
             cancellationToken: cancellationToken);
 
         await botClient.DeleteMessageAsync(
@@ -53,30 +41,100 @@ public partial class BotUpdateHandler
             messageId: message.MessageId,
             cancellationToken: cancellationToken);
 
-        user.MessageId = sentMessage.MessageId;
-        user.State = States.WaitingForSendBotPic;
+        var store = await appDbContext.Stores
+            .OrderByDescending(s => s.CreatedAt)
+            .Include(s => s.Image)
+            .FirstOrDefaultAsync(cancellationToken);
+
+        if (store is null)
+        {
+            await SendMenuCompanyInfoAsync(botClient, message, cancellationToken, localizer[Text.Error]);
+            return;
+        }
+
+        if (store.Image is null)
+            await appDbContext.Assets.AddAsync(store.Image = new()
+            {
+                FilePath = "https://b1547017.smushcdn.com/1547017/wp-content/uploads/2022/05/seo-16x9-1.jpg?lossy=1&strip=1&webp=1",
+                FileName = "StoreImage",
+            }, cancellationToken);
+
+        Stream stream;
+        bool isExist;
+        try
+        {
+            var file = await botClient.GetFileAsync(store.Image.FileId!, cancellationToken);
+            stream = new MemoryStream();
+            await botClient.DownloadFileAsync(file.FilePath!, stream, cancellationToken);
+            stream.Position = 0;
+            isExist = true;
+        }
+        catch
+        {
+            using HttpClient httpClient = new();
+            var imageBytes = await httpClient.GetByteArrayAsync(store.Image.FilePath, cancellationToken);
+            stream = new MemoryStream(imageBytes);
+            isExist = false;
+        }
+
+        InlineKeyboardMarkup keyboard = new(new[]
+        {
+            isExist
+                ? [InlineKeyboardButton.WithCallbackData(localizer[Text.Delete], CallbackData.Delete)]
+                : Array.Empty<InlineKeyboardButton>(),
+            [InlineKeyboardButton.WithCallbackData(localizer[Text.Back], CallbackData.Back)]
+        });
+
+        await using (stream)
+        {
+            var sentMessage = await botClient.SendPhotoAsync(
+                chatId: message.Chat.Id,
+                photo: InputFile.FromStream(stream),
+                caption: localizer[Text.AskPhoto],
+                replyMarkup: keyboard,
+                cancellationToken: cancellationToken);
+
+            user.MessageId = sentMessage.MessageId;
+            user.State = States.WaitingForSendCompanyImage;
+        }
     }
 
     private async Task HandleBotPicAsync(ITelegramBotClient botClient, Message message, CancellationToken cancellationToken)
     {
-        //var photo = message.Photo?.LastOrDefault();
-        //if (photo is not null)
-        //{
-        //    var file = await botClient.GetFileAsync(photo.FileId, cancellationToken);
-        //    using var fileStream = new FileStream(file.FilePath!, FileMode.Open, FileAccess.Read);
+        ArgumentNullException.ThrowIfNull(message.Photo, nameof(message));
 
-        //    await botClient.SetChatPhotoAsync(
-        //        chatId: message.Chat.Id,
-        //        photo: new InputFileStream(fileStream),
-        //        cancellationToken: cancellationToken);
-        //}
+        var store = await appDbContext.Stores
+            .OrderByDescending(s => s.CreatedAt)
+            .Include(s => s.Image)
+            .FirstOrDefaultAsync(cancellationToken);
 
-        await botClient.DeleteMessageAsync(
-            chatId: message.Chat.Id,
-            messageId: message.MessageId,
-            cancellationToken: cancellationToken);
+        if (store is null)
+        {
+            await SendMenuCompanyInfoAsync(botClient, message, cancellationToken, localizer[Text.Error]);
+            return;
+        }
 
-        await SendMenuCompanyInfoAsync(botClient, message, cancellationToken);
+        store.Image.FileId = message.Photo.Last().FileId;
+        var actionMessage = localizer[string.IsNullOrEmpty(store.Image.FileId) ? Text.SetSucceeded : Text.UpdateSucceeded];
+        await SendMenuCompanyInfoAsync(botClient, message, cancellationToken, actionMessage);
     }
 
+    private async Task HandleSelectedCompanyImageAsync(ITelegramBotClient botClient, CallbackQuery callbackQuery, CancellationToken cancellationToken)
+    {
+        ArgumentNullException.ThrowIfNull(callbackQuery.Message, nameof(callbackQuery));
+
+        var store = await appDbContext.Stores
+            .OrderByDescending(s => s.CreatedAt)
+            .Include(s => s.Image)
+            .FirstOrDefaultAsync(cancellationToken);
+
+        if (store is null)
+        {
+            await SendMenuCompanyInfoAsync(botClient, callbackQuery.Message, cancellationToken, localizer[Text.Error]);
+            return;
+        }
+
+        store.Image.FileId = Text.Empty;
+        await SendMenuCompanyInfoAsync(botClient, callbackQuery.Message, cancellationToken, localizer[Text.DeleteSucceeded]);
+    }
 }
