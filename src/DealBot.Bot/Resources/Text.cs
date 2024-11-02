@@ -127,4 +127,9 @@ public class Text
     public const string DeleteSucceeded = nameof(DeleteSucceeded);
     public const string SetSucceeded = nameof(SetSucceeded);
     public const string UpdateSucceeded = nameof(UpdateSucceeded);
+    public const string NotFound = nameof(NotFound);
+    public const string CashbackInfo = nameof(CashbackInfo);
+    public const string Premium = nameof(Premium);
+    public const string Simple = nameof(Simple);
+    public const string CashbackChanged = nameof(CashbackChanged);
 }

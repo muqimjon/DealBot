@@ -56,4 +56,8 @@ public class CallbackData
     public const string Channel = nameof(Channel);
     public const string Company = nameof(Company);
     public const string Delete = nameof(Delete);
+    public const string Simple = nameof(Simple);
+    public const string Premium = nameof(Premium);
+    public const string Next2 = nameof(Next2);
+    public const string Previous2 = nameof(Previous2);
 }

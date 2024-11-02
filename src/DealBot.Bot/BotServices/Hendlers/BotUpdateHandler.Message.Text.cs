@@ -12,13 +12,13 @@ public partial class BotUpdateHandler
         if (message is null || message.Text is null)
             return;
 
-        if (message.Text.Equals(localizer[Text.Back]))
+        if (message.Text == localizer[Text.Back])
         {
             await NavigateToPreviousPageAsync(botClient, message, cancellationToken);
             return;
         }
 
-        var userState = message.Text.Equals("/start") && !user.State.Equals(States.None) ? States.Restart : user.State;
+        var userState = message.Text == "/start" && user.State != States.None ? States.Restart : user.State;
 
         var handler = userState switch
         {

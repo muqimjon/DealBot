@@ -43,8 +43,11 @@ public partial class BotUpdateHandler
     // TO DO Need validation
     private async Task HandleFirstNameAsync(ITelegramBotClient botClient, Message message, CancellationToken cancellationToken)
     {
-        user.FirstName = message.Text!;
-        await SendMenuPersonalInfoAsync(botClient, message, cancellationToken);
+        ArgumentNullException.ThrowIfNull(message.Text, nameof(message));
+
+        var actionMessage = localizer[string.IsNullOrEmpty(user.FirstName) ? Text.SetSucceeded : Text.UpdateSucceeded];
+        user.FirstName = message.Text;
+        await SendMenuPersonalInfoAsync(botClient, message, cancellationToken, actionMessage);
     }
 
     private async Task SendRequestLastNameAsync(ITelegramBotClient botClient, Message message, CancellationToken cancellationToken)
@@ -81,8 +84,11 @@ public partial class BotUpdateHandler
     // TO DO Need validation
     private async Task HandleLastNameAsync(ITelegramBotClient botClient, Message message, CancellationToken cancellationToken)
     {
-        user.LastName = message.Text!;
-        await SendMenuPersonalInfoAsync(botClient, message, cancellationToken);
+        ArgumentNullException.ThrowIfNull(message.Text, nameof(message));
+
+        var actionMessage = localizer[string.IsNullOrEmpty(user.FirstName) ? Text.SetSucceeded : Text.UpdateSucceeded];
+        user.LastName = message.Text;
+        await SendMenuPersonalInfoAsync(botClient, message, cancellationToken, actionMessage);
     }
 
     private async Task SendRequestEmailAsync(ITelegramBotClient botClient, Message message, CancellationToken cancellationToken)
@@ -119,7 +125,8 @@ public partial class BotUpdateHandler
     // TO DO Need validation
     private async Task HandleEmailAsync(ITelegramBotClient botClient, Message message, CancellationToken cancellationToken)
     {
+        var actionMessage = localizer[string.IsNullOrEmpty(user.FirstName) ? Text.SetSucceeded : Text.UpdateSucceeded];
         user.Contact.Email = message.Text;
-        await SendMenuPersonalInfoAsync(botClient, message, cancellationToken);
+        await SendMenuPersonalInfoAsync(botClient, message, cancellationToken, actionMessage);
     }
 }

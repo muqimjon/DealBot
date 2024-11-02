@@ -15,7 +15,7 @@ public partial class BotUpdateHandler
     {
         var store = await appDbContext.Stores
             .OrderByDescending(s => s.Id)
-            .LastOrDefaultAsync(cancellationToken);
+            .LastAsync(cancellationToken);
 
         var miniAppUrl = string.IsNullOrEmpty(store.MiniAppUrl) ? "https://notfound.com" : store.MiniAppUrl;
 

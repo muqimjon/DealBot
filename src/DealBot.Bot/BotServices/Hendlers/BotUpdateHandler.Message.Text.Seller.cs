@@ -60,7 +60,7 @@ public partial class BotUpdateHandler
 
         if (customer is null)
         {
-            await SendSellerMenuAsync(botClient, message, cancellationToken);
+            await SendSellerMenuAsync(botClient, message, cancellationToken, localizer[Text.NotFound]);
             return;
         }
 
@@ -177,13 +177,17 @@ public partial class BotUpdateHandler
                 .Include(c => c.Card)
                 .FirstAsync(c => c.Id.Equals(user.PlaceId), cancellationToken);
 
-            customer.Card ??= new();
-            customer.Card.Ballance += price * customer.Card.Type switch
-            {
-                CardTypes.Simple => 0.02m,
-                CardTypes.Premium => 0.4m,
-                _ => 0,
-            };
+            if (customer.Card is null)
+                await appDbContext.Cards.AddAsync(customer.Card = new(), cancellationToken);
+
+            var cashbackSettings = await appDbContext.CashbackSettings
+                .OrderByDescending(cs => cs.Id)
+                .FirstOrDefaultAsync(cs => cs.Type == user.Card.Type && cs.IsActive, cancellationToken);
+
+            if (cashbackSettings is null)
+                await appDbContext.CashbackSettings.AddAsync(cashbackSettings = new() { IsActive = true }, cancellationToken);
+
+            customer.Card.Ballance += price *= cashbackSettings.Percentage;
 
             var transaction = await appDbContext.Transactions.AddAsync(new()
             {
@@ -194,11 +198,10 @@ public partial class BotUpdateHandler
                 Status = CashBackStatus.Completed,
                 CustomerId = customer.Id,
                 SellerId = user.Id,
-            });
+            }, cancellationToken);
         }
 
         var text = localizer[Text.TransactionSucceeded];
-
         await SendUserManagerMenuAsync(botClient, message, cancellationToken, text);
     }
 
@@ -240,6 +243,11 @@ public partial class BotUpdateHandler
             chatAction: ChatAction.Typing,
             cancellationToken: cancellationToken);
 
-        await SendSellerSettingsAsync(botClient, message, cancellationToken, localizer[Text.MessageSent]);
+        await (user.Role switch
+        {
+            Roles.Seller => SendSellerSettingsAsync(botClient, message, cancellationToken, localizer[Text.MessageSent]),
+            Roles.Admin => SendAdminSettingsAsync(botClient, message, cancellationToken, localizer[Text.MessageSent]),
+            _ => default!
+        });
     }
 }

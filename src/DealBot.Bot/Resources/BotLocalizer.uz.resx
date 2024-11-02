@@ -193,6 +193,9 @@ Iltimos, davom ettirish uchun kanalga a'zo bo'ling!</value>
   <data name="AskMessageInPlaceHolder" xml:space="preserve">
     <value>Xabar matnini yozing...</value>
   </data>
+  <data name="AskMiniAppUrl" xml:space="preserve">
+    <value>Mini app havolasi</value>
+  </data>
   <data name="AskMiniAppUrlInPlaceHolder" xml:space="preserve">
     <value>Mini app havolasini kiriting...</value>
   </data>
@@ -246,6 +249,17 @@ Holati: {2}</value>
   </data>
   <data name="Cashback" xml:space="preserve">
     <value>💸 Keshbek</value>
+  </data>
+  <data name="CashbackChanged" xml:space="preserve">
+    <value>Turi: {0}
+Joriy:   {1}
+Yangi: {2}</value>
+  </data>
+  <data name="CashbackInfo" xml:space="preserve">
+    <value>Keshbek ma'lumoti:
+
+Oddiy: {0}
+Premium: {1}</value>
   </data>
   <data name="ChangeLanguage" xml:space="preserve">
     <value>🌐 Tilni o'zgartirish</value>
@@ -395,6 +409,9 @@ Email: {5}</value>
   <data name="Next" xml:space="preserve">
     <value>Keyin ⇒</value>
   </data>
+  <data name="NotFound" xml:space="preserve">
+    <value>🔍 Ma'lumot topilmadi...</value>
+  </data>
   <data name="OrderOnTheSite" xml:space="preserve">
     <value>🛍 Sayt orqali buyurtma berish</value>
   </data>
@@ -411,7 +428,8 @@ Email: {5}</value>
     <value>⇐ Oldin</value>
   </data>
   <data name="ReceiveComment" xml:space="preserve">
-    <value>Izohingizni albatta ko'rib chiqamiz. E'tibor uchun rahmat!
+    <value>📬 Izohingizni qabul qildik. E'tibor uchun rahmat!
+
 </value>
   </data>
   <data name="Referral" xml:space="preserve">

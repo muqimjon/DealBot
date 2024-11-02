@@ -42,15 +42,6 @@ public partial class BotUpdateHandler
 
     private async Task HandleCommentMessageAsync(ITelegramBotClient botClient, Message message, CancellationToken cancellationToken)
     {
-        try
-        {
-            await botClient.DeleteMessageAsync(
-                chatId: message.Chat.Id,
-                messageId: user.MessageId,
-                cancellationToken: cancellationToken);
-        }
-        catch { }
-
         await SendCustomerMenuAsync(botClient, message, cancellationToken, localizer[Text.ReceiveComment]);
     }
 }

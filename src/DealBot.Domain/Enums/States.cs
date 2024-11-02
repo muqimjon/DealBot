@@ -47,4 +47,7 @@ public enum States
     WaitingForSendWebsite,
     WaitingForSendChannel,
     EmployeesList,
+    WaitingForSelectCardType,
+    WaitingForSelectCashbackQuantityPremium,
+    WaitingForSelectCashbackQuantitySimple,
 }

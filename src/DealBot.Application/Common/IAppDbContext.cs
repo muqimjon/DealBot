@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 public interface IAppDbContext
 {
     DbSet<User> Users { get; }
+    DbSet<Card> Cards { get; }
     DbSet<Address> Addresses { get; }
     DbSet<Contact> Contacts { get; }
     DbSet<Asset> Assets { get; }
