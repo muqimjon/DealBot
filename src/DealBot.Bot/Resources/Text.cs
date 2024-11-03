@@ -135,4 +135,7 @@ public class Text
     public const string AdminMenuPersonalInfo = nameof(AdminMenuPersonalInfo);
     public const string CustomerManager = nameof(CustomerManager);
     public const string SellerMenuPersonalInfo = nameof(SellerMenuPersonalInfo);
+    public const string AskRole = nameof(AskRole);
+    public const string Seller = nameof(Seller);
+    public const string Customer = nameof(Customer);
 }

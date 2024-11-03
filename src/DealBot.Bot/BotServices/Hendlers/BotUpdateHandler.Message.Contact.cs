@@ -25,12 +25,15 @@ public partial class BotUpdateHandler
         catch (Exception ex) { logger.LogError(ex, "Error handling message from {FirstName}", user.FirstName); }
     }
 
-    private async Task SendRequestPhoneNumberAsync(ITelegramBotClient botClient, Message message, CancellationToken cancellationToken, Domain.Entities.User value)
+
+    private async Task SendRequestPhoneNumberAsync(ITelegramBotClient botClient, Message message, CancellationToken cancellationToken, Domain.Entities.User value = default!)
     {
         await botClient.SendChatActionAsync(
             chatId: message.Chat.Id,
             chatAction: ChatAction.Typing,
             cancellationToken: cancellationToken);
+
+        value ??= user;
 
         ReplyKeyboardMarkup keyboard = new(new KeyboardButton[][]
         {
@@ -43,7 +46,7 @@ public partial class BotUpdateHandler
 
         var sentMessage = await botClient.SendTextMessageAsync(
             chatId: message.Chat.Id,
-            text: localizer[Text.AskPhoneNumber],
+            text: localizer[Text.AskPhoneNumber, value.Contact.Phone!],
             replyMarkup: keyboard,
             cancellationToken: cancellationToken);
 
@@ -60,13 +63,27 @@ public partial class BotUpdateHandler
     {
         ArgumentNullException.ThrowIfNull(message.Contact);
 
-        var actionMessage = localizer[string.IsNullOrEmpty(user.Contact.Phone) ? Text.SetSucceeded : Text.UpdateSucceeded];
-        user.Contact.Phone = message.Contact.PhoneNumber;
+        var value = user;
+        if (user.PlaceId != 0 && (value = await appDbContext.Users
+            .Include(u => u.Contact)
+            .FirstOrDefaultAsync(u => u.Id == user.PlaceId, cancellationToken)) is null)
+        {
+            await SendAdminMenuAsync(botClient, message, cancellationToken, localizer[Text.Error]);
+            return;
+        }
+
+        if (user.Contact is null)
+            await appDbContext.Contacts.AddAsync(user.Contact = new(), cancellationToken);
+
+
+        var actionMessage = localizer[string.IsNullOrEmpty(value.Contact.Phone) ? Text.SetSucceeded : Text.UpdateSucceeded];
+        value.Contact.Phone = message.Contact.PhoneNumber;
 
         await SendCustomerMenuAsync(botClient, message, cancellationToken, actionMessage);
     }
 
-    private async Task SendRequestForPhoneNumberAsync(ITelegramBotClient botClient, Message message, CancellationToken cancellationToken)
+
+    private async Task SendRequestCompanyPhoneNumberAsync(ITelegramBotClient botClient, Message message, CancellationToken cancellationToken)
     {
         await botClient.SendChatActionAsync(
             chatId: message.Chat.Id,

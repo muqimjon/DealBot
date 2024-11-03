@@ -60,4 +60,6 @@ public class CallbackData
     public const string Premium = nameof(Premium);
     public const string Next2 = nameof(Next2);
     public const string Previous2 = nameof(Previous2);
+    public const string Seller = nameof(Seller);
+    public const string Customer = nameof(Customer);
 }

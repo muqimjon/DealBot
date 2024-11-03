@@ -132,14 +132,16 @@ public partial class BotUpdateHandler
         user.State = States.WaitingForSelectUserInfo;
     }
 
-    private async Task HandleSelectedChangePersonalInfoAsync(ITelegramBotClient botClient, CallbackQuery callbackQuery, CancellationToken cancellationToken)
+    private async Task HandleSelectedUserInfoAsync(ITelegramBotClient botClient, CallbackQuery callbackQuery, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(callbackQuery.Message, nameof(Message));
 
         Domain.Entities.User? value = default!;
         if (user.PlaceId != 0)
         {
-            value = await appDbContext.Users.FirstOrDefaultAsync(u => u.Id == user.PlaceId, cancellationToken);
+            value = await appDbContext.Users
+                .Include(u => u.Contact)
+                .FirstOrDefaultAsync(u => u.Id == user.PlaceId, cancellationToken);
 
             if (value is null)
             {
@@ -201,54 +203,8 @@ public partial class BotUpdateHandler
             _ => Genders.Unknown,
         };
 
-        await SendMenuPersonalInfoAsync(botClient, callbackQuery.Message, cancellationToken);
+        await SendMenuPersonalInfoAsync(botClient, callbackQuery.Message, cancellationToken, localizer[Text.UpdateSucceeded]);
     }
-
-    private async Task SendAdminUserSettingsAsync(ITelegramBotClient botClient, Message message, CancellationToken cancellationToken, string actionMessage = Text.Empty)
-    {
-        var value = user;
-        if (user.PlaceId != 0)
-            if ((value = await appDbContext.Users.FirstOrDefaultAsync(u => u.Id == user.PlaceId, cancellationToken)) is null)
-            {
-                await SendAdminMenuAsync(botClient, message, cancellationToken, localizer[Text.Error]);
-                return;
-            }
-
-        InlineKeyboardMarkup keyboard = new(new InlineKeyboardButton[][]
-        {
-            [InlineKeyboardButton.WithCallbackData(localizer[Text.FirstName], CallbackData.FirstName),
-                InlineKeyboardButton.WithCallbackData(localizer[Text.LastName], CallbackData.LastName)],
-            [InlineKeyboardButton.WithCallbackData(localizer[Text.DateOfBirth], CallbackData.DateOfBirth),
-                InlineKeyboardButton.WithCallbackData(localizer[Text.Gender], CallbackData.Gender)],
-            [InlineKeyboardButton.WithCallbackData(localizer[Text.Role], CallbackData.Role)],
-            [InlineKeyboardButton.WithCallbackData(localizer[Text.Back], CallbackData.Back)],
-        });
-
-        var text = string.Concat(actionMessage,
-            localizer[
-                Text.AdminMenuPersonalInfo,
-                value.FirstName,
-                value.LastName,
-                value.DateOfBirth.ToString("yyyy-MM-dd"),
-                localizer[value.Gender.ToString()],
-                localizer[value.Role.ToString()]]);
-
-        var sentMessage = await EditOrSendMessageAsync(
-            botClient: botClient,
-            message: message,
-            text: text,
-            replyMarkup: keyboard,
-            cancellationToken: cancellationToken);
-
-        user.MessageId = sentMessage.MessageId;
-        user.State = States.WaitingForSelectUserInfo;
-    }
-
-    private Task SendRequestRoleAsync(ITelegramBotClient botClient, Message message, CancellationToken cancellationToken, Domain.Entities.User value = default!)
-    {
-        throw new NotImplementedException();
-    }
-
 
     private async Task SendSellerUserSettingsAsync(ITelegramBotClient botClient, Message message, CancellationToken cancellationToken, string actionMessage = Text.Empty)
     {

@@ -50,4 +50,5 @@ public enum States
     WaitingForSelectCardType,
     WaitingForSelectCashbackQuantityPremium,
     WaitingForSelectCashbackQuantitySimple,
+    WaitingForSelectRole,
 }

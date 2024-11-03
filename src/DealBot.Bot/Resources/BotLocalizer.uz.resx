@@ -234,6 +234,9 @@ Iltimos, davom ettirish uchun kanalga a'zo bo'ling!</value>
   <data name="AskProductPriceInPlaceHolder" xml:space="preserve">
     <value>Mahsulot narxini kiriting...</value>
   </data>
+  <data name="AskRole" xml:space="preserve">
+    <value>Rol: {0}</value>
+  </data>
   <data name="AskSalesAmountInPlaceHolder" xml:space="preserve">
     <value>Savdo summasini kiriting...</value>
   </data>
@@ -309,7 +312,7 @@ Kanal foydalanuvchi nomi: {7}
     <value>☎️ Biz bilan a'loqa</value>
   </data>
   <data name="Customer" xml:space="preserve">
-    <value>Mijoz</value>
+    <value>👤 Mijoz</value>
   </data>
   <data name="CustomerCardInfo" xml:space="preserve">
     <value>👤 {0}
@@ -331,7 +334,7 @@ Kanal foydalanuvchi nomi: {7}
     <value>Kun</value>
   </data>
   <data name="Defined" xml:space="preserve">
-    <value>✅</value>
+    <value>   ✅</value>
   </data>
   <data name="Delete" xml:space="preserve">
     <value>🗑️ O'chirish</value>
@@ -466,8 +469,8 @@ Email: {5}</value>
 
 </value>
   </data>
-  <data name="Roles" xml:space="preserve">
-    <value>🧑‍💼 Rollar</value>
+  <data name="Role" xml:space="preserve">
+    <value>🎖️ Rol</value>
   </data>
   <data name="SalesAmount" xml:space="preserve">
     <value>Savdo summasini kiriting</value>
@@ -485,7 +488,7 @@ Email: {5}</value>
     <value>Sozlamalar</value>
   </data>
   <data name="Seller" xml:space="preserve">
-    <value>Sotuvchi</value>
+    <value>👨‍💼 Ishchi</value>
   </data>
   <data name="SellerMenuPersonalInfo" xml:space="preserve">
     <value>Foydalanuvchi ma'lumotlari
@@ -573,7 +576,7 @@ Sana: {4}</value>
 </value>
   </data>
   <data name="Undefined" xml:space="preserve">
-    <value>🚫</value>
+    <value>  🚫</value>
   </data>
   <data name="UpdateSucceeded" xml:space="preserve">
     <value>✅ Muvaffaqiyatli yangilandi!

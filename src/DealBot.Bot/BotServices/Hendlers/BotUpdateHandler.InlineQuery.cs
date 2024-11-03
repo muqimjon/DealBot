@@ -1,5 +1,6 @@
 ﻿namespace DealBot.Bot.BotServices;
 
+using DealBot.Bot.Resources;
 using DealBot.Domain.Enums;
 using Microsoft.EntityFrameworkCore;
 using Telegram.Bot;
@@ -25,14 +26,19 @@ public partial class BotUpdateHandler
         if (inlineQuery.Query.Length < 3)
             return;
 
-        var users = appDbContext.Users
-            .Where(user => user.Contact.Phone != null
-                && user.Contact.Phone.Contains(inlineQuery.Query)
-                && user.Role.Equals(Roles.Customer))
+        var query = appDbContext.Users
             .Include(user => user.Contact)
             .Include(user => user.Image)
-            .Take(10)
-            .ToList();
+            .Where(u
+                => u.Contact != null
+                && u.Contact.Phone != null
+                && u.Contact.Phone.Contains(inlineQuery.Query));
+
+        var users = (user.Role switch
+        {
+            Roles.Admin => query.Where(u =>  u.Role == Roles.Seller || u.Role == Roles.Customer),
+            _ => query.Where(u => u.Role == Roles.Customer)
+        }).Take(10).ToList();
 
         var results = users.Select(user => new InlineQueryResultArticle(
             id: user.Id.ToString(),
@@ -41,9 +47,8 @@ public partial class BotUpdateHandler
             (user.Id.ToString()))
         {
             ThumbnailUrl = user.Image?.FilePath ?? "https://i.pinimg.com/736x/3b/73/48/3b73483fa5af06e3ba35f4f71e541e7a.jpg",
-            Description = user.Contact.Phone,
+            Description = user.Contact.Phone + (user.Role == Roles.Seller ? localizer[Text.Defined] : Text.Empty),
         }).ToArray();
-
 
         await botClient.AnswerInlineQueryAsync(
             inlineQueryId: inlineQuery.Id,

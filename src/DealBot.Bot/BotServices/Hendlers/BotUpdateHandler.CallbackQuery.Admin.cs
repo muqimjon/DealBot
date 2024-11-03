@@ -54,6 +54,7 @@ public partial class BotUpdateHandler
         });
     }
 
+
     private async Task SendAdminSettingsAsync(ITelegramBotClient botClient, Message message, CancellationToken cancellationToken, string actionMessage = Text.Empty)
     {
         InlineKeyboardMarkup keyboard = new(new InlineKeyboardButton[][]
@@ -94,6 +95,7 @@ public partial class BotUpdateHandler
             _ => HandleUnknownCallbackQueryAsync(botClient, callbackQuery, cancellationToken),
         });
     }
+
 
     private async Task SendCashbackSettingsAsync(ITelegramBotClient botClient, Message message, CancellationToken cancellationToken, string actionMessage = Text.Empty, CashbackSetting settings = default!)
     {
@@ -166,6 +168,7 @@ public partial class BotUpdateHandler
             _ => default!,
         });
     }
+
 
     private async Task SendRequestPremuimCashbackQuantityAsync(ITelegramBotClient botClient, Message message, CancellationToken cancellationToken, CashbackSetting template = default!)
     {
@@ -256,6 +259,7 @@ public partial class BotUpdateHandler
         await SendRequestPremuimCashbackQuantityAsync(botClient, callbackQuery.Message, cancellationToken, template);
     }
 
+
     private async Task SendRequestSimpleCashbackQuantityAsync(ITelegramBotClient botClient, Message message, CancellationToken cancellationToken, CashbackSetting template = default!)
     {
         var cashbackSettings = appDbContext.CashbackSettings.Where(cs => cs.Type == CardTypes.Simple);
@@ -344,6 +348,7 @@ public partial class BotUpdateHandler
         await SendRequestSimpleCashbackQuantityAsync(botClient, callbackQuery.Message, cancellationToken, template);
     }
 
+
     private async Task SendMenuCompanyInfoAsync(ITelegramBotClient botClient, Message message, CancellationToken cancellationToken, string actionMessage = Text.Empty)
     {
         Store store;
@@ -402,11 +407,12 @@ public partial class BotUpdateHandler
             CallbackData.MiniAppUrl => SendRequestForMiniAppUrlAsync(botClient, callbackQuery.Message, cancellationToken),
             CallbackData.Website => SendRequestForWebsiteAsync(botClient, callbackQuery.Message, cancellationToken),
             CallbackData.Channel => SendRequestForChannelAsync(botClient, callbackQuery.Message, cancellationToken),
-            CallbackData.PhoneNumber => SendRequestForPhoneNumberAsync(botClient, callbackQuery.Message, cancellationToken),
+            CallbackData.PhoneNumber => SendRequestCompanyPhoneNumberAsync(botClient, callbackQuery.Message, cancellationToken),
             CallbackData.Email => SendRequestForEmailAsync(botClient, callbackQuery.Message, cancellationToken),
             _ => default!,
         });
     }
+
 
     private async Task SendEmployeesListAsync(ITelegramBotClient botClient, Message message, CancellationToken cancellationToken)
     {
@@ -436,5 +442,98 @@ public partial class BotUpdateHandler
 
         user.MessageId = message.MessageId;
         user.State = States.EmployeesList;
+    }
+
+
+    private async Task SendRequestRoleAsync(ITelegramBotClient botClient, Message message, CancellationToken cancellationToken, Domain.Entities.User value = default!)
+    {
+        value ??= user;
+        InlineKeyboardMarkup keyboard = new(new InlineKeyboardButton[][]
+        {
+            [InlineKeyboardButton.WithCallbackData(localizer[Text.Seller], CallbackData.Seller),
+                InlineKeyboardButton.WithCallbackData(localizer[Text.Customer], CallbackData.Customer)],
+            [InlineKeyboardButton.WithCallbackData(localizer[Text.Back], CallbackData.Back)],
+        });
+
+        var text = string.Concat(localizer[Text.AskRole, localizer[value.Role.ToString()]]);
+        var sentMessage = await botClient.EditMessageTextAsync(
+            chatId: message.Chat.Id,
+            messageId: message.MessageId,
+            text: text,
+            replyMarkup: keyboard,
+            cancellationToken: cancellationToken);
+
+        user.MessageId = sentMessage.MessageId;
+        user.State = States.WaitingForSelectRole;
+    }
+
+    private async Task HandleSelectedRoleAsync(ITelegramBotClient botClient, CallbackQuery callbackQuery, CancellationToken cancellationToken)
+    {
+        ArgumentNullException.ThrowIfNull(callbackQuery.Message);
+
+        var value = user;
+        if (user.PlaceId != 0 && (value = await appDbContext.Users.FirstOrDefaultAsync(u => u.Id == user.PlaceId, cancellationToken)) is null)
+        {
+            await SendAdminMenuAsync(botClient, callbackQuery.Message, cancellationToken, localizer[Text.Error]);
+            return;
+        }
+
+        value.Role = callbackQuery.Data switch
+        {
+            CallbackData.Seller => Roles.Seller,
+            _ => Roles.Customer,
+        };
+
+        await SendMenuPersonalInfoAsync(botClient, callbackQuery.Message, cancellationToken, localizer[Text.UpdateSucceeded]);
+    }
+
+
+    private async Task SendAdminUserSettingsAsync(ITelegramBotClient botClient, Message message, CancellationToken cancellationToken, string actionMessage = Text.Empty)
+    {
+        var value = user;
+        if (user.PlaceId != 0)
+            if ((value = await appDbContext.Users
+                .Include(u => u.Contact)
+                .FirstOrDefaultAsync(u => u.Id == user.PlaceId, cancellationToken)) is null)
+            {
+                await SendAdminMenuAsync(botClient, message, cancellationToken, localizer[Text.Error]);
+                return;
+            }
+
+        InlineKeyboardMarkup keyboard = new(new InlineKeyboardButton[][]
+        {
+            [InlineKeyboardButton.WithCallbackData(localizer[Text.FirstName], CallbackData.FirstName),
+                InlineKeyboardButton.WithCallbackData(localizer[Text.LastName], CallbackData.LastName)],
+            [InlineKeyboardButton.WithCallbackData(localizer[Text.DateOfBirth], CallbackData.DateOfBirth),
+                InlineKeyboardButton.WithCallbackData(localizer[Text.Gender], CallbackData.Gender)],
+            [InlineKeyboardButton.WithCallbackData(localizer[Text.PhoneNumber], CallbackData.PhoneNumber),
+                InlineKeyboardButton.WithCallbackData(localizer[Text.Email], CallbackData.Email)],
+            [InlineKeyboardButton.WithCallbackData(localizer[Text.Role], CallbackData.Role)],
+            [InlineKeyboardButton.WithCallbackData(localizer[Text.Back], CallbackData.Back)],
+        });
+
+        value.Contact ??= new();
+
+        var text = string.Concat(actionMessage,
+            localizer[
+                Text.AdminMenuPersonalInfo,
+                value.FirstName,
+                value.LastName,
+                value.DateOfBirth.ToString("yyyy-MM-dd"),
+                localizer[value.Gender.ToString()],
+                value.Contact.Phone!,
+                value.Contact.Email!,
+                localizer[value.Role.ToString()]]
+            );
+
+        var sentMessage = await EditOrSendMessageAsync(
+            botClient: botClient,
+            message: message,
+            text: text,
+            replyMarkup: keyboard,
+            cancellationToken: cancellationToken);
+
+        user.MessageId = sentMessage.MessageId;
+        user.State = States.WaitingForSelectUserInfo;
     }
 }

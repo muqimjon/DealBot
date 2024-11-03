@@ -24,7 +24,7 @@ public partial class BotUpdateHandler
                 States.WaitingForFirstSelectLanguage => HandleSelectedLanguageAsync(botClient, callbackQuery, cancellationToken),
                 States.WaitingForSelectLanguage => HandleSelectedLanguageAsync(botClient, callbackQuery, cancellationToken),
                 States.WaitingForSubscribeToChannel => HandleSubscribeToChannel(botClient, callbackQuery, cancellationToken),
-                States.WaitingForSelectUserInfo => HandleSelectedChangePersonalInfoAsync(botClient, callbackQuery, cancellationToken),
+                States.WaitingForSelectUserInfo => HandleSelectedUserInfoAsync(botClient, callbackQuery, cancellationToken),
                 States.WaitingForSelectGender => HandleSelectedGenderAsync(botClient, callbackQuery, cancellationToken),
                 States.WaitingForSelectDateOfBirth => HandleDateOfBirthAsync(botClient, callbackQuery, cancellationToken),
                 States.WaitingForSelectDateOfBirthYear1 => HandleYearAsync(botClient, callbackQuery, cancellationToken),
@@ -54,6 +54,7 @@ public partial class BotUpdateHandler
                     Roles.Seller => HandleSelectedSellerSettingsAsync(botClient, callbackQuery, cancellationToken),
                     _ => HandleSelectedCustomerSettingsAsync(botClient, callbackQuery, cancellationToken),
                 },
+                States.WaitingForSelectRole => HandleSelectedRoleAsync(botClient, callbackQuery, cancellationToken),
                 _ => HandleUnknownCallbackQueryAsync(botClient, callbackQuery, cancellationToken),
             };
 
@@ -140,6 +141,7 @@ public partial class BotUpdateHandler
             States.WaitingForSelectCardType => SendAdminSettingsAsync(botClient, message, cancellationToken),
             States.WaitingForSelectCashbackQuantityPremium => SendCashbackSettingsAsync(botClient, message, cancellationToken),
             States.WaitingForSelectCashbackQuantitySimple => SendAdminSettingsAsync(botClient, message, cancellationToken),
+            States.WaitingForSelectRole => SendAdminUserSettingsAsync(botClient, message, cancellationToken),
             States.WaitingForSelectUserInfo => user.PlaceId switch
             {
                 0 => SendMenuPersonalInfoAsync(botClient, message, cancellationToken),

@@ -52,6 +52,7 @@ public partial class BotUpdateHandler
         });
     }
 
+
     private async Task SendSellerSettingsAsync(ITelegramBotClient botClient, Message message, CancellationToken cancellationToken, string actionMessage = Text.Empty)
     {
         InlineKeyboardMarkup keyboard = new(new InlineKeyboardButton[][]
@@ -89,6 +90,7 @@ public partial class BotUpdateHandler
         });
     }
 
+
     private async Task SendMessageMenuAsync(ITelegramBotClient botClient, Message message, CancellationToken cancellationToken)
     {
         await botClient.SendChatActionAsync(
@@ -120,6 +122,7 @@ public partial class BotUpdateHandler
         user.State = States.WaitingForSendMessage;
     }
 
+
     private async Task SendStatisticsAsync(ITelegramBotClient botClient, Message message, CancellationToken cancellationToken)
     {
         await botClient.SendChatActionAsync(
@@ -127,6 +130,7 @@ public partial class BotUpdateHandler
             chatId: message.Chat.Id,
             cancellationToken: cancellationToken);
     }
+
 
     private async Task SendUserManagerMenuAsync(ITelegramBotClient botClient, Message message, CancellationToken cancellationToken, string actionMessage = Text.Empty)
     {
@@ -169,6 +173,7 @@ public partial class BotUpdateHandler
         });
     }
 
+
     private async Task SendUserStatisticsAsync(ITelegramBotClient botClient, Message message, CancellationToken cancellationToken)
     {
         await botClient.SendChatActionAsync(
@@ -176,6 +181,7 @@ public partial class BotUpdateHandler
             chatId: message.Chat.Id,
             cancellationToken: cancellationToken);
     }
+
 
     private async Task SendCustomerListAsync(ITelegramBotClient botClient, Message message, CancellationToken cancellationToken)
     {
