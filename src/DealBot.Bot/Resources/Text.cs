@@ -43,7 +43,7 @@ public class Text
     public const string Gender = nameof(Gender);
     public const string PhoneNumber = nameof(PhoneNumber);
     public const string Email = nameof(Email);
-    public const string MenuChangePersonalInfo = nameof(MenuChangePersonalInfo);
+    public const string MenuPersonalInfo = nameof(MenuPersonalInfo);
     public const string AskFirstNameInPlaceHolder = nameof(AskFirstNameInPlaceHolder);
     public const string AskFirstName = nameof(AskFirstName);
     public const string AskLastNameInPlaceHolder = nameof(AskLastNameInPlaceHolder);
@@ -109,7 +109,7 @@ public class Text
     public const string Inactive = nameof(Inactive);
     public const string EmployeesList = nameof(EmployeesList);
     public const string Cashback = nameof(Cashback);
-    public const string Roles = nameof(Roles);
+    public const string Role = nameof(Role);
     public const string Error = nameof(Error);
     public const string AskDescriptionInPlaceHolder = nameof(AskDescriptionInPlaceHolder);
     public const string AskMiniAppUrl = nameof(AskMiniAppUrl);
@@ -132,4 +132,7 @@ public class Text
     public const string Premium = nameof(Premium);
     public const string Simple = nameof(Simple);
     public const string CashbackChanged = nameof(CashbackChanged);
+    public const string AdminMenuPersonalInfo = nameof(AdminMenuPersonalInfo);
+    public const string CustomerManager = nameof(CustomerManager);
+    public const string SellerMenuPersonalInfo = nameof(SellerMenuPersonalInfo);
 }

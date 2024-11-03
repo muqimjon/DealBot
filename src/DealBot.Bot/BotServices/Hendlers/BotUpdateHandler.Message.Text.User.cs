@@ -2,6 +2,7 @@
 
 using DealBot.Bot.Resources;
 using DealBot.Domain.Enums;
+using Microsoft.EntityFrameworkCore;
 using Telegram.Bot;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
@@ -9,7 +10,7 @@ using Telegram.Bot.Types.ReplyMarkups;
 
 public partial class BotUpdateHandler
 {
-    private async Task SendRequestFirstNameAsync(ITelegramBotClient botClient, Message message, CancellationToken cancellationToken)
+    private async Task SendRequestFirstNameAsync(ITelegramBotClient botClient, Message message, CancellationToken cancellationToken, Domain.Entities.User value = default!)
     {
         await botClient.SendChatActionAsync(
             chatId: message.Chat.Id,
@@ -25,9 +26,11 @@ public partial class BotUpdateHandler
             InputFieldPlaceholder = localizer[Text.AskFirstNameInPlaceHolder],
         };
 
+        value ??= user;
+
         var sentMessage = await botClient.SendTextMessageAsync(
             chatId: message.Chat.Id,
-            text: localizer[Text.AskFirstName, user.FirstName],
+            text: localizer[Text.AskFirstName, value.FirstName],
             replyMarkup: keyboard,
             cancellationToken: cancellationToken);
 
@@ -45,17 +48,26 @@ public partial class BotUpdateHandler
     {
         ArgumentNullException.ThrowIfNull(message.Text, nameof(message));
 
-        var actionMessage = localizer[string.IsNullOrEmpty(user.FirstName) ? Text.SetSucceeded : Text.UpdateSucceeded];
-        user.FirstName = message.Text;
+        var value = user;
+        if (user.PlaceId != 0 && (value = await appDbContext.Users.FirstOrDefaultAsync(u => u.Id == user.PlaceId, cancellationToken)) is null)
+        {
+            await SendAdminMenuAsync(botClient, message, cancellationToken, localizer[Text.Error]);
+            return;
+        }
+
+        var actionMessage = localizer[string.IsNullOrEmpty(value.FirstName) ? Text.SetSucceeded : Text.UpdateSucceeded];
+        value.FirstName = message.Text;
         await SendMenuPersonalInfoAsync(botClient, message, cancellationToken, actionMessage);
     }
 
-    private async Task SendRequestLastNameAsync(ITelegramBotClient botClient, Message message, CancellationToken cancellationToken)
+    private async Task SendRequestLastNameAsync(ITelegramBotClient botClient, Message message, CancellationToken cancellationToken, Domain.Entities.User value = default!)
     {
         await botClient.SendChatActionAsync(
             chatId: message.Chat.Id,
             chatAction: ChatAction.Typing,
             cancellationToken: cancellationToken);
+
+        value ??= user;
 
         ReplyKeyboardMarkup keyboard = new(new KeyboardButton[][]
         {
@@ -68,7 +80,7 @@ public partial class BotUpdateHandler
 
         var sentMessage = await botClient.SendTextMessageAsync(
             chatId: message.Chat.Id,
-            text: localizer[Text.AskLastName, user.LastName],
+            text: localizer[Text.AskLastName, value.LastName],
             replyMarkup: keyboard,
             cancellationToken: cancellationToken);
 
@@ -86,12 +98,19 @@ public partial class BotUpdateHandler
     {
         ArgumentNullException.ThrowIfNull(message.Text, nameof(message));
 
-        var actionMessage = localizer[string.IsNullOrEmpty(user.FirstName) ? Text.SetSucceeded : Text.UpdateSucceeded];
-        user.LastName = message.Text;
+        var value = user;
+        if (user.PlaceId != 0 && (value = await appDbContext.Users.FirstOrDefaultAsync(u => u.Id == user.PlaceId, cancellationToken)) is null)
+        {
+            await SendAdminMenuAsync(botClient, message, cancellationToken, localizer[Text.Error]);
+            return;
+        }
+
+        var actionMessage = localizer[string.IsNullOrEmpty(value.LastName) ? Text.SetSucceeded : Text.UpdateSucceeded];
+        value.LastName = message.Text;
         await SendMenuPersonalInfoAsync(botClient, message, cancellationToken, actionMessage);
     }
 
-    private async Task SendRequestEmailAsync(ITelegramBotClient botClient, Message message, CancellationToken cancellationToken)
+    private async Task SendRequestEmailAsync(ITelegramBotClient botClient, Message message, CancellationToken cancellationToken, Domain.Entities.User value = default!)
     {
         await botClient.SendChatActionAsync(
             chatId: message.Chat.Id,

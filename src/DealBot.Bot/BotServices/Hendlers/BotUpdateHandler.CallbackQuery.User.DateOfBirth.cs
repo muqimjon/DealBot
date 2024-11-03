@@ -1,5 +1,6 @@
 ﻿using DealBot.Bot.Resources;
 using DealBot.Domain.Enums;
+using Microsoft.EntityFrameworkCore;
 using System.Globalization;
 using Telegram.Bot;
 using Telegram.Bot.Types;
@@ -21,10 +22,17 @@ public partial class BotUpdateHandler
             [InlineKeyboardButton.WithCallbackData(localizer[Text.Back], CallbackData.Back)],
         });
 
+        var value = user;
+        if (user.PlaceId != 0 && (value = await appDbContext.Users.FirstOrDefaultAsync(u => u.Id == user.PlaceId, cancellationToken)) is null)
+        {
+            await SendAdminMenuAsync(botClient, message, cancellationToken, localizer[Text.Error]);
+            return;
+        }
+
         Message sentMessage = await botClient.EditMessageTextAsync(
                 chatId: message.Chat.Id,
                 messageId: message.MessageId,
-                text: localizer[Text.AskDateOfBirth, user.DateOfBirth.ToString("yyyy-MM-dd")],
+                text: localizer[Text.AskDateOfBirth, value.DateOfBirth.ToString("yyyy-MM-dd")],
                 replyMarkup: keyboard,
                 cancellationToken: cancellationToken);
 
@@ -50,6 +58,13 @@ public partial class BotUpdateHandler
         ArgumentNullException.ThrowIfNull(callbackQuery.Message, nameof(callbackQuery.Message));
         ArgumentNullException.ThrowIfNull(callbackQuery.Data);
 
+        var value = user;
+        if (user.PlaceId != 0 && (value = await appDbContext.Users.FirstOrDefaultAsync(u => u.Id == user.PlaceId, cancellationToken)) is null)
+        {
+            await SendAdminMenuAsync(botClient, callbackQuery.Message, cancellationToken, localizer[Text.Error]);
+            return;
+        }
+
         switch (callbackQuery.Data)
         {
             case CallbackData.Next:
@@ -65,10 +80,10 @@ public partial class BotUpdateHandler
                 break;
             default:
                 var year = int.Parse(callbackQuery.Data);
-                var inpupDate = DateTime.DaysInMonth(year, user.DateOfBirth.Month);
-                var existDate = DateTime.DaysInMonth(user.DateOfBirth.Year, user.DateOfBirth.Month);
+                var inpupDate = DateTime.DaysInMonth(year, value.DateOfBirth.Month);
+                var existDate = DateTime.DaysInMonth(value.DateOfBirth.Year, value.DateOfBirth.Month);
                 var day = Math.Min(inpupDate, existDate);
-                user.DateOfBirth = new DateTimeOffset(year, user.DateOfBirth.Month, day, 0, 0, 0, TimeSpan.Zero);
+                value.DateOfBirth = new DateTimeOffset(year, value.DateOfBirth.Month, day, 0, 0, 0, TimeSpan.Zero);
 
                 await SendRequestDateOfBirthAsync(botClient, callbackQuery.Message, cancellationToken);
                 break;
@@ -82,6 +97,13 @@ public partial class BotUpdateHandler
 
         ArgumentNullException.ThrowIfNull(callbackQuery.Message, nameof(Message));
 
+        var value = user;
+        if (user.PlaceId != 0 && (value = await appDbContext.Users.FirstOrDefaultAsync(u => u.Id == user.PlaceId, cancellationToken)) is null)
+        {
+            await SendAdminMenuAsync(botClient, callbackQuery.Message, cancellationToken, localizer[Text.Error]);
+            return;
+        }
+
         var date = DateTime.UtcNow.Year - minAge;
         var page = (int)user.State - (int)States.WaitingForSelectDateOfBirthYear1 + 2;
 
@@ -91,7 +113,7 @@ public partial class BotUpdateHandler
         var sentMessage = await botClient.EditMessageTextAsync(
             chatId: callbackQuery.Message.Chat.Id,
             messageId: callbackQuery.Message.MessageId,
-            text: localizer[Text.AskDateOfBirth, user.DateOfBirth.ToString("yyyy-MM-dd")],
+            text: localizer[Text.AskDateOfBirth, value.DateOfBirth.ToString("yyyy-MM-dd")],
             replyMarkup: new(buttons),
             cancellationToken: cancellationToken
         );
@@ -109,6 +131,13 @@ public partial class BotUpdateHandler
 
         ArgumentNullException.ThrowIfNull(callbackQuery.Message, nameof(Message));
 
+        var value = user;
+        if (user.PlaceId == 0 && (value = await appDbContext.Users.FirstOrDefaultAsync(u => u.Id == user.PlaceId, cancellationToken)) is null)
+        {
+            await SendAdminMenuAsync(botClient, callbackQuery.Message, cancellationToken, localizer[Text.Error]);
+            return;
+        }
+
         var date = DateTime.UtcNow.Year - minAge;
         var page = (int)user.State - (int)States.WaitingForSelectDateOfBirthYear1;
 
@@ -118,7 +147,7 @@ public partial class BotUpdateHandler
         var sentMessage = await botClient.EditMessageTextAsync(
             chatId: callbackQuery.Message.Chat.Id,
             messageId: callbackQuery.Message.MessageId,
-            text: localizer[Text.AskDateOfBirth, user.DateOfBirth.ToString("yyyy-MM-dd")],
+            text: localizer[Text.AskDateOfBirth, value.DateOfBirth.ToString("yyyy-MM-dd")],
             replyMarkup: new(buttons),
             cancellationToken: cancellationToken
         );
@@ -129,6 +158,13 @@ public partial class BotUpdateHandler
 
     private async Task SendMonthsAsync(ITelegramBotClient botClient, Message message, CancellationToken cancellationToken)
     {
+        var value = user;
+        if (user.PlaceId != 0 && (value = await appDbContext.Users.FirstOrDefaultAsync(u => u.Id == user.PlaceId, cancellationToken)) is null)
+        {
+            await SendAdminMenuAsync(botClient, message, cancellationToken, localizer[Text.Error]);
+            return;
+        }
+
         var months = Enumerable.Range(1, 12)
             .Select(month => new DateTime(1, month, 1).ToString("MMMM", new CultureInfo(user.LanguageCode)))
             .Select((monthName, index) => InlineKeyboardButton.WithCallbackData(monthName, (1 + index).ToString()))
@@ -141,7 +177,7 @@ public partial class BotUpdateHandler
         Message sentMessage = await botClient.EditMessageTextAsync(
                 chatId: message.Chat.Id,
                 messageId: message.MessageId,
-                text: localizer[Text.AskDateOfBirth, user.DateOfBirth.ToString("yyyy-MM-dd")],
+                text: localizer[Text.AskDateOfBirth, value.DateOfBirth.ToString("yyyy-MM-dd")],
                 replyMarkup: new(months),
                 cancellationToken: cancellationToken);
 
@@ -154,17 +190,31 @@ public partial class BotUpdateHandler
         ArgumentNullException.ThrowIfNull(callbackQuery.Message, nameof(Message));
         ArgumentNullException.ThrowIfNull(callbackQuery.Data);
 
+        var value = user;
+        if (user.PlaceId != 0 && (value = await appDbContext.Users.FirstOrDefaultAsync(u => u.Id == user.PlaceId, cancellationToken)) is null)
+        {
+            await SendAdminMenuAsync(botClient, callbackQuery.Message, cancellationToken, localizer[Text.Error]);
+            return;
+        }
+
         var month = int.Parse(callbackQuery.Data);
-        var inpupDate = DateTime.DaysInMonth(user.DateOfBirth.Year, month);
-        var existDate = DateTime.DaysInMonth(user.DateOfBirth.Year, user.DateOfBirth.Month);
+        var inpupDate = DateTime.DaysInMonth(value.DateOfBirth.Year, month);
+        var existDate = DateTime.DaysInMonth(value.DateOfBirth.Year, value.DateOfBirth.Month);
         var day = Math.Min(inpupDate, existDate);
-        user.DateOfBirth = new DateTimeOffset(user.DateOfBirth.Year, month, day, 0, 0, 0, TimeSpan.Zero);
+        value.DateOfBirth = new DateTimeOffset(value.DateOfBirth.Year, month, day, 0, 0, 0, TimeSpan.Zero);
 
         await SendRequestDateOfBirthAsync(botClient, callbackQuery.Message, cancellationToken);
     }
 
     private async Task SendDaysAsync(ITelegramBotClient botClient, Message message, CancellationToken cancellationToken)
     {
+        var value = user;
+        if (user.PlaceId != 0 && (value = await appDbContext.Users.FirstOrDefaultAsync(u => u.Id == user.PlaceId, cancellationToken)) is null)
+        {
+            await SendAdminMenuAsync(botClient, message, cancellationToken, localizer[Text.Error]);
+            return;
+        }
+
         int daysInMonth = DateTime.DaysInMonth(user.DateOfBirth.Year, user.DateOfBirth.Month);
         var buttons = GenerateNumberButtons(1, daysInMonth, 6);
         buttons.Add([InlineKeyboardButton.WithCallbackData(localizer[Text.Back], CallbackData.Back)]);
@@ -172,7 +222,7 @@ public partial class BotUpdateHandler
         Message sentMessage = await botClient.EditMessageTextAsync(
                 chatId: message.Chat.Id,
                 messageId: message.MessageId,
-                text: localizer[Text.AskDateOfBirth, user.DateOfBirth.ToString("yyyy-MM-dd")],
+                text: localizer[Text.AskDateOfBirth, value.DateOfBirth.ToString("yyyy-MM-dd")],
                 replyMarkup: new(buttons),
                 cancellationToken: cancellationToken);
 
@@ -185,8 +235,15 @@ public partial class BotUpdateHandler
         ArgumentNullException.ThrowIfNull(callbackQuery.Message, nameof(Message));
         ArgumentNullException.ThrowIfNull(callbackQuery.Data);
 
-        int day = Math.Min(int.Parse(callbackQuery.Data), DateTime.DaysInMonth(user.DateOfBirth.Year, user.DateOfBirth.Month));
-        user.DateOfBirth = new DateTimeOffset(user.DateOfBirth.Year, user.DateOfBirth.Month, day, 0, 0, 0, TimeSpan.Zero);
+        var value = user;
+        if (user.PlaceId != 0 && (value = await appDbContext.Users.FirstOrDefaultAsync(u => u.Id == user.PlaceId, cancellationToken)) is null)
+        {
+            await SendAdminMenuAsync(botClient, callbackQuery.Message, cancellationToken, localizer[Text.Error]);
+            return;
+        }
+
+        int day = Math.Min(int.Parse(callbackQuery.Data), DateTime.DaysInMonth(value.DateOfBirth.Year, value.DateOfBirth.Month));
+        value.DateOfBirth = new DateTimeOffset(value.DateOfBirth.Year, value.DateOfBirth.Month, day, 0, 0, 0, TimeSpan.Zero);
 
         await SendRequestDateOfBirthAsync(botClient, callbackQuery.Message, cancellationToken);
     }

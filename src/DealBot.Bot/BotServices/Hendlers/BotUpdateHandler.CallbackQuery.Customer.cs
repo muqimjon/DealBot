@@ -209,40 +209,6 @@ public partial class BotUpdateHandler
         user.State = States.WaitingForSelectStoreContactOption;
     }
 
-    private async Task SendCustomerSettingsAsync(ITelegramBotClient botClient, Message message, CancellationToken cancellationToken, string actionMessage = Text.Empty)
-    {
-        InlineKeyboardMarkup keyboard = new(new InlineKeyboardButton[][]
-        {
-            [InlineKeyboardButton.WithCallbackData(localizer[Text.ChangeLanguage], CallbackData.ChangeLanguage)],
-            [InlineKeyboardButton.WithCallbackData(localizer[Text.PersonalInfo], CallbackData.PersonalInfo)],
-            [InlineKeyboardButton.WithCallbackData(localizer[Text.Back], CallbackData.Back)],
-        });
-
-        var text = string.Concat(actionMessage, localizer[Text.SelectSettings]);
-
-        var sentMessage = await botClient.EditMessageTextAsync(
-            chatId: message.Chat.Id,
-            messageId: message.MessageId,
-            text: text,
-            replyMarkup: keyboard,
-            cancellationToken: cancellationToken);
-
-        user.MessageId = sentMessage.MessageId;
-        user.State = States.WaitingForSelectSettings;
-    }
-
-    private async Task HandleSelectedCustomerSettingsAsync(ITelegramBotClient botClient, CallbackQuery callbackQuery, CancellationToken cancellationToken)
-    {
-        ArgumentNullException.ThrowIfNull(callbackQuery.Message, nameof(Message));
-
-        await (callbackQuery.Data switch
-        {
-            CallbackData.ChangeLanguage => SendMenuLanguagesAsync(botClient, callbackQuery.Message, cancellationToken),
-            CallbackData.PersonalInfo => SendMenuPersonalInfoAsync(botClient, callbackQuery.Message, cancellationToken),
-            _ => HandleUnknownCallbackQueryAsync(botClient, callbackQuery, cancellationToken),
-        });
-    }
-
     private async Task<bool> IsSubscribed(ITelegramBotClient botClient, long userId, CancellationToken cancellationToken)
     {
         var store = await (from s in appDbContext.Stores

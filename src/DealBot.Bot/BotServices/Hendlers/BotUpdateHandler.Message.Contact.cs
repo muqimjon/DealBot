@@ -25,7 +25,7 @@ public partial class BotUpdateHandler
         catch (Exception ex) { logger.LogError(ex, "Error handling message from {FirstName}", user.FirstName); }
     }
 
-    private async Task SendRequestPhoneNumberAsync(ITelegramBotClient botClient, Message message, CancellationToken cancellationToken)
+    private async Task SendRequestPhoneNumberAsync(ITelegramBotClient botClient, Message message, CancellationToken cancellationToken, Domain.Entities.User value)
     {
         await botClient.SendChatActionAsync(
             chatId: message.Chat.Id,

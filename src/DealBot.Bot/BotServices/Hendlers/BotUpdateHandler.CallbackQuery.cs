@@ -24,7 +24,7 @@ public partial class BotUpdateHandler
                 States.WaitingForFirstSelectLanguage => HandleSelectedLanguageAsync(botClient, callbackQuery, cancellationToken),
                 States.WaitingForSelectLanguage => HandleSelectedLanguageAsync(botClient, callbackQuery, cancellationToken),
                 States.WaitingForSubscribeToChannel => HandleSubscribeToChannel(botClient, callbackQuery, cancellationToken),
-                States.WaitingForSelectChangePersonalInfo => HandleSelectedChangePersonalInfoAsync(botClient, callbackQuery, cancellationToken),
+                States.WaitingForSelectUserInfo => HandleSelectedChangePersonalInfoAsync(botClient, callbackQuery, cancellationToken),
                 States.WaitingForSelectGender => HandleSelectedGenderAsync(botClient, callbackQuery, cancellationToken),
                 States.WaitingForSelectDateOfBirth => HandleDateOfBirthAsync(botClient, callbackQuery, cancellationToken),
                 States.WaitingForSelectDateOfBirthYear1 => HandleYearAsync(botClient, callbackQuery, cancellationToken),
@@ -50,8 +50,8 @@ public partial class BotUpdateHandler
                 },
                 States.WaitingForSelectSettings => user.Role switch
                 {
-                    Roles.Admin => HandleSelectedAdminSettings(botClient, callbackQuery, cancellationToken),
-                    Roles.Seller => HandleSelectedSellerSettings(botClient, callbackQuery, cancellationToken),
+                    Roles.Admin => HandleSelectedAdminSettingsAsync(botClient, callbackQuery, cancellationToken),
+                    Roles.Seller => HandleSelectedSellerSettingsAsync(botClient, callbackQuery, cancellationToken),
                     _ => HandleSelectedCustomerSettingsAsync(botClient, callbackQuery, cancellationToken),
                 },
                 _ => HandleUnknownCallbackQueryAsync(botClient, callbackQuery, cancellationToken),
@@ -92,12 +92,6 @@ public partial class BotUpdateHandler
                 _ => SendCustomerMenuAsync(botClient, message, cancellationToken),
             },
             States.WaitingForSelectLanguage => user.Role switch
-            {
-                Roles.Admin => SendAdminSettingsAsync(botClient, message, cancellationToken),
-                Roles.Seller => SendSellerSettingsAsync(botClient, message, cancellationToken),
-                _ => SendCustomerSettingsAsync(botClient, message, cancellationToken),
-            },
-            States.WaitingForSelectChangePersonalInfo => user.Role switch
             {
                 Roles.Admin => SendAdminSettingsAsync(botClient, message, cancellationToken),
                 Roles.Seller => SendSellerSettingsAsync(botClient, message, cancellationToken),
@@ -146,6 +140,11 @@ public partial class BotUpdateHandler
             States.WaitingForSelectCardType => SendAdminSettingsAsync(botClient, message, cancellationToken),
             States.WaitingForSelectCashbackQuantityPremium => SendCashbackSettingsAsync(botClient, message, cancellationToken),
             States.WaitingForSelectCashbackQuantitySimple => SendAdminSettingsAsync(botClient, message, cancellationToken),
+            States.WaitingForSelectUserInfo => user.PlaceId switch
+            {
+                0 => SendMenuPersonalInfoAsync(botClient, message, cancellationToken),
+                _ => SendUserManagerMenuAsync(botClient, message, cancellationToken),
+            },
             _ => HandleUnknownMessageAsync(botClient, message, cancellationToken),
         };
 

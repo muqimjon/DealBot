@@ -16,7 +16,7 @@ public partial class BotUpdateHandler
     {
         InlineKeyboardMarkup keyboard = new(new InlineKeyboardButton[][]
         {
-            [InlineKeyboardButton.WithCallbackData(localizer[Text.UserManager], CallbackData.UserMamager)],
+            [InlineKeyboardButton.WithCallbackData(localizer[Text.CustomerManager], CallbackData.UserManager)],
             [InlineKeyboardButton.WithCallbackData(localizer[Text.CustomersList], CallbackData.CustomersList)],
             [InlineKeyboardButton.WithCallbackData(localizer[Text.SendMessage], CallbackData.SendMessage),
                 InlineKeyboardButton.WithCallbackData(localizer[Text.Statistics], CallbackData.Statistics)],
@@ -32,6 +32,7 @@ public partial class BotUpdateHandler
             replyMarkup: keyboard,
             cancellationToken: cancellationToken);
 
+        user.PlaceId = 0;
         user.MessageId = sentMessage.MessageId;
         user.State = States.WaitingForSelectMenu;
     }
@@ -42,7 +43,7 @@ public partial class BotUpdateHandler
 
         await (callbackQuery.Data switch
         {
-            CallbackData.UserMamager => SendRequestForUserIdAsync(botClient, callbackQuery.Message, cancellationToken),
+            CallbackData.UserManager => SendRequestForUserIdAsync(botClient, callbackQuery.Message, cancellationToken),
             CallbackData.CustomersList => SendCustomerListAsync(botClient, callbackQuery.Message, cancellationToken),
             CallbackData.Statistics => SendStatisticsAsync(botClient, callbackQuery.Message, cancellationToken),
             CallbackData.SendMessage => SendMessageMenuAsync(botClient, callbackQuery.Message, cancellationToken),
@@ -74,7 +75,7 @@ public partial class BotUpdateHandler
         user.State = States.WaitingForSelectSettings;
     }
 
-    private async Task HandleSelectedSellerSettings(ITelegramBotClient botClient, CallbackQuery callbackQuery, CancellationToken cancellationToken)
+    private async Task HandleSelectedSellerSettingsAsync(ITelegramBotClient botClient, CallbackQuery callbackQuery, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(callbackQuery.Message, nameof(Message));
 
@@ -158,17 +159,14 @@ public partial class BotUpdateHandler
         {
             CallbackData.Transaction => CheckMissionTransactionAsync(botClient, callbackQuery.Message, cancellationToken),
             CallbackData.Statistics => SendUserStatisticsAsync(botClient, callbackQuery.Message, cancellationToken),
-            CallbackData.Settings => SendUserSettingsAsync(botClient, callbackQuery.Message, cancellationToken),
+            CallbackData.Settings => user.Role switch
+            {
+                Roles.Admin => SendAdminUserSettingsAsync(botClient, callbackQuery.Message, cancellationToken),
+                Roles.Seller => SendSellerUserSettingsAsync(botClient, callbackQuery.Message, cancellationToken),
+                _ => default!
+            },
             _ => default!
         });
-    }
-
-    private async Task SendUserSettingsAsync(ITelegramBotClient botClient, Message message, CancellationToken cancellationToken)
-    {
-        await botClient.SendChatActionAsync(
-            chatAction: ChatAction.Typing,
-            chatId: message.Chat.Id,
-            cancellationToken: cancellationToken);
     }
 
     private async Task SendUserStatisticsAsync(ITelegramBotClient botClient, Message message, CancellationToken cancellationToken)

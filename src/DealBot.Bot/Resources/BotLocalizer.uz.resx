@@ -123,6 +123,20 @@
   <data name="ActionNotAvailable" xml:space="preserve">
     <value>Ushbu amalni bajarish vaqtincha imkonsiz...</value>
   </data>
+  <data name="Admin" xml:space="preserve">
+    <value>Boshqaruvchi</value>
+  </data>
+  <data name="AdminMenuPersonalInfo" xml:space="preserve">
+    <value>Foydalanuvchi ma'lumotlari
+
+Ism: {0}
+Familiya: {1}
+Tug'ilgan sana: {2}
+Jinsi: {3}
+Raqam: {4}
+Email: {5}
+Roli: {6}</value>
+  </data>
   <data name="AskAboutInPlaceHolder" xml:space="preserve">
     <value>Bot haqida qisqa ma'lumot yozing...</value>
   </data>
@@ -143,7 +157,7 @@
 </value>
   </data>
   <data name="AskDateOfBirth" xml:space="preserve">
-    <value>Tug'ilgan sanangiz: {0}</value>
+    <value>Tug'ilgan sana: {0}</value>
   </data>
   <data name="AskDescription" xml:space="preserve">
     <value>Joriy tavsif:
@@ -156,19 +170,19 @@ Quyida yangilangan  matinni yuboring</value>
     <value>Tavsifni kiriting...</value>
   </data>
   <data name="AskEmail" xml:space="preserve">
-    <value>Emailingiz: {0}</value>
+    <value>Email: {0}</value>
   </data>
   <data name="AskEmailInPlaceHolder" xml:space="preserve">
-    <value>Emailingizni kiriting...</value>
+    <value>Emailni kiriting...</value>
   </data>
   <data name="AskFirstName" xml:space="preserve">
-    <value>Ismingiz: {0}</value>
+    <value>Ism: {0}</value>
   </data>
   <data name="AskFirstNameInPlaceHolder" xml:space="preserve">
-    <value>Ismingizni kiriting...</value>
+    <value>Ismni kiriting...</value>
   </data>
   <data name="AskGender" xml:space="preserve">
-    <value>Jinsingiz: {0}</value>
+    <value>Jinsz: {0}</value>
   </data>
   <data name="AskJoinToChannel" xml:space="preserve">
     <value>Davom ettirish uchun kanalga a'zo bo'ling!</value>
@@ -182,10 +196,10 @@ Iltimos, davom ettirish uchun kanalga a'zo bo'ling!</value>
     <value>Qulay tilni tanlang</value>
   </data>
   <data name="AskLastName" xml:space="preserve">
-    <value>Familiyangiz: {0}</value>
+    <value>Familiya: {0}</value>
   </data>
   <data name="AskLastNameInPlaceHolder" xml:space="preserve">
-    <value>Familiyangizni kiriting...</value>
+    <value>Familiyani kiriting...</value>
   </data>
   <data name="AskMessage" xml:space="preserve">
     <value>Xabarni kiriting:</value>
@@ -294,12 +308,18 @@ Kanal foydalanuvchi nomi: {7}
   <data name="ContactUs" xml:space="preserve">
     <value>☎️ Biz bilan a'loqa</value>
   </data>
+  <data name="Customer" xml:space="preserve">
+    <value>Mijoz</value>
+  </data>
   <data name="CustomerCardInfo" xml:space="preserve">
     <value>👤 {0}
 💵 {1}
 💎 {2}
 🔐 {3}
 💳 {4}</value>
+  </data>
+  <data name="CustomerManager" xml:space="preserve">
+    <value>👤 Mijoz boshqaruvi</value>
   </data>
   <data name="CustomersList" xml:space="preserve">
     <value>📋 Mijozlar</value>
@@ -376,7 +396,7 @@ Telefon raqamingizni yuboring</value>
   <data name="Male" xml:space="preserve">
     <value>♂ Erkak</value>
   </data>
-  <data name="MenuChangePersonalInfo" xml:space="preserve">
+  <data name="MenuPersonalInfo" xml:space="preserve">
     <value>Shaxsiy ma'lumotlarni o'zgartirish:
 
 Ism: {0}
@@ -463,6 +483,17 @@ Email: {5}</value>
   </data>
   <data name="SelectSettings" xml:space="preserve">
     <value>Sozlamalar</value>
+  </data>
+  <data name="Seller" xml:space="preserve">
+    <value>Sotuvchi</value>
+  </data>
+  <data name="SellerMenuPersonalInfo" xml:space="preserve">
+    <value>Foydalanuvchi ma'lumotlari
+
+Ism: {0}
+Familiya: {1}
+Tug'ilgan sana: {2}
+Jinsi: {3}</value>
   </data>
   <data name="SendContact" xml:space="preserve">
     <value>Telefon raqamni yuborish</value>

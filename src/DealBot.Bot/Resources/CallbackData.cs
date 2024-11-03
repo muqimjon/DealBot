@@ -35,7 +35,7 @@ public class CallbackData
     public const string Previous = nameof(Previous);
     public const string Next = nameof(Next);
     public const string CustomersList = nameof(CustomersList);
-    public const string UserMamager = nameof(UserMamager);
+    public const string UserManager = nameof(UserManager);
     public const string Statistics = nameof(Statistics);
     public const string SendMessage = nameof(SendMessage);
     public const string CompanyInfo = nameof(CompanyInfo);
@@ -51,7 +51,7 @@ public class CallbackData
     public const string Transaction = nameof(Transaction);
     public const string EmployeesList = nameof(EmployeesList);
     public const string Cashback = nameof(Cashback);
-    public const string Roles = nameof(Roles);
+    public const string Role = nameof(Role);
     public const string Website = nameof(Website);
     public const string Channel = nameof(Channel);
     public const string Company = nameof(Company);

@@ -13,7 +13,7 @@ public enum States
     WaitingForSelectStoreContactOption,
     WaitingForSendComment,
     WaitingForSelectSettings,
-    WaitingForSelectChangePersonalInfo,
+    WaitingForSelectUserInfo,
     WaitingForFirstSelectLanguage,
     WaitingForSendFirstName,
     WaitingForSendLastName,
