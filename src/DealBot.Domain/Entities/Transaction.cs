@@ -6,7 +6,7 @@ using DealBot.Domain.Enums;
 public sealed class Transaction : Auditable
 {
     public decimal Amount { get; set; }
-    public CashBackStatus Status { get; set; }
+    public Status Status { get; set; }
     public bool IsCashback { get; set; }
 
     public long SellerId { get; set; }

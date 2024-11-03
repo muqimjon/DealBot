@@ -195,7 +195,7 @@ public partial class BotUpdateHandler
                 Customer = customer,
                 IsCashback = true,
                 Seller = user,
-                Status = CashBackStatus.Completed,
+                Status = Status.Completed,
                 CustomerId = customer.Id,
                 SellerId = user.Id,
             }, cancellationToken);

@@ -19,7 +19,7 @@ public partial class BotUpdateHandler
             .OrderBy(t => t.Id)
             .LastOrDefaultAsync(t
                 => t.CustomerId.Equals(user.PlaceId)
-                && t.Status.Equals(CashBackStatus.None),
+                && t.Status.Equals(Status.None),
             cancellationToken: cancellationToken);
 
         Domain.Entities.User customer = transaction?.Customer
@@ -132,13 +132,13 @@ public partial class BotUpdateHandler
             .OrderBy(t => t.Id)
             .LastOrDefaultAsync(t
                 => t.CustomerId.Equals(user.PlaceId)
-                && t.Status.Equals(CashBackStatus.None),
+                && t.Status.Equals(Status.None),
             cancellationToken: cancellationToken);
 
         if (transaction is null)
             return;
 
-        transaction.Status = CashBackStatus.Cancelled;
+        transaction.Status = Status.Cancelled;
         await SendTransactionAsync(botClient, message, cancellationToken);
     }
 
@@ -149,7 +149,7 @@ public partial class BotUpdateHandler
                 .OrderBy(t => t.Id)
                 .LastOrDefaultAsync(t
                     => t.CustomerId.Equals(user.PlaceId)
-                    && t.Status.Equals(CashBackStatus.Pending),
+                    && t.Status.Equals(Status.Pending),
                 cancellationToken: cancellationToken);
 
         if (transaction is null)

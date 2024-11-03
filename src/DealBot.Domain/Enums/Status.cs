@@ -1,6 +1,6 @@
 ﻿namespace DealBot.Domain.Enums;
 
-public enum CashBackStatus
+public enum Status
 {
     None,
     Pending,

@@ -247,7 +247,7 @@ public partial class BotUpdateHandler
         await appDbContext.Transactions.AddAsync(new()
         {
             Amount = price,
-            Status = CashBackStatus.Pending,
+            Status = Status.Pending,
             Customer = customer,
             Seller = user,
             IsCashback = false,
@@ -300,12 +300,12 @@ public partial class BotUpdateHandler
         switch (callbackQuery.Data)
         {
             case CallbackData.Submit:
-                transaction.Status = CashBackStatus.Completed;
+                transaction.Status = Status.Completed;
                 user.Card.Ballance -= transaction.Amount;
                 await SendCustomerMenuAsync(botClient, callbackQuery.Message, cancellationToken, localizer[Text.TransactionSucceeded]);
                 break;
             case CallbackData.Cancel:
-                transaction.Status = CashBackStatus.Cancelled;
+                transaction.Status = Status.Cancelled;
                 await SendCustomerMenuAsync(botClient, callbackQuery.Message, cancellationToken, localizer[Text.TransactionCanceled]);
                 break;
             default: break;
