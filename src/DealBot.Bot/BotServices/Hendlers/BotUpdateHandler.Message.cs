@@ -13,6 +13,7 @@ public partial class BotUpdateHandler
             MessageType.Text => HandleTextMessageAsync(botClient, message, cancellationToken),
             MessageType.Contact => HandleContactMessageAsync(botClient, message, cancellationToken),
             MessageType.Photo => HandlePhotoMessageAsync(botClient, message, cancellationToken),
+            MessageType.Location => HandleLocationMessageAsync(botClient, message, cancellationToken),
             _ => HandleUnknownMessageAsync(botClient, message, cancellationToken),
         };
 
@@ -22,7 +23,7 @@ public partial class BotUpdateHandler
 
     private Task HandleUnknownMessageAsync(ITelegramBotClient botClient, Message message, CancellationToken _)
     {
-        logger.LogInformation("Received message type {message.Type} from {message.From.FirstName}", message, message);
+        logger.LogInformation("Received message type {message.CardType} from {message.From.FirstName}", message, message);
         return Task.CompletedTask;
     }
 }

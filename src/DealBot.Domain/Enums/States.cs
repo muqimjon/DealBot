@@ -51,4 +51,8 @@ public enum States
     WaitingForSelectCashbackQuantityPremium,
     WaitingForSelectCashbackQuantitySimple,
     WaitingForSelectRole,
+    WaitingForMessageMenu,
+    WaitingForSendMessageText,
+    WaitingForSelectGenderForMessage,
+    WaitingForSendLocation,
 }

@@ -1,6 +1,7 @@
 ﻿namespace DealBot.Bot.BotServices;
 
 using DealBot.Bot.Resources;
+using DealBot.Domain.Entities;
 using DealBot.Domain.Enums;
 using Microsoft.EntityFrameworkCore;
 using System.Threading;
@@ -14,18 +15,27 @@ public partial class BotUpdateHandler
     private async Task SendCustomerMenuAsync(ITelegramBotClient botClient, Message message, CancellationToken cancellationToken, string actionMessage = Text.Empty)
     {
         var store = await appDbContext.Stores
+            .Include(s => s.Contact)
+            .Include(s => s.Address)
             .OrderByDescending(s => s.Id)
-            .LastAsync(cancellationToken);
+            .FirstOrDefaultAsync(cancellationToken);
 
-        var miniAppUrl = string.IsNullOrEmpty(store.MiniAppUrl) ? "https://notfound.com" : store.MiniAppUrl;
+        if (!IsStoreReady(store))
+        {
+            await SendNotReadyNotificationAsync(botClient, message, cancellationToken);
+            return;
+        }
 
         InlineKeyboardMarkup keyboard = new(new InlineKeyboardButton[][]
         {
             [InlineKeyboardButton.WithCallbackData(localizer[Text.MyPrivilegeCard], CallbackData.MyPrivilegeCard)],
-            [InlineKeyboardButton.WithWebApp(localizer[Text.OrderOnTheSite], new WebAppInfo() { Url = miniAppUrl })],
+            string.IsNullOrEmpty(store!.MiniAppUrl) ? [] :
+                [InlineKeyboardButton.WithWebApp(localizer[Text.OrderOnTheSite], new WebAppInfo() { Url = store.MiniAppUrl })],
+            string.IsNullOrEmpty(store.Contact?.Phone) ? [] :
+                [InlineKeyboardButton.WithCallbackData(localizer[Text.ContactUs], CallbackData.ContactUs)],
+            string.IsNullOrEmpty(store.Address?.City) ? [] :
+                [InlineKeyboardButton.WithCallbackData(localizer[Text.StoreAddress], CallbackData.StoreAddress)],
             [InlineKeyboardButton.WithCallbackData(localizer[Text.Settings], CallbackData.Settings),
-                InlineKeyboardButton.WithCallbackData(localizer[Text.StoreAddress], CallbackData.StoreAddress)],
-            [InlineKeyboardButton.WithCallbackData(localizer[Text.ContactUs], CallbackData.ContactUs),
                 InlineKeyboardButton.WithCallbackData(localizer[Text.Comment], CallbackData.Comment)],
             [InlineKeyboardButton.WithUrl(localizer[Text.Referral], await GetShareLink(botClient, cancellationToken))],
         });
@@ -45,7 +55,7 @@ public partial class BotUpdateHandler
             botClient: botClient,
             message: message,
             text: text,
-            replyMarkup: keyboard,
+            keyboard: keyboard,
             cancellationToken: cancellationToken);
 
         user.MessageId = sentMessage.MessageId;
@@ -71,6 +81,7 @@ public partial class BotUpdateHandler
             _ => HandleUnknownCallbackQueryAsync(botClient, callbackQuery, cancellationToken),
         });
     }
+
 
     private async Task SendRequestJoinToChannel(ITelegramBotClient botClient, Message message, CancellationToken cancellationToken, string actionMessage = Text.Empty, Domain.Entities.User customer = default!)
     {
@@ -175,24 +186,67 @@ public partial class BotUpdateHandler
 
     private async Task SendStoreAddressAsync(ITelegramBotClient botClient, Message message, CancellationToken cancellationToken)
     {
+        var address = (await appDbContext.Stores
+            .Include(s => s.Address)
+            .OrderByDescending(s => s.Id)
+            .FirstOrDefaultAsync(cancellationToken))?.Address;
+
+        if (address is null)
+        {
+            await SendCustomerMenuAsync(botClient, message, cancellationToken, localizer[Text.Error]);
+            return;
+        }
+
+        double latitude = address.Latitude;
+        double longitude = address.Longitude;
+
+        string googleMapsUrl = $"https://www.google.com/maps?q={latitude},{longitude}";
+        string yandexMapsUrl = $"https://yandex.com/maps/?rtext={latitude},{longitude}&rtt=auto";
+
         InlineKeyboardMarkup keyboard = new(new InlineKeyboardButton[][]
         {
-            [InlineKeyboardButton.WithCallbackData(localizer[Text.Back], CallbackData.Back)],
+            [InlineKeyboardButton.WithUrl("Google Maps", googleMapsUrl),
+                InlineKeyboardButton.WithUrl("Yandex Maps", yandexMapsUrl)],
+            [InlineKeyboardButton.WithCallbackData(localizer[Text.Back], CallbackData.Back)]
         });
 
-        var sentMessage = await botClient.EditMessageTextAsync(
-            chatId: message.Chat.Id,
-            messageId: message.MessageId,
-            text: localizer[Text.StoreAddressInfo],
-            replyMarkup: keyboard,
-            cancellationToken: cancellationToken);
+        try
+        {
+            var locationMessage = await botClient.SendLocationAsync(
+                chatId: message.Chat.Id,
+                latitude: latitude,
+                longitude: longitude,
+                replyMarkup: keyboard,
+                cancellationToken: cancellationToken);
 
-        user.MessageId = sentMessage.MessageId;
-        user.State = States.WaitingForSelectAddressOption;
+            await botClient.DeleteMessageAsync(
+                chatId: message.Chat.Id,
+                messageId: message.MessageId,
+                cancellationToken: cancellationToken);
+
+            user.MessageId = locationMessage.MessageId;
+            user.State = States.WaitingForSelectAddressOption;
+        }
+        catch
+        {
+            logger.LogInformation("Invalid address");
+        }
     }
+
 
     private async Task SendContactInfoAsync(ITelegramBotClient botClient, Message message, CancellationToken cancellationToken)
     {
+        var store = await appDbContext.Stores
+            .Include(s => s.Contact)
+            .OrderByDescending(s => s.Id)
+            .FirstOrDefaultAsync(cancellationToken);
+
+        if (store is null || store.Contact is null || store.Contact.Phone is null || store.Contact.Email is null)
+        {
+            await SendCustomerMenuAsync(botClient, message, cancellationToken, localizer[Text.Error]);
+            return;
+        }
+
         InlineKeyboardMarkup keyboard = new(new InlineKeyboardButton[][]
         {
             [InlineKeyboardButton.WithCallbackData(localizer[Text.Back], CallbackData.Back)],
@@ -201,7 +255,7 @@ public partial class BotUpdateHandler
         var sentMessage = await botClient.EditMessageTextAsync(
             chatId: message.Chat.Id,
             messageId: message.MessageId,
-            text: localizer[Text.StoreContactInfo],
+            text: localizer[Text.StoreContactInfo, store.Contact.Phone, store.Contact.Email],
             replyMarkup: keyboard,
             cancellationToken: cancellationToken);
 
@@ -211,29 +265,35 @@ public partial class BotUpdateHandler
 
     private async Task<bool> IsSubscribed(ITelegramBotClient botClient, long userId, CancellationToken cancellationToken)
     {
-        var store = await (from s in appDbContext.Stores
-                           orderby s.Id descending
-                           select s)
-                    .LastAsync(cancellationToken);
+        var channel = (await appDbContext.Stores
+            .OrderByDescending(s => s.Id)
+            .LastOrDefaultAsync(cancellationToken))?.Channel;
 
-        var member = await botClient.GetChatMemberAsync(
-            chatId: store.Channel,
-            userId,
-            cancellationToken: cancellationToken);
+        if (channel is null)
+            return true;
 
-        return (int)member.Status < 4;
+        try
+        {
+            var member = await botClient.GetChatMemberAsync(
+                chatId: channel,
+                userId,
+                cancellationToken: cancellationToken);
+
+            return (int)member.Status < 4;
+        }
+        catch { logger.LogInformation("Invalid username"); }
+
+        return true;
     }
 
     public bool IsAccountComplete(Domain.Entities.User user)
-    {
-        return !string.IsNullOrWhiteSpace(user.FirstName) &&
+        => !string.IsNullOrWhiteSpace(user.FirstName) &&
            !string.IsNullOrWhiteSpace(user.LastName) &&
            !string.IsNullOrWhiteSpace(user.Contact.Email) &&
            !string.IsNullOrWhiteSpace(user.Contact.Phone) &&
-           !user.Gender.Equals(Genders.Unknown) &&
+           user.Gender != Genders.Unknown &&
            user.DateOfBirth != DateTimeOffset.MinValue &&
            user.DateOfBirth.Year > 0;
-    }
 
     private async Task<string> GetShareLink(ITelegramBotClient botClient, CancellationToken cancellationToken)
     {
@@ -311,4 +371,34 @@ public partial class BotUpdateHandler
             default: break;
         }
     }
+
+
+    #region Is ready
+    private static bool IsStoreReady(Store? store)
+        => store is not null
+        //&& channel.MiniAppUrl is not null
+        && store.Contact is not null
+        && store.Contact.Phone is not null
+        && store.Contact.Email is not null
+        //&& channel.Channel is not null
+        //&& channel.Address is not null
+        && store.Description is not null
+        && store.Name is not null;
+
+    private async Task SendNotReadyNotificationAsync(ITelegramBotClient botClient, Message message, CancellationToken cancellationToken)
+    {
+        await botClient.SendChatActionAsync(
+            chatAction: ChatAction.Typing,
+            chatId: message.Chat.Id,
+            cancellationToken: cancellationToken);
+
+        var sentMessage = await EditOrSendMessageAsync(
+            botClient,
+            message,
+            localizer[Text.NotReadyNotification],
+            cancellationToken);
+
+        user.MessageId = sentMessage.MessageId;
+    }
+    #endregion
 }

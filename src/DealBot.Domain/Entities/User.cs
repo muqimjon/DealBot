@@ -18,6 +18,7 @@ public sealed class User : Auditable
     public long ChatId { get; set; }
     public bool IsActive { get; set; }
     public long PlaceId { get; set; }
+    public int PageNumber { get; set; }
 
     public Card Card { get; set; }
     public long? CardId { get; set; }

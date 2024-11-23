@@ -44,6 +44,7 @@ public partial class BotUpdateHandler
         });
     }
 
+
     private async Task SendMenuLanguagesAsync(ITelegramBotClient botClient, Message message, CancellationToken cancellationToken)
     {
         InlineKeyboardMarkup keyboard = new(new InlineKeyboardButton[][]
@@ -87,6 +88,7 @@ public partial class BotUpdateHandler
         });
     }
 
+
     private async Task SendMenuPersonalInfoAsync(ITelegramBotClient botClient, Message message, CancellationToken cancellationToken, string actionMessage = Text.Empty)
     {
         if (user.PlaceId != 0)
@@ -124,7 +126,7 @@ public partial class BotUpdateHandler
             botClient: botClient,
             message: message,
             text: text,
-            replyMarkup: keyboard,
+            keyboard: keyboard,
             cancellationToken: cancellationToken);
 
         user.IsActive = IsAccountComplete(user);
@@ -163,6 +165,7 @@ public partial class BotUpdateHandler
         });
     }
 
+
     private async Task SendRequestGenderAsync(ITelegramBotClient botClient, Message message, CancellationToken cancellationToken, string actionMessage = Text.Empty, Domain.Entities.User value = default!)
     {
         value ??= user;
@@ -187,24 +190,26 @@ public partial class BotUpdateHandler
 
     private async Task HandleSelectedGenderAsync(ITelegramBotClient botClient, CallbackQuery callbackQuery, CancellationToken cancellationToken)
     {
-        ArgumentNullException.ThrowIfNull(callbackQuery.Message);
+        ArgumentNullException.ThrowIfNull(callbackQuery.Message, nameof(Message));
 
-        var value = user;
-        if (user.PlaceId != 0 && (value = await appDbContext.Users.FirstOrDefaultAsync(u => u.Id == user.PlaceId, cancellationToken)) is null)
-        {
-            await SendAdminMenuAsync(botClient, callbackQuery.Message, cancellationToken, localizer[Text.Error]);
-            return;
-        }
+        var prepareMessage = await appDbContext.MyMessages
+            .OrderByDescending(m => m.Id)
+            .FirstOrDefaultAsync(m => m.Status == Status.Pending, cancellationToken);
 
-        value.Gender = callbackQuery.Data switch
+        if (prepareMessage is null)
+            await appDbContext.MyMessages.AddAsync(prepareMessage = new() { Status = Status.Pending }, cancellationToken);
+
+        var actionMessage = localizer[prepareMessage.Gender == Genders.Unknown ? Text.SetSucceeded : Text.UpdateSucceeded];
+        prepareMessage.Gender = callbackQuery.Data switch
         {
-            CallbackData.Female => Genders.Female,
             CallbackData.Male => Genders.Male,
+            CallbackData.Female => Genders.Female,
             _ => Genders.Unknown,
         };
 
-        await SendMenuPersonalInfoAsync(botClient, callbackQuery.Message, cancellationToken, localizer[Text.UpdateSucceeded]);
+        await SendMessageMenuAsync(botClient, callbackQuery.Message, cancellationToken, actionMessage);
     }
+
 
     private async Task SendSellerUserSettingsAsync(ITelegramBotClient botClient, Message message, CancellationToken cancellationToken, string actionMessage = Text.Empty)
     {
@@ -238,10 +243,11 @@ public partial class BotUpdateHandler
             botClient: botClient,
             message: message,
             text: text,
-            replyMarkup: keyboard,
+            keyboard: keyboard,
             cancellationToken: cancellationToken);
 
         user.MessageId = sentMessage.MessageId;
         user.State = States.WaitingForSelectUserInfo;
     }
+    // Handler in admin file
 }

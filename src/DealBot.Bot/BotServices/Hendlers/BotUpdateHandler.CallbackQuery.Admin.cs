@@ -30,7 +30,7 @@ public partial class BotUpdateHandler
             botClient: botClient,
             message: message,
             text: text,
-            replyMarkup: keyboard,
+            keyboard: keyboard,
             cancellationToken: cancellationToken);
 
         user.PlaceId = 0;
@@ -48,7 +48,7 @@ public partial class BotUpdateHandler
             CallbackData.CustomersList => SendCustomerListAsync(botClient, callbackQuery.Message, cancellationToken),
             CallbackData.EmployeesList => SendEmployeesListAsync(botClient, callbackQuery.Message, cancellationToken),
             CallbackData.Statistics => SendStatisticsAsync(botClient, callbackQuery.Message, cancellationToken),
-            CallbackData.SendMessage => SendMessageMenuAsync(botClient, callbackQuery.Message, cancellationToken),
+            CallbackData.SendMessage => SendRequestMessageTextAsync(botClient, callbackQuery.Message, cancellationToken),
             CallbackData.Settings => SendAdminSettingsAsync(botClient, callbackQuery.Message, cancellationToken),
             _ => HandleUnknownCallbackQueryAsync(botClient, callbackQuery, cancellationToken),
         });
@@ -73,7 +73,7 @@ public partial class BotUpdateHandler
             botClient: botClient,
             message: message,
             text: text,
-            replyMarkup: keyboard,
+            keyboard: keyboard,
             cancellationToken: cancellationToken);
 
         user.MessageId = sentMessage.MessageId;
@@ -97,258 +97,6 @@ public partial class BotUpdateHandler
     }
 
 
-    private async Task SendCashbackSettingsAsync(ITelegramBotClient botClient, Message message, CancellationToken cancellationToken, string actionMessage = Text.Empty, CashbackSetting settings = default!)
-    {
-        var isSimple = settings is not null && settings.Type is CardTypes.Simple;
-        var isPremium = settings is not null && settings.Type is CardTypes.Premium;
-
-        var premiumCS = isPremium ? settings : null
-            ?? await appDbContext.CashbackSettings
-            .OrderByDescending(cs => cs.Id)
-            .FirstOrDefaultAsync(cs
-            => cs.Type == CardTypes.Premium
-            && cs.IsActive,
-            cancellationToken);
-
-        if (premiumCS is null)
-            await appDbContext.CashbackSettings.AddAsync(premiumCS = new()
-            {
-                Type = CardTypes.Premium,
-                IsActive = true,
-            }, cancellationToken);
-
-        var simpleCS = isSimple ? settings : null
-            ?? await appDbContext.CashbackSettings
-            .OrderByDescending(cs => cs.Id)
-            .FirstOrDefaultAsync(cs
-            => cs.Type == CardTypes.Simple
-            && cs.IsActive,
-            cancellationToken);
-
-        if (simpleCS is null)
-            await appDbContext.CashbackSettings.AddAsync(simpleCS = new()
-            {
-                Type = CardTypes.Simple,
-                IsActive = true,
-            }, cancellationToken);
-
-        InlineKeyboardMarkup keyboard = new(new InlineKeyboardButton[][]
-        {
-            [InlineKeyboardButton.WithCallbackData(localizer[Text.Simple], CallbackData.Simple)],
-            [InlineKeyboardButton.WithCallbackData(localizer[Text.Premium], CallbackData.Premium)],
-            [InlineKeyboardButton.WithCallbackData(localizer[Text.Back], CallbackData.Back)],
-        });
-
-        var text = string.Concat(
-            actionMessage,
-            localizer[
-                Text.CashbackInfo,
-                simpleCS.Percentage.ToString("P0"),
-                premiumCS.Percentage.ToString("P0")]);
-
-        var sentMessage = await EditOrSendMessageAsync(
-            botClient: botClient,
-            message: message,
-            text: text,
-            replyMarkup: keyboard,
-            cancellationToken: cancellationToken);
-
-        user.MessageId = sentMessage.MessageId;
-        user.State = States.WaitingForSelectCardType;
-    }
-
-    private async Task HandleSelectedCardTypeAsync(ITelegramBotClient botClient, CallbackQuery callbackQuery, CancellationToken cancellationToken)
-    {
-        ArgumentNullException.ThrowIfNull(callbackQuery.Message, nameof(Message));
-
-        await (callbackQuery.Data switch
-        {
-            CallbackData.Simple => SendRequestSimpleCashbackQuantityAsync(botClient, callbackQuery.Message, cancellationToken),
-            CallbackData.Premium => SendRequestPremuimCashbackQuantityAsync(botClient, callbackQuery.Message, cancellationToken),
-            _ => default!,
-        });
-    }
-
-
-    private async Task SendRequestPremuimCashbackQuantityAsync(ITelegramBotClient botClient, Message message, CancellationToken cancellationToken, CashbackSetting template = default!)
-    {
-        var cashbackSettings = appDbContext.CashbackSettings.Where(cs => cs.Type == CardTypes.Premium);
-
-        var actualCS = await cashbackSettings
-            .OrderByDescending(cs => cs.Id)
-            .FirstOrDefaultAsync(cs => cs.IsActive, cancellationToken);
-
-        template ??= (await cashbackSettings
-            .OrderByDescending(cs => cs.Id)
-            .FirstOrDefaultAsync(cs => !cs.IsActive, cancellationToken))!;
-
-        if (template is null)
-            await appDbContext.CashbackSettings.AddAsync(template = new() { Type = CardTypes.Premium }, cancellationToken);
-
-        actualCS ??= new();
-
-        InlineKeyboardMarkup keyboard = new(new InlineKeyboardButton[][]
-        {
-            [InlineKeyboardButton.WithCallbackData("<<", CallbackData.Previous2),
-                InlineKeyboardButton.WithCallbackData("<", CallbackData.Previous),
-                InlineKeyboardButton.WithCallbackData(">", CallbackData.Next),
-                InlineKeyboardButton.WithCallbackData(">>", CallbackData.Next2)],
-                [InlineKeyboardButton.WithCallbackData(localizer[Text.Submit], CallbackData.Submit)],
-                [InlineKeyboardButton.WithCallbackData(localizer[Text.Back], CallbackData.Back)],
-        });
-
-        var text = string.Concat(
-            localizer[
-                Text.CashbackChanged,
-                localizer[actualCS.Type.ToString()],
-                actualCS.Percentage.ToString("P0"),
-                template.Percentage.ToString("P0")]);
-
-        var sentMessage = await botClient.EditMessageTextAsync(
-            chatId: message.Chat.Id,
-            messageId: message.MessageId,
-            text: text,
-            replyMarkup: keyboard,
-            cancellationToken: cancellationToken);
-
-        user.MessageId = sentMessage.MessageId;
-        user.State = States.WaitingForSelectCashbackQuantityPremium;
-    }
-
-    private async Task HandleCashbackQuantityPremiumAsync(ITelegramBotClient botClient, CallbackQuery callbackQuery, CancellationToken cancellationToken)
-    {
-        ArgumentNullException.ThrowIfNull(callbackQuery.Message, nameof(Message));
-
-        var template = await appDbContext.CashbackSettings
-            .OrderByDescending(cs => cs.Id)
-            .FirstOrDefaultAsync(cs
-            => !cs.IsActive && cs.Type == CardTypes.Premium,
-            cancellationToken);
-
-        if (template is null)
-        {
-            await SendAdminSettingsAsync(botClient, callbackQuery.Message, cancellationToken, localizer[Text.Error]);
-            return;
-        }
-        else if (callbackQuery.Data == CallbackData.Submit)
-        {
-            template.IsActive = true;
-            await SendAdminSettingsAsync(
-                botClient,
-                callbackQuery.Message,
-                cancellationToken,
-                localizer[Text.UpdateSucceeded]);
-            return;
-        }
-        else if (callbackQuery.Data == CallbackData.Cancel)
-        {
-            appDbContext.CashbackSettings.Remove(template);
-            await SendAdminSettingsAsync(botClient, callbackQuery.Message, cancellationToken);
-            return;
-        }
-
-        template.Percentage += callbackQuery.Data switch
-        {
-            CallbackData.Previous2 => -0.1m,
-            CallbackData.Previous => -0.01m,
-            CallbackData.Next => 0.01m,
-            CallbackData.Next2 => 0.1m,
-            _ => 0
-        };
-
-        await SendRequestPremuimCashbackQuantityAsync(botClient, callbackQuery.Message, cancellationToken, template);
-    }
-
-
-    private async Task SendRequestSimpleCashbackQuantityAsync(ITelegramBotClient botClient, Message message, CancellationToken cancellationToken, CashbackSetting template = default!)
-    {
-        var cashbackSettings = appDbContext.CashbackSettings.Where(cs => cs.Type == CardTypes.Simple);
-
-        var actualCS = await cashbackSettings
-            .OrderByDescending(cs => cs.Id)
-            .FirstOrDefaultAsync(cs => cs.IsActive, cancellationToken) ?? new();
-
-        template ??= (await cashbackSettings
-            .OrderByDescending(cs => cs.Id)
-            .FirstOrDefaultAsync(cs => !cs.IsActive, cancellationToken))!;
-
-        if (template is null)
-            await appDbContext.CashbackSettings.AddAsync(template = new() { Type = CardTypes.Simple }, cancellationToken);
-
-        InlineKeyboardMarkup keyboard = new(new InlineKeyboardButton[][]
-        {
-            [InlineKeyboardButton.WithCallbackData("<<", CallbackData.Previous2),
-                InlineKeyboardButton.WithCallbackData("<", CallbackData.Previous),
-                InlineKeyboardButton.WithCallbackData(">", CallbackData.Next),
-                InlineKeyboardButton.WithCallbackData(">>", CallbackData.Next2)],
-            [InlineKeyboardButton.WithCallbackData(localizer[Text.Cancel], CallbackData.Cancel),
-                InlineKeyboardButton.WithCallbackData(localizer[Text.Submit], CallbackData.Submit)],
-            [InlineKeyboardButton.WithCallbackData(localizer[Text.Back], CallbackData.Back)],
-        });
-
-        var text = string.Concat(
-            localizer[
-                Text.CashbackChanged,
-                localizer[actualCS.Type.ToString()],
-                actualCS.Percentage.ToString("P0"),
-                template.Percentage.ToString("P0")]);
-
-        var sentMessage = await botClient.EditMessageTextAsync(
-            chatId: message.Chat.Id,
-            messageId: message.MessageId,
-            text: text,
-            replyMarkup: keyboard,
-            cancellationToken: cancellationToken);
-
-        user.MessageId = sentMessage.MessageId;
-        user.State = States.WaitingForSelectCashbackQuantitySimple;
-    }
-
-    private async Task HandleCashbackQuantitySimpleAsync(ITelegramBotClient botClient, CallbackQuery callbackQuery, CancellationToken cancellationToken)
-    {
-        ArgumentNullException.ThrowIfNull(callbackQuery.Message, nameof(Message));
-
-        var template = await appDbContext.CashbackSettings
-            .OrderByDescending(cs => cs.Id)
-            .FirstOrDefaultAsync(cs
-            => !cs.IsActive && cs.Type == CardTypes.Simple,
-            cancellationToken);
-
-        if (template is null)
-        {
-            await SendAdminSettingsAsync(botClient, callbackQuery.Message, cancellationToken, localizer[Text.Error]);
-            return;
-        }
-        else if (callbackQuery.Data == CallbackData.Submit)
-        {
-            template.IsActive = true;
-            await SendAdminSettingsAsync(
-                botClient,
-                callbackQuery.Message,
-                cancellationToken,
-                localizer[Text.UpdateSucceeded]);
-            return;
-        }
-        else if (callbackQuery.Data == CallbackData.Cancel)
-        {
-            appDbContext.CashbackSettings.Remove(template);
-            await SendAdminSettingsAsync(botClient, callbackQuery.Message, cancellationToken);
-            return;
-        }
-
-        template.Percentage += callbackQuery.Data switch
-        {
-            CallbackData.Previous2 => -0.1m,
-            CallbackData.Previous => -0.01m,
-            CallbackData.Next => 0.01m,
-            CallbackData.Next2 => 0.1m,
-            _ => 0
-        };
-
-        await SendRequestSimpleCashbackQuantityAsync(botClient, callbackQuery.Message, cancellationToken, template);
-    }
-
-
     private async Task SendMenuCompanyInfoAsync(ITelegramBotClient botClient, Message message, CancellationToken cancellationToken, string actionMessage = Text.Empty)
     {
         Store store;
@@ -368,6 +116,7 @@ public partial class BotUpdateHandler
                 InlineKeyboardButton.WithCallbackData(localizer[Text.MiniAppUrl], CallbackData.MiniAppUrl)],
             [InlineKeyboardButton.WithCallbackData(localizer[Text.PhoneNumber], CallbackData.PhoneNumber),
                 InlineKeyboardButton.WithCallbackData(localizer[Text.Email], CallbackData.Email)],
+            [InlineKeyboardButton.WithCallbackData(localizer[Text.Address], CallbackData.Address)],
             [InlineKeyboardButton.WithCallbackData(localizer[Text.Back], CallbackData.Back)],
         });
 
@@ -388,7 +137,7 @@ public partial class BotUpdateHandler
             botClient: botClient,
             message: message,
             text: text,
-            replyMarkup: keyboard,
+            keyboard: keyboard,
             cancellationToken: cancellationToken);
 
         user.MessageId = sentMessage.MessageId;
@@ -409,8 +158,15 @@ public partial class BotUpdateHandler
             CallbackData.Channel => SendRequestForChannelAsync(botClient, callbackQuery.Message, cancellationToken),
             CallbackData.PhoneNumber => SendRequestCompanyPhoneNumberAsync(botClient, callbackQuery.Message, cancellationToken),
             CallbackData.Email => SendRequestForEmailAsync(botClient, callbackQuery.Message, cancellationToken),
+            CallbackData.Address => SendRequestForAddressAsync(botClient, callbackQuery.Message, cancellationToken),
             _ => default!,
         });
+    }
+
+
+    private Task SendRequestForAddressAsync(ITelegramBotClient botClient, Message message, CancellationToken cancellationToken)
+    {
+        throw new NotImplementedException();
     }
 
 
@@ -530,7 +286,7 @@ public partial class BotUpdateHandler
             botClient: botClient,
             message: message,
             text: text,
-            replyMarkup: keyboard,
+            keyboard: keyboard,
             cancellationToken: cancellationToken);
 
         user.MessageId = sentMessage.MessageId;

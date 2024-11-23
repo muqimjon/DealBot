@@ -65,6 +65,7 @@ public partial class BotUpdateHandler
         await SendMenuCompanyInfoAsync(botClient, message, cancellationToken, actionMessage);
     }
 
+
     private async Task SendRequestForDescriptionAsync(ITelegramBotClient botClient, Message message, CancellationToken cancellationToken)
     {
         await botClient.SendChatActionAsync(
@@ -119,6 +120,7 @@ public partial class BotUpdateHandler
 
         await SendMenuCompanyInfoAsync(botClient, message, cancellationToken, actionMessage);
     }
+
 
     private async Task SendRequestForMiniAppUrlAsync(ITelegramBotClient botClient, Message message, CancellationToken cancellationToken)
     {
@@ -175,6 +177,7 @@ public partial class BotUpdateHandler
         await SendMenuCompanyInfoAsync(botClient, message, cancellationToken, actionMessage);
     }
 
+
     private async Task SendRequestForWebsiteAsync(ITelegramBotClient botClient, Message message, CancellationToken cancellationToken)
     {
         await botClient.SendChatActionAsync(
@@ -229,6 +232,7 @@ public partial class BotUpdateHandler
 
         await SendMenuCompanyInfoAsync(botClient, message, cancellationToken, actionMessage);
     }
+
 
     private async Task SendRequestForEmailAsync(ITelegramBotClient botClient, Message message, CancellationToken cancellationToken)
     {
@@ -289,6 +293,7 @@ public partial class BotUpdateHandler
 
         await SendMenuCompanyInfoAsync(botClient, message, cancellationToken, actionMessage);
     }
+
 
     private async Task SendRequestForChannelAsync(ITelegramBotClient botClient, Message message, CancellationToken cancellationToken)
     {

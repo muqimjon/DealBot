@@ -43,6 +43,7 @@ public partial class BotUpdateHandler
             States.WaitingForSendWebsite => HandleWebsiteAsync(botClient, message, cancellationToken),
             States.WaitingForSendCompanyEmail => HandleCompanyEmailAsync(botClient, message, cancellationToken),
             States.WaitingForSendChannel => HandleChannelAsync(botClient, message, cancellationToken),
+            States.WaitingForSendMessageText => HandleMessageTextAsync(botClient, message, cancellationToken),
             _ => HandleUnknownMessageAsync(botClient, message, cancellationToken)
         };
 

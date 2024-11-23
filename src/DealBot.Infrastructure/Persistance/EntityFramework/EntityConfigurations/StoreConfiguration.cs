@@ -37,6 +37,10 @@ public class StoreConfiguration : IEntityTypeConfiguration<Store>
         builder.Property(s => s.Description)
                .IsRequired(false)
                .HasMaxLength(500);
+
+        builder.Property(s => s.Channel)
+               .IsRequired(false)
+               .HasMaxLength(500);
     }
 
     private static void ConfigureRelationships(EntityTypeBuilder<Store> builder)

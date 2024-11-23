@@ -29,7 +29,7 @@ public partial class BotUpdateHandler
             botClient: botClient,
             message: message,
             text: text,
-            replyMarkup: keyboard,
+            keyboard: keyboard,
             cancellationToken: cancellationToken);
 
         user.PlaceId = 0;
@@ -46,12 +46,11 @@ public partial class BotUpdateHandler
             CallbackData.UserManager => SendRequestForUserIdAsync(botClient, callbackQuery.Message, cancellationToken),
             CallbackData.CustomersList => SendCustomerListAsync(botClient, callbackQuery.Message, cancellationToken),
             CallbackData.Statistics => SendStatisticsAsync(botClient, callbackQuery.Message, cancellationToken),
-            CallbackData.SendMessage => SendMessageMenuAsync(botClient, callbackQuery.Message, cancellationToken),
+            CallbackData.SendMessage => HandleSendMessage(botClient, callbackQuery.Message, cancellationToken),
             CallbackData.Settings => SendSellerSettingsAsync(botClient, callbackQuery.Message, cancellationToken),
             _ => HandleUnknownCallbackQueryAsync(botClient, callbackQuery, cancellationToken),
         });
     }
-
 
     private async Task SendSellerSettingsAsync(ITelegramBotClient botClient, Message message, CancellationToken cancellationToken, string actionMessage = Text.Empty)
     {
@@ -69,7 +68,7 @@ public partial class BotUpdateHandler
             botClient: botClient,
             message: message,
             text: text,
-            replyMarkup: keyboard,
+            keyboard: keyboard,
             cancellationToken: cancellationToken);
 
         user.MessageId = sentMessage.MessageId;
@@ -88,38 +87,6 @@ public partial class BotUpdateHandler
             CallbackData.SendMessage => SendRequestMessageToDeveloperAsync(botClient, callbackQuery.Message, cancellationToken),
             _ => HandleUnknownCallbackQueryAsync(botClient, callbackQuery, cancellationToken),
         });
-    }
-
-
-    private async Task SendMessageMenuAsync(ITelegramBotClient botClient, Message message, CancellationToken cancellationToken)
-    {
-        await botClient.SendChatActionAsync(
-            chatId: message.Chat.Id,
-            chatAction: ChatAction.Typing,
-            cancellationToken: cancellationToken);
-
-        ReplyKeyboardMarkup keyboard = new(new KeyboardButton[][]
-        {
-            [new(localizer[Text.Back])]
-        })
-        {
-            ResizeKeyboard = true,
-            InputFieldPlaceholder = localizer[Text.AskMessageInPlaceHolder],
-        };
-
-        var sentMessage = await botClient.SendTextMessageAsync(
-            chatId: message.Chat.Id,
-            text: localizer[Text.AskMessage],
-            replyMarkup: keyboard,
-            cancellationToken: cancellationToken);
-
-        await botClient.DeleteMessageAsync(
-            chatId: message.Chat.Id,
-            messageId: message.MessageId,
-            cancellationToken: cancellationToken);
-
-        user.MessageId = sentMessage.MessageId;
-        user.State = States.WaitingForSendMessage;
     }
 
 
@@ -148,7 +115,7 @@ public partial class BotUpdateHandler
             botClient: botClient,
             message: message,
             text: text,
-            replyMarkup: keyboard,
+            keyboard: keyboard,
             cancellationToken: cancellationToken);
 
         user.MessageId = sentMessage.MessageId;
@@ -194,7 +161,7 @@ public partial class BotUpdateHandler
         foreach (var customer in customers)
             text.Append($"_{customer.GetFullName()}_ \\{customer.Contact.Phone}\n");
 
-        var xabar = string.IsNullOrEmpty(text.ToString()) ? "mijozlar mavjud emas" : text.ToString();
+        var xabar = string.IsNullOrEmpty(text.ToString()) ? Text.NotAvailable : text.ToString();
 
         InlineKeyboardMarkup keyboard = new(new InlineKeyboardButton[][]
         {

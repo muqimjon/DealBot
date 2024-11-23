@@ -158,9 +158,9 @@ public partial class BotUpdateHandler
         }
 
         if (value.Contact is null)
-            await appDbContext.Contacts.AddAsync(user.Contact = new(), cancellationToken);
+            await appDbContext.Contacts.AddAsync(value.Contact = new(), cancellationToken);
 
-        var actionMessage = localizer[string.IsNullOrEmpty(user.FirstName) ? Text.SetSucceeded : Text.UpdateSucceeded];
+        var actionMessage = localizer[string.IsNullOrEmpty(user.Contact.Email) ? Text.SetSucceeded : Text.UpdateSucceeded];
         value.Contact!.Email = message.Text;
         await SendMenuPersonalInfoAsync(botClient, message, cancellationToken, actionMessage);
     }

@@ -1,7 +1,4 @@
-﻿
-
-
-namespace DealBot.Bot.Resources;
+﻿namespace DealBot.Bot.Resources;
 
 public class CallbackData
 {
@@ -62,4 +59,6 @@ public class CallbackData
     public const string Previous2 = nameof(Previous2);
     public const string Seller = nameof(Seller);
     public const string Customer = nameof(Customer);
+    public const string ToAll = nameof(ToAll);
+    public const string Address = nameof(Address);
 }

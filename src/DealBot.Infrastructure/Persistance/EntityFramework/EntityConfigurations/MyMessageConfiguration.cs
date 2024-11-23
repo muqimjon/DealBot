@@ -23,15 +23,11 @@ public class MyMessageConfiguration : IEntityTypeConfiguration<MyMessage>
 
     private static void ConfigureProperties(EntityTypeBuilder<MyMessage> builder)
     {
-        builder.Property(m => m.Title)
-            .HasMaxLength(100)
-            .IsRequired(false);
-
         builder.Property(m => m.Content)
             .HasMaxLength(500)
             .IsRequired(false);
 
-        builder.Property(m => m.Type)
+        builder.Property(m => m.CardType)
             .IsRequired();
 
         builder.Property(m => m.Gender)
@@ -46,9 +42,16 @@ public class MyMessageConfiguration : IEntityTypeConfiguration<MyMessage>
 
     private static void ConfigureRelationships(EntityTypeBuilder<MyMessage> builder)
     {
+        // Sender bilan bog'lash
         builder.HasOne(m => m.Sender)
             .WithMany()
             .HasForeignKey(m => m.SenderId)
             .OnDelete(DeleteBehavior.Cascade);
+
+        // Recipient bilan bog'lash
+        builder.HasOne(m => m.Recipient)
+            .WithMany()
+            .HasForeignKey(m => m.RecipientId)
+            .OnDelete(DeleteBehavior.Restrict);
     }
 }

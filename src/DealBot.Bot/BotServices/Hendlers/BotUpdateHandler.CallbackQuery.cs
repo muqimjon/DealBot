@@ -21,6 +21,12 @@ public partial class BotUpdateHandler
         else
             handler = user.State switch
             {
+                States.Restart => user.Role switch
+                {
+                    Roles.Admin => SendAdminMenuAsync(botClient, callbackQuery.Message, cancellationToken),
+                    Roles.Seller => SendSellerMenuAsync(botClient, callbackQuery.Message, cancellationToken),
+                    _ => SendCustomerMenuAsync(botClient, callbackQuery.Message, cancellationToken),
+                },
                 States.WaitingForFirstSelectLanguage => HandleSelectedLanguageAsync(botClient, callbackQuery, cancellationToken),
                 States.WaitingForSelectLanguage => HandleSelectedLanguageAsync(botClient, callbackQuery, cancellationToken),
                 States.WaitingForSubscribeToChannel => HandleSubscribeToChannel(botClient, callbackQuery, cancellationToken),
@@ -55,6 +61,8 @@ public partial class BotUpdateHandler
                     _ => HandleSelectedCustomerSettingsAsync(botClient, callbackQuery, cancellationToken),
                 },
                 States.WaitingForSelectRole => HandleSelectedRoleAsync(botClient, callbackQuery, cancellationToken),
+                States.WaitingForMessageMenu => HandleSelectedMessageMenuAsync(botClient, callbackQuery, cancellationToken),
+                States.WaitingForSelectGenderForMessage => HandleSelectedGenderForMessageAsync(botClient, callbackQuery, cancellationToken),
                 _ => HandleUnknownCallbackQueryAsync(botClient, callbackQuery, cancellationToken),
             };
 
@@ -142,6 +150,7 @@ public partial class BotUpdateHandler
             States.WaitingForSelectCashbackQuantityPremium => SendCashbackSettingsAsync(botClient, message, cancellationToken),
             States.WaitingForSelectCashbackQuantitySimple => SendAdminSettingsAsync(botClient, message, cancellationToken),
             States.WaitingForSelectRole => SendAdminUserSettingsAsync(botClient, message, cancellationToken),
+            States.WaitingForMessageMenu => SendAdminMenuAsync(botClient, message, cancellationToken),
             States.WaitingForSelectUserInfo => user.PlaceId switch
             {
                 0 => SendMenuPersonalInfoAsync(botClient, message, cancellationToken),
@@ -221,8 +230,8 @@ public partial class BotUpdateHandler
         ITelegramBotClient botClient,
         Message message,
         string text,
-        InlineKeyboardMarkup replyMarkup,
         CancellationToken cancellationToken,
+        InlineKeyboardMarkup keyboard = default!,
         int messageId = -1)
     {
         messageId = messageId == -1 ? user.MessageId : messageId;
@@ -235,7 +244,7 @@ public partial class BotUpdateHandler
                 messageId: message.MessageId,
                 text: text,
                 //parseMode: ParseMode.MarkdownV2,
-                replyMarkup: replyMarkup,
+                replyMarkup: keyboard ?? default,
                 cancellationToken: cancellationToken);
         }
         catch
@@ -265,7 +274,7 @@ public partial class BotUpdateHandler
             sentMessage = await botClient.SendTextMessageAsync(
                 chatId: message.Chat.Id,
                 text: text,
-                replyMarkup: replyMarkup,
+                replyMarkup: keyboard,
                 //parseMode: ParseMode.MarkdownV2,
                 cancellationToken: cancellationToken);
         }

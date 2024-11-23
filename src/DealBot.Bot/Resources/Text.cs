@@ -3,6 +3,7 @@
 public class Text
 {
     public const string Empty = "";
+    public const string SkipRow = "\n\n";
     public const string LanguageEn = "🇬🇧 english 🇬🇧";
     public const string LanguageUz = "🇺🇿 o'zbekcha 🇺🇿";
     public const string LanguageRu = "🇷🇺 русский 🇷🇺";
@@ -138,4 +139,15 @@ public class Text
     public const string AskRole = nameof(AskRole);
     public const string Seller = nameof(Seller);
     public const string Customer = nameof(Customer);
+    public const string ToAll = nameof(ToAll);
+    public const string NotAvailable = nameof(NotAvailable);
+    public const string ExistMessage = nameof(ExistMessage);
+    public const string NotReadyNotification = nameof(NotReadyNotification);
+    public const string Address = nameof(Address);
+    public const string SendLocation = nameof(SendLocation);
+    public const string AskLocation = nameof(AskLocation);
+    public const string AskForLocationInPlaceHolder = nameof(AskForLocationInPlaceHolder);
+    public const string Continue = nameof(Continue);
+    public const string UserRoleUpdated = nameof(UserRoleUpdated);
+    public const string YourRoleUpdated = nameof(YourRoleUpdated);
 }

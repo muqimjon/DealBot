@@ -68,6 +68,7 @@ public partial class BotUpdateHandler
         await SendUserManagerMenuAsync(botClient, message, cancellationToken);
     }
 
+
     private async Task SendProductPriceInquiryAsync(ITelegramBotClient botClient, Message message, CancellationToken cancellationToken, string actionMessage = Text.Empty)
     {
         await botClient.DeleteMessageAsync(
@@ -120,27 +121,6 @@ public partial class BotUpdateHandler
             await SendProductPriceInquiryAsync(botClient, message, cancellationToken, localizer[Text.AskCorrectNumber]);
     }
 
-    private async Task SendRequestCustomerConfirmationAsync(Transaction transaction, ITelegramBotClient botClient, Message message, CancellationToken cancellationToken, string actionMessage = Text.Empty)
-    {
-        InlineKeyboardMarkup keyboard = new(new InlineKeyboardButton[][]
-        {
-            [InlineKeyboardButton.WithCallbackData(localizer[Text.Submit], CallbackData.Submit),
-                InlineKeyboardButton.WithCallbackData(localizer[Text.Cancel], CallbackData.Cancel)],
-        });
-
-        var text = string.Concat(actionMessage, localizer[Text.Confirmation]);
-
-        var sentMessage = await EditOrSendMessageAsync(
-            botClient: botClient,
-            message: message,
-            text: text,
-            replyMarkup: keyboard,
-            cancellationToken: cancellationToken,
-            messageId: transaction.Customer.MessageId);
-
-        transaction.Customer.MessageId = sentMessage.MessageId;
-        transaction.Customer.State = States.WaitingForConfirmation;
-    }
 
     private async Task SendSalesAmountInquiryAsync(ITelegramBotClient botClient, Message message, CancellationToken cancellationToken)
     {
@@ -205,6 +185,7 @@ public partial class BotUpdateHandler
         await SendUserManagerMenuAsync(botClient, message, cancellationToken, text);
     }
 
+
     private async Task SendRequestMessageToDeveloperAsync(ITelegramBotClient botClient, Message message, CancellationToken cancellationToken)
     {
         await botClient.SendChatActionAsync(
@@ -249,5 +230,89 @@ public partial class BotUpdateHandler
             Roles.Admin => SendAdminSettingsAsync(botClient, message, cancellationToken, localizer[Text.MessageSent]),
             _ => default!
         });
+    }
+
+
+    private async Task SendRequestCustomerConfirmationAsync(Transaction transaction, ITelegramBotClient botClient, Message message, CancellationToken cancellationToken, string actionMessage = Text.Empty)
+    {
+        InlineKeyboardMarkup keyboard = new(new InlineKeyboardButton[][]
+        {
+            [InlineKeyboardButton.WithCallbackData(localizer[Text.Submit], CallbackData.Submit),
+                InlineKeyboardButton.WithCallbackData(localizer[Text.Cancel], CallbackData.Cancel)],
+        });
+
+        var text = string.Concat(actionMessage, localizer[Text.Confirmation]);
+
+        var sentMessage = await EditOrSendMessageAsync(
+            botClient: botClient,
+            message: message,
+            text: text,
+            keyboard: keyboard,
+            cancellationToken: cancellationToken,
+            messageId: transaction.Customer.MessageId);
+
+        transaction.Customer.MessageId = sentMessage.MessageId;
+        transaction.Customer.State = States.WaitingForConfirmation;
+    }
+
+
+    private async Task SendRequestMessageTextAsync(ITelegramBotClient botClient, Message message, CancellationToken cancellationToken, MyMessage myMessage = default!)
+    {
+        var text = string.Empty;
+
+        if (myMessage is not null)
+            text = localizer[Text.ExistMessage, myMessage.Content];
+
+        await botClient.SendChatActionAsync(
+            chatId: message.Chat.Id,
+            chatAction: ChatAction.Typing,
+            cancellationToken: cancellationToken);
+
+        await botClient.DeleteMessageAsync(
+            chatId: message.Chat.Id,
+            messageId: message.MessageId,
+            cancellationToken: cancellationToken);
+
+        ReplyKeyboardMarkup keyboard = new(new KeyboardButton[][]
+        {
+            [new(localizer[Text.Back])]
+        })
+        {
+            ResizeKeyboard = true,
+            InputFieldPlaceholder = localizer[Text.AskMessageInPlaceHolder],
+        };
+
+        text = string.Concat(text, Text.SkipRow, localizer[Text.AskMessage]);
+
+        var sentMessage = await botClient.SendTextMessageAsync(
+        chatId: message.Chat.Id,
+            text: text,
+            replyMarkup: keyboard,
+            cancellationToken: cancellationToken);
+
+        user.MessageId = sentMessage.MessageId;
+        user.State = States.WaitingForSendMessageText;
+    }
+
+    // TO DO 
+    private async Task HandleMessageTextAsync(ITelegramBotClient botClient, Message message, CancellationToken cancellationToken)
+    {
+        ArgumentNullException.ThrowIfNull(message.Text, nameof(message));
+
+        var myMessage = await appDbContext.MyMessages
+            .OrderByDescending(m => m.Id)
+            .FirstOrDefaultAsync(m => m.Status == Status.Pending, cancellationToken);
+
+        if (myMessage is null)
+            await appDbContext.MyMessages.AddAsync(myMessage = new()
+            {
+                Status = Status.Pending,
+                Sender = user,
+            }, cancellationToken);
+
+        var actionMessage = localizer[string.IsNullOrEmpty(myMessage.Content) ? Text.SetSucceeded : Text.UpdateSucceeded];
+        myMessage.Content = message.Text;
+
+        await SendMessageMenuAsync(botClient, message, cancellationToken, actionMessage, myMessage);
     }
 }

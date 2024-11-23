@@ -123,6 +123,9 @@
   <data name="ActionNotAvailable" xml:space="preserve">
     <value>Ushbu amalni bajarish vaqtincha imkonsiz...</value>
   </data>
+  <data name="Address" xml:space="preserve">
+    <value>Manzil</value>
+  </data>
   <data name="Admin" xml:space="preserve">
     <value>Boshqaruvchi</value>
   </data>
@@ -182,7 +185,8 @@ Quyida yangilangan  matinni yuboring</value>
     <value>Ismni kiriting...</value>
   </data>
   <data name="AskGender" xml:space="preserve">
-    <value>Jinsz: {0}</value>
+    <value>Jinsni tanlash
+Joriy qiymat: {0}</value>
   </data>
   <data name="AskJoinToChannel" xml:space="preserve">
     <value>Davom ettirish uchun kanalga a'zo bo'ling!</value>
@@ -311,6 +315,9 @@ Kanal foydalanuvchi nomi: {7}
   <data name="ContactUs" xml:space="preserve">
     <value>☎️ Biz bilan a'loqa</value>
   </data>
+  <data name="Continue" xml:space="preserve">
+    <value>Davom etish</value>
+  </data>
   <data name="Customer" xml:space="preserve">
     <value>👤 Mijoz</value>
   </data>
@@ -432,8 +439,16 @@ Email: {5}</value>
   <data name="Next" xml:space="preserve">
     <value>Keyin ⇒</value>
   </data>
+  <data name="NotAvailable" xml:space="preserve">
+    <value>Ma‘lumot mavjud emas!
+
+</value>
+  </data>
   <data name="NotFound" xml:space="preserve">
     <value>🔍 Ma'lumot topilmadi...</value>
+  </data>
+  <data name="NotReadyNotification" xml:space="preserve">
+    <value>Hozircha bot to'liq ishga tushirilmadi. Tayyor bo'lishi bilan sizga xabar beramiz. Rahmat!...</value>
   </data>
   <data name="OrderOnTheSite" xml:space="preserve">
     <value>🛍 Sayt orqali buyurtma berish</value>
@@ -488,7 +503,7 @@ Email: {5}</value>
     <value>Sozlamalar</value>
   </data>
   <data name="Seller" xml:space="preserve">
-    <value>👨‍💼 Ishchi</value>
+    <value>👨‍💼 Xodim</value>
   </data>
   <data name="SellerMenuPersonalInfo" xml:space="preserve">
     <value>Foydalanuvchi ma'lumotlari
@@ -530,11 +545,13 @@ Jinsi: {3}</value>
     <value>📍 Do'konimiz</value>
   </data>
   <data name="StoreAddressInfo" xml:space="preserve">
-    <value>Farg'ona, Chimyon</value>
+    <value>Manzil:
+
+{0}</value>
   </data>
   <data name="StoreContactInfo" xml:space="preserve">
-    <value>Email: muqimjon.mr@gmail.com
-tel: +998 93 7349808</value>
+    <value>Telefon: {0}
+Email: {1}</value>
   </data>
   <data name="Submit" xml:space="preserve">
     <value>✅ Tasdiqlash</value>
@@ -544,6 +561,9 @@ tel: +998 93 7349808</value>
   </data>
   <data name="Take" xml:space="preserve">
     <value>📥 Olish</value>
+  </data>
+  <data name="ToAll" xml:space="preserve">
+    <value>📢 Barchaga</value>
   </data>
   <data name="Transaction" xml:space="preserve">
     <value>🔃 Ayirboshlash</value>
@@ -593,10 +613,16 @@ Sana: {4}</value>
   <data name="UserManager" xml:space="preserve">
     <value>👤 Mijoz boshqaruvi</value>
   </data>
+  <data name="UserRoleUpdated" xml:space="preserve">
+    <value>{0} uchun {1} roli berildi.</value>
+  </data>
   <data name="Website" xml:space="preserve">
     <value>🔗 Veb sayt</value>
   </data>
   <data name="Year" xml:space="preserve">
     <value>Yil</value>
+  </data>
+  <data name="YourRoleUpdated" xml:space="preserve">
+    <value>Sizning rolingiz {0}ga o'zgartirildi.</value>
   </data>
 </root>
