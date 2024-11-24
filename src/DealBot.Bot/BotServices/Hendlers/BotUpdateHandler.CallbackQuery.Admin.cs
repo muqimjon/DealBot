@@ -158,17 +158,90 @@ public partial class BotUpdateHandler
             CallbackData.Channel => SendRequestForChannelAsync(botClient, callbackQuery.Message, cancellationToken),
             CallbackData.PhoneNumber => SendRequestCompanyPhoneNumberAsync(botClient, callbackQuery.Message, cancellationToken),
             CallbackData.Email => SendRequestForEmailAsync(botClient, callbackQuery.Message, cancellationToken),
-            CallbackData.Address => SendRequestForAddressAsync(botClient, callbackQuery.Message, cancellationToken),
+            CallbackData.Address => HandleAddressAsync(botClient, callbackQuery.Message, cancellationToken),
             _ => default!,
         });
     }
 
 
-    private Task SendRequestForAddressAsync(ITelegramBotClient botClient, Message message, CancellationToken cancellationToken)
+    private async Task HandleAddressAsync(ITelegramBotClient botClient, Message message, CancellationToken cancellationToken)
     {
-        throw new NotImplementedException();
+        var address = (await appDbContext.Stores
+            .Include(s => s.Address)
+            .OrderByDescending(s => s.CreatedAt)
+            .FirstOrDefaultAsync(cancellationToken))?.Address;
+
+        if (address is null)
+            await SendRequestForLocationAsync(botClient, message, cancellationToken);
+        else
+            await SendMenuAddressInfoAsync(botClient, message, cancellationToken, value: address);
     }
 
+    private async Task SendMenuAddressInfoAsync(
+        ITelegramBotClient botClient,
+        Message message,
+        CancellationToken cancellationToken,
+        string actionMessage = Text.Empty,
+        Address value = default!)
+    {
+        var addressInfo = string.Concat(actionMessage, localizer[Text.AddressInfo,
+            localizer[string.IsNullOrEmpty(value.Country) ? Text.Undefined : Text.Defined],
+            localizer[string.IsNullOrEmpty(value.CountryCode) ? Text.Undefined : Text.Defined],
+            localizer[string.IsNullOrEmpty(value.Region) ? Text.Undefined : Text.Defined],
+            localizer[string.IsNullOrEmpty(value.District) ? Text.Undefined : Text.Defined],
+            localizer[string.IsNullOrEmpty(value.Street) ? Text.Undefined : Text.Defined],
+            localizer[string.IsNullOrEmpty(value.House) ? Text.Undefined : Text.Defined],
+            localizer[value.Latitude == 0 || value.Longitude == 0 ? Text.Undefined : Text.Defined]]);
+
+        var keyboard = new InlineKeyboardMarkup(new InlineKeyboardButton[][]
+        {
+            [InlineKeyboardButton.WithCallbackData(localizer[Text.Country], CallbackData.Country),
+                InlineKeyboardButton.WithCallbackData(localizer[Text.CountryCode], CallbackData.CountryCode)],
+            [InlineKeyboardButton.WithCallbackData(localizer[Text.Region], CallbackData.Region),
+                InlineKeyboardButton.WithCallbackData(localizer[Text.District], CallbackData.District)],
+            [InlineKeyboardButton.WithCallbackData(localizer[Text.Street], CallbackData.Street),
+                InlineKeyboardButton.WithCallbackData(localizer[Text.House], CallbackData.House)],
+            [InlineKeyboardButton.WithCallbackData(localizer[Text.Back], CallbackData.Back)]
+        });
+
+        var text = string.Concat(addressInfo, localizer[Text.SelectSettings]);
+
+        var sentMessage = await EditOrSendMessageAsync(
+            botClient: botClient,
+            message: message,
+            text: text,
+            keyboard: keyboard,
+            cancellationToken: cancellationToken);
+
+        user.MessageId = sentMessage.MessageId;
+        user.State = States.WaitingForSelectAddressSettings;
+    }
+
+    private async Task HandleAddressSettingsAsync(ITelegramBotClient botClient, CallbackQuery callbackQuery, CancellationToken cancellationToken)
+    {
+        ArgumentNullException.ThrowIfNull(callbackQuery.Message, nameof(Message));
+
+        await (callbackQuery.Data switch
+        {
+            CallbackData.Country => SendRequestForCountryAsync(botClient, callbackQuery.Message, cancellationToken),
+            CallbackData.CountryCode => SendRequestForCountryCodeAsync(botClient, callbackQuery.Message, cancellationToken),
+            CallbackData.Region => SendRequestForRegionAsync(botClient, callbackQuery.Message, cancellationToken),
+            CallbackData.District => SendRequestForDistrictAsync(botClient, callbackQuery.Message, cancellationToken),
+            CallbackData.Street => SendRequestForStreetAsync(botClient, callbackQuery.Message, cancellationToken),
+            CallbackData.House => SendRequestForHouseAsync(botClient, callbackQuery.Message, cancellationToken),
+            _ => default!,
+        });
+    }
+
+    private bool IsAddressValid(Address? address) =>
+        address is not null &&
+        address.Latitude != 0 &&
+        address.Longitude != 0 &&
+        string.IsNullOrEmpty(address.Country) &&
+        string.IsNullOrEmpty(address.Region) &&
+        string.IsNullOrEmpty(address.District) &&
+        string.IsNullOrEmpty(address.Street) &&
+        string.IsNullOrEmpty(address.House);
 
     private async Task SendEmployeesListAsync(ITelegramBotClient botClient, Message message, CancellationToken cancellationToken)
     {

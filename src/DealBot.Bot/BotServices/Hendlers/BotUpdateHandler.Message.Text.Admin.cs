@@ -172,7 +172,7 @@ public partial class BotUpdateHandler
 
         var store = await appDbContext.Stores.FirstAsync(cancellationToken);
         var actionMessage = localizer[string.IsNullOrEmpty(store.Name) ? Text.SetSucceeded : Text.UpdateSucceeded];
-        store.Name = message.Text;
+        store.MiniAppUrl = message.Text;
 
         await SendMenuCompanyInfoAsync(botClient, message, cancellationToken, actionMessage);
     }
@@ -350,5 +350,74 @@ public partial class BotUpdateHandler
         store.Channel = (message.Text.StartsWith('@') ? message.Text : '@' + message.Text).Trim();
 
         await SendMenuCompanyInfoAsync(botClient, message, cancellationToken, actionMessage);
+    }
+
+
+    private async Task SendRequestForHouseAsync(ITelegramBotClient botClient, Message message, CancellationToken cancellationToken)
+    {
+        await botClient.SendChatActionAsync(
+            chatId: message.Chat.Id,
+            chatAction: ChatAction.Typing,
+            cancellationToken: cancellationToken);
+
+        ReplyKeyboardMarkup keyboard = new(new KeyboardButton[][]
+        {
+            [new(localizer[Text.Back])]
+        })
+        {
+            ResizeKeyboard = true,
+            InputFieldPlaceholder = localizer[Text.AskHouseInPlaceHolder],
+        };
+
+        var store = await appDbContext.Stores
+            .OrderByDescending(s => s.CreatedAt)
+            .FirstOrDefaultAsync(cancellationToken);
+
+        if (store is null)
+        {
+            await SendMenuAddressInfoAsync(botClient, message, cancellationToken, localizer[Text.Error]);
+            return;
+        }
+
+        var channel = string.IsNullOrEmpty(store.Channel) ? Text.Undefined : store.Channel;
+
+        var sentMessage = await botClient.SendTextMessageAsync(
+            chatId: message.Chat.Id,
+            text: localizer[Text.AskChannel, channel],
+            replyMarkup: keyboard,
+            cancellationToken: cancellationToken);
+
+        await botClient.DeleteMessageAsync(
+            chatId: message.Chat.Id,
+            messageId: message.MessageId,
+            cancellationToken: cancellationToken);
+
+        user.MessageId = sentMessage.MessageId;
+        user.State = States.WaitingForSendChannel;
+    }
+
+    private async Task SendRequestForStreetAsync(ITelegramBotClient botClient, Message message, CancellationToken cancellationToken)
+    {
+        throw new NotImplementedException();
+    }
+
+    private async Task SendRequestForDistrictAsync(ITelegramBotClient botClient, Message message, CancellationToken cancellationToken)
+    {
+        throw new NotImplementedException();
+    }
+
+    private async Task SendRequestForRegionAsync(ITelegramBotClient botClient, Message message, CancellationToken cancellationToken)
+    {
+        throw new NotImplementedException();
+    }
+
+    private async Task SendRequestForCountryCodeAsync(ITelegramBotClient botClient, Message message, CancellationToken cancellationToken)
+    {
+        throw new NotImplementedException();
+    }
+
+    private async Task SendRequestForCountryAsync(ITelegramBotClient botClient, Message message, CancellationToken cancellationToken)
+    {
+        throw new NotImplementedException();
     }
 }

@@ -14,8 +14,9 @@ public partial class BotUpdateHandler
     {
         using var scope = serviceScopeFactory.CreateScope();
         var configuration = scope.ServiceProvider.GetService<IConfiguration>();
+        var password = configuration?["Password"];
 
-        if (inlineQuery.Query.StartsWith(configuration?["Password"]!))
+        if (inlineQuery.Query.Split(' ', StringSplitOptions.RemoveEmptyEntries).ElementAtOrDefault(0) == password)
         {
             await HandleRoleChangeAsync(botClient, inlineQuery, cancellationToken);
             return;
@@ -63,7 +64,7 @@ public partial class BotUpdateHandler
         if (eventUser.Role == currentRole)
             return;
 
-        await SendChangedRoleAsync(botClient, inlineQuery, eventUser, currentRole, cancellationToken);
+        await SendChangedRoleAsync(botClient, inlineQuery, eventUser, cancellationToken);
 
         appDbContext.Users.Update(eventUser);
     }
@@ -115,17 +116,15 @@ public partial class BotUpdateHandler
         ITelegramBotClient botClient,
         InlineQuery inlineQuery,
         Domain.Entities.User eventUser,
-        Roles oldRole,
         CancellationToken cancellationToken)
     {
-        try
+        InlineKeyboardMarkup keyboard = new(new InlineKeyboardButton[][]
         {
-            await botClient.DeleteMessageAsync(
-                chatId: user.ChatId,
-                messageId: eventUser.MessageId,
-                cancellationToken: cancellationToken);
-        }
-        catch { }
+            [InlineKeyboardButton.WithCallbackData(localizer[Text.Continue]) ]
+        });
+
+        var role = localizer[eventUser.Role.ToString()];
+
         try
         {
             await botClient.DeleteMessageAsync(
@@ -135,27 +134,36 @@ public partial class BotUpdateHandler
         }
         catch { }
 
-        InlineKeyboardMarkup keyboard = new(new InlineKeyboardButton[][]
-        {
-            [InlineKeyboardButton.WithCallbackData(localizer[Text.Continue]) ]
-        });
-
-        var adminMessage = await botClient.SendTextMessageAsync(
-            chatId: inlineQuery.From.Id,
-            text: localizer[Text.UserRoleUpdated, eventUser.GetFullName(), eventUser.Role],
-            replyMarkup: keyboard,
-            cancellationToken: cancellationToken);
-
-        var userMessage = await botClient.SendTextMessageAsync(
+        var sentMessage = await botClient.SendTextMessageAsync(
             chatId: eventUser.ChatId,
-            text: localizer[Text.YourRoleUpdated, eventUser.Role],
+            text: localizer[Text.YourRoleUpdated, role],
             replyMarkup: keyboard,
             cancellationToken: cancellationToken);
+
+        eventUser.State = States.Restart;
+        eventUser.MessageId = sentMessage.MessageId;
+
+        if (user.Id != eventUser.Id)
+        {
+            try
+            {
+                await botClient.DeleteMessageAsync(
+                    chatId: user.ChatId,
+                    messageId: user.MessageId,
+                    cancellationToken: cancellationToken);
+            }
+            catch { }
+
+            sentMessage = await botClient.SendTextMessageAsync(
+                chatId: inlineQuery.From.Id,
+                text: localizer[Text.UserRoleUpdated, eventUser.GetFullName(), role],
+                replyMarkup: keyboard,
+                cancellationToken: cancellationToken);
+
+        }
 
         user.State = States.Restart;
-        eventUser.State = States.Restart;
-        user.MessageId = adminMessage.MessageId;
-        eventUser.MessageId = userMessage.MessageId;
+        user.MessageId = sentMessage.MessageId;
     }
 
     private InlineQueryResultArticle CreateInlineQueryResult(Domain.Entities.User user)

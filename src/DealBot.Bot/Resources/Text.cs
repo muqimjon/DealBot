@@ -150,4 +150,13 @@ public class Text
     public const string Continue = nameof(Continue);
     public const string UserRoleUpdated = nameof(UserRoleUpdated);
     public const string YourRoleUpdated = nameof(YourRoleUpdated);
+    public const string AddressInfo = nameof(AddressInfo);
+    public const string Country = nameof(Country);
+    public const string CountryCode = nameof(CountryCode);
+    public const string City = nameof(City);
+    public const string Street = nameof(Street);
+    public const string House = nameof(House);
+    public const string District = nameof(District);
+    public const string Region = nameof(Region);
+    public const string AskHouseInPlaceHolder = nameof(AskHouseInPlaceHolder);
 }

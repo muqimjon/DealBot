@@ -1,7 +1,12 @@
 ﻿namespace DealBot.Bot.BotServices;
 
 using DealBot.Bot.Resources;
+using DealBot.Domain.Entities;
 using DealBot.Domain.Enums;
+using Microsoft.EntityFrameworkCore;
+using System.Globalization;
+using System.Net.Http;
+using System.Text.Json;
 using Telegram.Bot;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.ReplyMarkups;
@@ -10,12 +15,9 @@ public partial class BotUpdateHandler
 {
     private async Task HandleLocationMessageAsync(ITelegramBotClient botClient, Message message, CancellationToken cancellationToken)
     {
-        logger.LogInformation("Received Contact message query from {FirstName}", user.FirstName);
-
         var handler = user.State switch
         {
-            States.WaitingForSendPhoneNumber => HandleSentPhoneNumberAsync(botClient, message, cancellationToken),
-            States.WaitingForSendCompanyPhoneNumber => HandleCompanyPhoneNumberAsync(botClient, message, cancellationToken),
+            States.WaitingForSendLocation => HandleCompanyLocationAsync(botClient, message, cancellationToken),
             _ => HandleUnknownMessageAsync(botClient, message, cancellationToken)
         };
 
@@ -25,11 +27,10 @@ public partial class BotUpdateHandler
 
     private async Task SendRequestForLocationAsync(ITelegramBotClient botClient, Message message, CancellationToken cancellationToken)
     {
-        ReplyKeyboardMarkup keyboard = new(new KeyboardButton[][]
-        {
+        ReplyKeyboardMarkup keyboard = new([
             [new(localizer[Text.SendLocation]) { RequestLocation = true }],
             [new(localizer[Text.Back])]
-        })
+        ])
         {
             ResizeKeyboard = true,
             InputFieldPlaceholder = localizer[Text.AskForLocationInPlaceHolder],
@@ -50,4 +51,82 @@ public partial class BotUpdateHandler
         user.State = States.WaitingForSendLocation;
     }
 
+    private async Task HandleCompanyLocationAsync(ITelegramBotClient botClient, Message message, CancellationToken cancellationToken)
+    {
+        var store = await appDbContext.Stores
+            .OrderByDescending(s => s.CreatedAt)
+            .FirstOrDefaultAsync(cancellationToken);
+
+        if (store is null)
+        {
+            await SendMenuCompanyInfoAsync(botClient, message, cancellationToken, localizer[Text.Error]);
+            return;
+        }
+
+        var latitude = message.Location!.Latitude;
+        var longitude = message.Location.Longitude;
+        var address = await GetAddressFromCoordinatesAsync(longitude, latitude);
+        await appDbContext.Addresses.AddAsync(address ??= new(), cancellationToken);
+        store.Address = address;
+        await SendMenuAddressInfoAsync(botClient, message, cancellationToken, value: address);
+    }
+
+    private async Task<Address?> GetAddressFromCoordinatesAsync(double longitude, double latitude)
+    {
+        using HttpClient httpClient = new();
+        httpClient.DefaultRequestHeaders.Add("User-Agent", "DealBot/1.0");
+
+        var url = $"https://nominatim.openstreetmap.org/reverse?format=json&lat={latitude.ToString(CultureInfo.InvariantCulture)}&lon={longitude.ToString(CultureInfo.InvariantCulture)}&zoom=18&addressdetails=1";
+
+        try
+        {
+            var response = await httpClient.GetAsync(url);
+            response.EnsureSuccessStatusCode();
+
+            var content = await response.Content.ReadAsStringAsync();
+
+            NominatimResponse? nominatimResponse = JsonSerializer.Deserialize<NominatimResponse>(content,
+                new JsonSerializerOptions
+                {
+                    PropertyNameCaseInsensitive = true
+                });
+
+            if (nominatimResponse?.Address is null)
+                return null;
+
+            return new()
+            {
+                Country = nominatimResponse.Address.Country,
+                CountryCode = nominatimResponse.Address.CountryCode,
+                Region = nominatimResponse.Address.State,
+                District = nominatimResponse.Address.County,
+                Street = nominatimResponse.Address.Road,
+                House = nominatimResponse.Address.HouseNumber,
+                Longitude = longitude,
+                Latitude = latitude
+            };
+        }
+        catch { }
+
+        return null;
+    }
+
 }
+
+#region Model
+public class NominatimResponse
+{
+    public string? DisplayName { get; set; }
+    public NominatimAddress? Address { get; set; }
+}
+
+public class NominatimAddress
+{
+    public string? Country { get; set; }
+    public string? CountryCode { get; set; }
+    public string? State { get; set; }
+    public string? County { get; set; }
+    public string? Road { get; set; }
+    public string? HouseNumber { get; set; }
+}
+#endregion

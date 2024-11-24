@@ -61,4 +61,11 @@ public class CallbackData
     public const string Customer = nameof(Customer);
     public const string ToAll = nameof(ToAll);
     public const string Address = nameof(Address);
+    public const string Country = nameof(Country);
+    public const string CountryCode = nameof(CountryCode);
+    public const string City = nameof(City);
+    public const string Street = nameof(Street);
+    public const string Region = nameof(Region);
+    public const string District = nameof(District);
+    public const string House = nameof(House);
 }

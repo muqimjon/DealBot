@@ -33,7 +33,7 @@ public partial class BotUpdateHandler
                 [InlineKeyboardButton.WithWebApp(localizer[Text.OrderOnTheSite], new WebAppInfo() { Url = store.MiniAppUrl })],
             string.IsNullOrEmpty(store.Contact?.Phone) ? [] :
                 [InlineKeyboardButton.WithCallbackData(localizer[Text.ContactUs], CallbackData.ContactUs)],
-            string.IsNullOrEmpty(store.Address?.City) ? [] :
+            IsAddressValid(store.Address) ? [] :
                 [InlineKeyboardButton.WithCallbackData(localizer[Text.StoreAddress], CallbackData.StoreAddress)],
             [InlineKeyboardButton.WithCallbackData(localizer[Text.Settings], CallbackData.Settings),
                 InlineKeyboardButton.WithCallbackData(localizer[Text.Comment], CallbackData.Comment)],

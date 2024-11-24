@@ -55,4 +55,5 @@ public enum States
     WaitingForSendMessageText,
     WaitingForSelectGenderForMessage,
     WaitingForSendLocation,
+    WaitingForSelectAddressSettings,
 }

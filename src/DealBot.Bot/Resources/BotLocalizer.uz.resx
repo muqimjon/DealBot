@@ -124,7 +124,18 @@
     <value>Ushbu amalni bajarish vaqtincha imkonsiz...</value>
   </data>
   <data name="Address" xml:space="preserve">
-    <value>Manzil</value>
+    <value>📍 Manzil</value>
+  </data>
+  <data name="AddressInfo" xml:space="preserve">
+    <value>Joylashuv ma'lumotlari:
+
+Davlat: {0}
+Kodi: {1}
+Viloyat: {2}
+Tuman: {3}
+Ko'cha: {4}
+Uy: {5}
+Joylashuv: {6}</value>
   </data>
   <data name="Admin" xml:space="preserve">
     <value>Boshqaruvchi</value>
@@ -188,6 +199,9 @@ Quyida yangilangan  matinni yuboring</value>
     <value>Jinsni tanlash
 Joriy qiymat: {0}</value>
   </data>
+  <data name="AskHouseInPlaceHolder" xml:space="preserve">
+    <value>Uy raqamini kiriting...</value>
+  </data>
   <data name="AskJoinToChannel" xml:space="preserve">
     <value>Davom ettirish uchun kanalga a'zo bo'ling!</value>
   </data>
@@ -204,6 +218,9 @@ Iltimos, davom ettirish uchun kanalga a'zo bo'ling!</value>
   </data>
   <data name="AskLastNameInPlaceHolder" xml:space="preserve">
     <value>Familiyani kiriting...</value>
+  </data>
+  <data name="AskLocation" xml:space="preserve">
+    <value>Joylashuvingizni yuboring</value>
   </data>
   <data name="AskMessage" xml:space="preserve">
     <value>Xabarni kiriting:</value>
@@ -515,6 +532,12 @@ Jinsi: {3}</value>
   </data>
   <data name="SendContact" xml:space="preserve">
     <value>Telefon raqamni yuborish</value>
+  </data>
+  <data name="SendLocation" xml:space="preserve">
+    <value>Joylashuvni yuborish</value>
+  </data>
+  <data name="SendLocationInPlaceHolder" xml:space="preserve">
+    <value>Standart usulda joylashuvingizni yuboring...</value>
   </data>
   <data name="SendMessage" xml:space="preserve">
     <value>✉️ Xabar yuborish</value>
