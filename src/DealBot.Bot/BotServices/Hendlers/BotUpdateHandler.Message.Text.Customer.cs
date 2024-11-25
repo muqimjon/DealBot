@@ -16,10 +16,10 @@ public partial class BotUpdateHandler
             chatAction: ChatAction.Typing,
             cancellationToken: cancellationToken);
 
-        ReplyKeyboardMarkup keyboard = new(new KeyboardButton[][]
-        {
+        ReplyKeyboardMarkup keyboard = new(
+        [
             [new(localizer[Text.Back])]
-        })
+        ])
         {
             ResizeKeyboard = true,
             InputFieldPlaceholder = localizer[Text.AskCommentInPlaceHolder],

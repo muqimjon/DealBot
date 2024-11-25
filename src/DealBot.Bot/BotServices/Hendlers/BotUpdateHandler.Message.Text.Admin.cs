@@ -17,10 +17,10 @@ public partial class BotUpdateHandler
             chatAction: ChatAction.Typing,
             cancellationToken: cancellationToken);
 
-        ReplyKeyboardMarkup keyboard = new(new KeyboardButton[][]
-        {
+        ReplyKeyboardMarkup keyboard = new(
+        [
             [new(localizer[Text.Back])]
-        })
+        ])
         {
             ResizeKeyboard = true,
             InputFieldPlaceholder = localizer[Text.AskNameInPlaceHolder],
@@ -73,10 +73,10 @@ public partial class BotUpdateHandler
             chatAction: ChatAction.Typing,
             cancellationToken: cancellationToken);
 
-        ReplyKeyboardMarkup keyboard = new(new KeyboardButton[][]
-        {
+        ReplyKeyboardMarkup keyboard = new(
+        [
             [new(localizer[Text.Back])]
-        })
+        ])
         {
             ResizeKeyboard = true,
             InputFieldPlaceholder = localizer[Text.AskDescriptionInPlaceHolder],
@@ -129,10 +129,10 @@ public partial class BotUpdateHandler
             chatAction: ChatAction.Typing,
             cancellationToken: cancellationToken);
 
-        ReplyKeyboardMarkup keyboard = new(new KeyboardButton[][]
-        {
+        ReplyKeyboardMarkup keyboard = new(
+        [
             [new(localizer[Text.Back])]
-        })
+        ])
         {
             ResizeKeyboard = true,
             InputFieldPlaceholder = localizer[Text.AskMiniAppUrlInPlaceHolder],
@@ -185,10 +185,10 @@ public partial class BotUpdateHandler
             chatAction: ChatAction.Typing,
             cancellationToken: cancellationToken);
 
-        ReplyKeyboardMarkup keyboard = new(new KeyboardButton[][]
-        {
+        ReplyKeyboardMarkup keyboard = new(
+        [
             [new(localizer[Text.Back])]
-        })
+        ])
         {
             ResizeKeyboard = true,
             InputFieldPlaceholder = localizer[Text.AskWebsiteInPlaceHolder],
@@ -241,10 +241,10 @@ public partial class BotUpdateHandler
             chatAction: ChatAction.Typing,
             cancellationToken: cancellationToken);
 
-        ReplyKeyboardMarkup keyboard = new(new KeyboardButton[][]
-        {
+        ReplyKeyboardMarkup keyboard = new(
+        [
             [new(localizer[Text.Back])]
-        })
+        ])
         {
             ResizeKeyboard = true,
             InputFieldPlaceholder = localizer[Text.AskEmailInPlaceHolder],
@@ -302,10 +302,10 @@ public partial class BotUpdateHandler
             chatAction: ChatAction.Typing,
             cancellationToken: cancellationToken);
 
-        ReplyKeyboardMarkup keyboard = new(new KeyboardButton[][]
-        {
+        ReplyKeyboardMarkup keyboard = new(
+        [
             [new(localizer[Text.Back])]
-        })
+        ])
         {
             ResizeKeyboard = true,
             InputFieldPlaceholder = localizer[Text.AskChannelInPlaceHolder],
@@ -360,30 +360,30 @@ public partial class BotUpdateHandler
             chatAction: ChatAction.Typing,
             cancellationToken: cancellationToken);
 
-        ReplyKeyboardMarkup keyboard = new(new KeyboardButton[][]
-        {
+        ReplyKeyboardMarkup keyboard = new(
+        [
             [new(localizer[Text.Back])]
-        })
+        ])
         {
             ResizeKeyboard = true,
             InputFieldPlaceholder = localizer[Text.AskHouseInPlaceHolder],
         };
 
-        var store = await appDbContext.Stores
+        var address = (await appDbContext.Stores
             .OrderByDescending(s => s.CreatedAt)
-            .FirstOrDefaultAsync(cancellationToken);
+            .FirstOrDefaultAsync(cancellationToken))?.Address;
 
-        if (store is null)
+        if (address is null)
         {
             await SendMenuAddressInfoAsync(botClient, message, cancellationToken, localizer[Text.Error]);
             return;
         }
 
-        var channel = string.IsNullOrEmpty(store.Channel) ? Text.Undefined : store.Channel;
+        var channel = string.IsNullOrEmpty(address.House) ? localizer[Text.Undefined] : address.House;
 
         var sentMessage = await botClient.SendTextMessageAsync(
             chatId: message.Chat.Id,
-            text: localizer[Text.AskChannel, channel],
+            text: localizer[Text.AskHouse, channel],
             replyMarkup: keyboard,
             cancellationToken: cancellationToken);
 
@@ -393,31 +393,221 @@ public partial class BotUpdateHandler
             cancellationToken: cancellationToken);
 
         user.MessageId = sentMessage.MessageId;
-        user.State = States.WaitingForSendChannel;
+        user.State = States.WaitingForSendHouse;
     }
 
     private async Task SendRequestForStreetAsync(ITelegramBotClient botClient, Message message, CancellationToken cancellationToken)
     {
-        throw new NotImplementedException();
+        await botClient.SendChatActionAsync(
+            chatId: message.Chat.Id,
+            chatAction: ChatAction.Typing,
+            cancellationToken: cancellationToken);
+
+        ReplyKeyboardMarkup keyboard = new(
+        [
+            [new(localizer[Text.Back])]
+        ])
+        {
+            ResizeKeyboard = true,
+            InputFieldPlaceholder = localizer[Text.AskStreetInPlaceHolder],
+        };
+
+        var address = (await appDbContext.Stores
+            .OrderByDescending(s => s.CreatedAt)
+            .FirstOrDefaultAsync(cancellationToken))?.Address;
+
+        if (address is null)
+        {
+            await SendMenuAddressInfoAsync(botClient, message, cancellationToken, localizer[Text.Error]);
+            return;
+        }
+
+        var channel = string.IsNullOrEmpty(address.Street) ? localizer[Text.Undefined] : address.Street;
+
+        var sentMessage = await botClient.SendTextMessageAsync(
+            chatId: message.Chat.Id,
+            text: localizer[Text.AskStreet, channel],
+            replyMarkup: keyboard,
+            cancellationToken: cancellationToken);
+
+        await botClient.DeleteMessageAsync(
+            chatId: message.Chat.Id,
+            messageId: message.MessageId,
+            cancellationToken: cancellationToken);
+
+        user.MessageId = sentMessage.MessageId;
+        user.State = States.WaitingForSendStreet;
     }
 
     private async Task SendRequestForDistrictAsync(ITelegramBotClient botClient, Message message, CancellationToken cancellationToken)
     {
-        throw new NotImplementedException();
+        await botClient.SendChatActionAsync(
+            chatId: message.Chat.Id,
+            chatAction: ChatAction.Typing,
+            cancellationToken: cancellationToken);
+
+        ReplyKeyboardMarkup keyboard = new(
+        [
+            [new(localizer[Text.Back])]
+        ])
+        {
+            ResizeKeyboard = true,
+            InputFieldPlaceholder = localizer[Text.AskDistrictInPlaceHolder],
+        };
+
+        var address = (await appDbContext.Stores
+            .OrderByDescending(s => s.CreatedAt)
+            .FirstOrDefaultAsync(cancellationToken))?.Address;
+
+        if (address is null)
+        {
+            await SendMenuAddressInfoAsync(botClient, message, cancellationToken, localizer[Text.Error]);
+            return;
+        }
+
+        var channel = string.IsNullOrEmpty(address.District) ? localizer[Text.Undefined] : address.District;
+
+        var sentMessage = await botClient.SendTextMessageAsync(
+            chatId: message.Chat.Id,
+            text: localizer[Text.AskDistrict, channel],
+            replyMarkup: keyboard,
+            cancellationToken: cancellationToken);
+
+        await botClient.DeleteMessageAsync(
+            chatId: message.Chat.Id,
+            messageId: message.MessageId,
+            cancellationToken: cancellationToken);
+
+        user.MessageId = sentMessage.MessageId;
+        user.State = States.WaitingForSendDistrict;
     }
 
     private async Task SendRequestForRegionAsync(ITelegramBotClient botClient, Message message, CancellationToken cancellationToken)
     {
-        throw new NotImplementedException();
+        await botClient.SendChatActionAsync(
+            chatId: message.Chat.Id,
+            chatAction: ChatAction.Typing,
+            cancellationToken: cancellationToken);
+
+        ReplyKeyboardMarkup keyboard = new(
+        [
+            [new(localizer[Text.Back])]
+        ])
+        {
+            ResizeKeyboard = true,
+            InputFieldPlaceholder = localizer[Text.AskRegionInPlaceHolder],
+        };
+
+        var address = (await appDbContext.Stores
+            .OrderByDescending(s => s.CreatedAt)
+            .FirstOrDefaultAsync(cancellationToken))?.Address;
+
+        if (address is null)
+        {
+            await SendMenuAddressInfoAsync(botClient, message, cancellationToken, localizer[Text.Error]);
+            return;
+        }
+
+        var channel = string.IsNullOrEmpty(address.Region) ? localizer[Text.Undefined] : address.Region;
+
+        var sentMessage = await botClient.SendTextMessageAsync(
+            chatId: message.Chat.Id,
+            text: localizer[Text.AskRegion, channel],
+            replyMarkup: keyboard,
+            cancellationToken: cancellationToken);
+
+        await botClient.DeleteMessageAsync(
+            chatId: message.Chat.Id,
+            messageId: message.MessageId,
+            cancellationToken: cancellationToken);
+
+        user.MessageId = sentMessage.MessageId;
+        user.State = States.WaitingForSendRegion;
     }
 
     private async Task SendRequestForCountryCodeAsync(ITelegramBotClient botClient, Message message, CancellationToken cancellationToken)
     {
-        throw new NotImplementedException();
+        await botClient.SendChatActionAsync(
+            chatId: message.Chat.Id,
+            chatAction: ChatAction.Typing,
+            cancellationToken: cancellationToken);
+
+        ReplyKeyboardMarkup keyboard = new(
+        [
+            [new(localizer[Text.Back])]
+        ])
+        {
+            ResizeKeyboard = true,
+            InputFieldPlaceholder = localizer[Text.AskCountryCodeInPlaceHolder],
+        };
+
+        var address = (await appDbContext.Stores
+            .OrderByDescending(s => s.CreatedAt)
+            .FirstOrDefaultAsync(cancellationToken))?.Address;
+
+        if (address is null)
+        {
+            await SendMenuAddressInfoAsync(botClient, message, cancellationToken, localizer[Text.Error]);
+            return;
+        }
+
+        var channel = string.IsNullOrEmpty(address.CountryCode) ? localizer[Text.Undefined] : address.CountryCode;
+
+        var sentMessage = await botClient.SendTextMessageAsync(
+            chatId: message.Chat.Id,
+            text: localizer[Text.AskCountryCode, channel],
+            replyMarkup: keyboard,
+            cancellationToken: cancellationToken);
+
+        await botClient.DeleteMessageAsync(
+            chatId: message.Chat.Id,
+            messageId: message.MessageId,
+            cancellationToken: cancellationToken);
+
+        user.MessageId = sentMessage.MessageId;
+        user.State = States.WaitingForSendCountryCode;
     }
 
     private async Task SendRequestForCountryAsync(ITelegramBotClient botClient, Message message, CancellationToken cancellationToken)
     {
-        throw new NotImplementedException();
+        await botClient.SendChatActionAsync(
+            chatId: message.Chat.Id,
+            chatAction: ChatAction.Typing,
+            cancellationToken: cancellationToken);
+
+        ReplyKeyboardMarkup keyboard = new(
+        [
+            [new(localizer[Text.Back])]
+        ])
+        {
+            ResizeKeyboard = true,
+            InputFieldPlaceholder = localizer[Text.AskCountryInPlaceHolder],
+        };
+
+        var address = (await appDbContext.Stores
+            .OrderByDescending(s => s.CreatedAt)
+            .FirstOrDefaultAsync(cancellationToken))?.Address;
+
+        if (address is null)
+        {
+            await SendMenuAddressInfoAsync(botClient, message, cancellationToken, localizer[Text.Error]);
+            return;
+        }
+
+        var channel = string.IsNullOrEmpty(address.Country) ? localizer[Text.Undefined] : address.Country;
+
+        var sentMessage = await botClient.SendTextMessageAsync(
+            chatId: message.Chat.Id,
+            text: localizer[Text.AskCountry, channel],
+            replyMarkup: keyboard,
+            cancellationToken: cancellationToken);
+
+        await botClient.DeleteMessageAsync(
+            chatId: message.Chat.Id,
+            messageId: message.MessageId,
+            cancellationToken: cancellationToken);
+
+        user.MessageId = sentMessage.MessageId;
+        user.State = States.WaitingForSendCountry;
     }
 }

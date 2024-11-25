@@ -23,10 +23,10 @@ public partial class BotUpdateHandler
             chatId: message.Chat.Id,
             cancellationToken: cancellationToken);
 
-        ReplyKeyboardMarkup keyboard = new(new KeyboardButton[][]
-        {
+        ReplyKeyboardMarkup keyboard = new(
+        [
             [new(localizer[Text.Back])]
-        })
+        ])
         {
             ResizeKeyboard = true,
             InputFieldPlaceholder = localizer[Text.AskUserIdInPlaceHolder,
@@ -76,10 +76,10 @@ public partial class BotUpdateHandler
             messageId: message.MessageId,
             cancellationToken: cancellationToken);
 
-        ReplyKeyboardMarkup keyboard = new(new KeyboardButton[][]
-        {
+        ReplyKeyboardMarkup keyboard = new(
+        [
             [new(localizer[Text.Back])]
-        })
+        ])
         {
             ResizeKeyboard = true,
             InputFieldPlaceholder = localizer[Text.AskProductPriceInPlaceHolder],
@@ -129,10 +129,10 @@ public partial class BotUpdateHandler
             messageId: message.MessageId,
             cancellationToken: cancellationToken);
 
-        ReplyKeyboardMarkup keyboard = new(new KeyboardButton[][]
-        {
+        ReplyKeyboardMarkup keyboard = new(
+        [
             [new(localizer[Text.Back])]
-        })
+        ])
         {
             ResizeKeyboard = true,
             InputFieldPlaceholder = localizer[Text.AskSalesAmountInPlaceHolder],
@@ -198,10 +198,10 @@ public partial class BotUpdateHandler
             messageId: message.MessageId,
             cancellationToken: cancellationToken);
 
-        ReplyKeyboardMarkup keyboard = new(new KeyboardButton[][]
-        {
+        ReplyKeyboardMarkup keyboard = new(
+        [
             [new(localizer[Text.Back])]
-        })
+        ])
         {
             ResizeKeyboard = true,
             InputFieldPlaceholder = localizer[Text.AskMessageInPlaceHolder],
@@ -235,11 +235,11 @@ public partial class BotUpdateHandler
 
     private async Task SendRequestCustomerConfirmationAsync(Transaction transaction, ITelegramBotClient botClient, Message message, CancellationToken cancellationToken, string actionMessage = Text.Empty)
     {
-        InlineKeyboardMarkup keyboard = new(new InlineKeyboardButton[][]
-        {
+        InlineKeyboardMarkup keyboard = new(
+        [
             [InlineKeyboardButton.WithCallbackData(localizer[Text.Submit], CallbackData.Submit),
                 InlineKeyboardButton.WithCallbackData(localizer[Text.Cancel], CallbackData.Cancel)],
-        });
+        ]);
 
         var text = string.Concat(actionMessage, localizer[Text.Confirmation]);
 
@@ -273,10 +273,10 @@ public partial class BotUpdateHandler
             messageId: message.MessageId,
             cancellationToken: cancellationToken);
 
-        ReplyKeyboardMarkup keyboard = new(new KeyboardButton[][]
-        {
+        ReplyKeyboardMarkup keyboard = new(
+        [
             [new(localizer[Text.Back])]
-        })
+        ])
         {
             ResizeKeyboard = true,
             InputFieldPlaceholder = localizer[Text.AskMessageInPlaceHolder],

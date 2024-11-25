@@ -68,4 +68,5 @@ public class CallbackData
     public const string Region = nameof(Region);
     public const string District = nameof(District);
     public const string House = nameof(House);
+    public const string Location = nameof(Location);
 }

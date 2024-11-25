@@ -26,8 +26,8 @@ public partial class BotUpdateHandler
             return;
         }
 
-        InlineKeyboardMarkup keyboard = new(new InlineKeyboardButton[][]
-        {
+        InlineKeyboardMarkup keyboard = new(
+        [
             [InlineKeyboardButton.WithCallbackData(localizer[Text.MyPrivilegeCard], CallbackData.MyPrivilegeCard)],
             string.IsNullOrEmpty(store!.MiniAppUrl) ? [] :
                 [InlineKeyboardButton.WithWebApp(localizer[Text.OrderOnTheSite], new WebAppInfo() { Url = store.MiniAppUrl })],
@@ -38,7 +38,7 @@ public partial class BotUpdateHandler
             [InlineKeyboardButton.WithCallbackData(localizer[Text.Settings], CallbackData.Settings),
                 InlineKeyboardButton.WithCallbackData(localizer[Text.Comment], CallbackData.Comment)],
             [InlineKeyboardButton.WithUrl(localizer[Text.Referral], await GetShareLink(botClient, cancellationToken))],
-        });
+        ]);
 
         user.Card.State = await IsSubscribed(botClient, user.TelegramId, cancellationToken)
             ? CardStates.Active : CardStates.Block;
@@ -90,12 +90,12 @@ public partial class BotUpdateHandler
                            select s)
                     .LastAsync(cancellationToken);
 
-        InlineKeyboardMarkup keyboard = new(new InlineKeyboardButton[][]
-        {
+        InlineKeyboardMarkup keyboard = new(
+        [
             [InlineKeyboardButton.WithUrl(localizer[Text.Subscribe], store.Channel)],
             [InlineKeyboardButton.WithCallbackData(localizer[Text.Check], CallbackData.Check)],
             [InlineKeyboardButton.WithCallbackData(localizer[Text.Back], CallbackData.Back)],
-        });
+        ]);
 
         var askToJoin = !user.State.Equals(States.WaitingForSubscribeToChannel)
             ? Text.AskJoinToChannel : Text.AskJoinToChannelAgain;
@@ -166,10 +166,10 @@ public partial class BotUpdateHandler
 
     private async Task SendUserPrivilegeCardAsync(ITelegramBotClient botClient, Message message, CancellationToken cancellationToken)
     {
-        InlineKeyboardMarkup keyboard = new(new InlineKeyboardButton[][]
-        {
+        InlineKeyboardMarkup keyboard = new(
+        [
             [InlineKeyboardButton.WithCallbackData(localizer[Text.Back], CallbackData.Back)],
-        });
+        ]);
 
         var card = user.Card;
 
@@ -203,12 +203,12 @@ public partial class BotUpdateHandler
         string googleMapsUrl = $"https://www.google.com/maps?q={latitude},{longitude}";
         string yandexMapsUrl = $"https://yandex.com/maps/?rtext={latitude},{longitude}&rtt=auto";
 
-        InlineKeyboardMarkup keyboard = new(new InlineKeyboardButton[][]
-        {
+        InlineKeyboardMarkup keyboard = new(
+        [
             [InlineKeyboardButton.WithUrl("Google Maps", googleMapsUrl),
                 InlineKeyboardButton.WithUrl("Yandex Maps", yandexMapsUrl)],
             [InlineKeyboardButton.WithCallbackData(localizer[Text.Back], CallbackData.Back)]
-        });
+        ]);
 
         try
         {
@@ -247,10 +247,10 @@ public partial class BotUpdateHandler
             return;
         }
 
-        InlineKeyboardMarkup keyboard = new(new InlineKeyboardButton[][]
-        {
+        InlineKeyboardMarkup keyboard = new(
+        [
             [InlineKeyboardButton.WithCallbackData(localizer[Text.Back], CallbackData.Back)],
-        });
+        ]);
 
         var sentMessage = await botClient.EditMessageTextAsync(
             chatId: message.Chat.Id,
@@ -313,11 +313,11 @@ public partial class BotUpdateHandler
             IsCashback = false,
         }, cancellationToken);
 
-        var keyboard = new InlineKeyboardMarkup(new InlineKeyboardButton[][]
-        {
+        var keyboard = new InlineKeyboardMarkup(
+        [
             [InlineKeyboardButton.WithCallbackData(localizer[Text.Submit], CallbackData.Submit),
                 InlineKeyboardButton.WithCallbackData(localizer[Text.Cancel], CallbackData.Cancel)],
-        });
+        ]);
 
         var text = localizer[
             Text.TransactionConfirmation,

@@ -14,14 +14,14 @@ public partial class BotUpdateHandler
 {
     private async Task SendSellerMenuAsync(ITelegramBotClient botClient, Message message, CancellationToken cancellationToken, string actionMessage = Text.Empty)
     {
-        InlineKeyboardMarkup keyboard = new(new InlineKeyboardButton[][]
-        {
+        InlineKeyboardMarkup keyboard = new(
+        [
             [InlineKeyboardButton.WithCallbackData(localizer[Text.CustomerManager], CallbackData.UserManager)],
             [InlineKeyboardButton.WithCallbackData(localizer[Text.CustomersList], CallbackData.CustomersList)],
             [InlineKeyboardButton.WithCallbackData(localizer[Text.SendMessage], CallbackData.SendMessage),
                 InlineKeyboardButton.WithCallbackData(localizer[Text.Statistics], CallbackData.Statistics)],
             [InlineKeyboardButton.WithCallbackData(localizer[Text.Settings], CallbackData.Settings)],
-        });
+        ]);
 
         var text = string.Concat(actionMessage, localizer[Text.SelectMenu]);
 
@@ -54,13 +54,13 @@ public partial class BotUpdateHandler
 
     private async Task SendSellerSettingsAsync(ITelegramBotClient botClient, Message message, CancellationToken cancellationToken, string actionMessage = Text.Empty)
     {
-        InlineKeyboardMarkup keyboard = new(new InlineKeyboardButton[][]
-        {
+        InlineKeyboardMarkup keyboard = new(
+        [
             [InlineKeyboardButton.WithCallbackData(localizer[Text.ChangeLanguage], CallbackData.ChangeLanguage)],
             [InlineKeyboardButton.WithCallbackData(localizer[Text.PersonalInfo], CallbackData.PersonalInfo)],
             [InlineKeyboardButton.WithCallbackData(localizer[Text.MessageToDeveloper], CallbackData.SendMessage)],
             [InlineKeyboardButton.WithCallbackData(localizer[Text.Back], CallbackData.Back)],
-        });
+        ]);
 
         var text = string.Concat(actionMessage, localizer[Text.SelectSettings]);
 
@@ -101,13 +101,13 @@ public partial class BotUpdateHandler
 
     private async Task SendUserManagerMenuAsync(ITelegramBotClient botClient, Message message, CancellationToken cancellationToken, string actionMessage = Text.Empty)
     {
-        InlineKeyboardMarkup keyboard = new(new InlineKeyboardButton[][]
-        {
+        InlineKeyboardMarkup keyboard = new(
+        [
             [InlineKeyboardButton.WithCallbackData(localizer[Text.Transaction], CallbackData.Transaction)],
             [InlineKeyboardButton.WithCallbackData(localizer[Text.Statistics], CallbackData.Statistics)],
             [InlineKeyboardButton.WithCallbackData(localizer[Text.Settings], CallbackData.Settings)],
             [InlineKeyboardButton.WithCallbackData(localizer[Text.Back], CallbackData.Back)]
-        });
+        ]);
 
         var text = string.Concat(actionMessage, localizer[Text.SelectMenu]);
 
@@ -163,10 +163,10 @@ public partial class BotUpdateHandler
 
         var xabar = string.IsNullOrEmpty(text.ToString()) ? Text.NotAvailable : text.ToString();
 
-        InlineKeyboardMarkup keyboard = new(new InlineKeyboardButton[][]
-        {
+        InlineKeyboardMarkup keyboard = new(
+        [
             [InlineKeyboardButton.WithCallbackData(localizer[Text.Back], CallbackData.Back)]
-        });
+        ]);
 
         await botClient.EditMessageTextAsync(
             chatId: message.Chat.Id,

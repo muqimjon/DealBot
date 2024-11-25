@@ -77,13 +77,13 @@ public partial class BotUpdateHandler
             isExist = false;
         }
 
-        InlineKeyboardMarkup keyboard = new(new[]
-        {
+        InlineKeyboardMarkup keyboard = new(
+        [
             isExist
                 ? [InlineKeyboardButton.WithCallbackData(localizer[Text.Delete], CallbackData.Delete)]
                 : Array.Empty<InlineKeyboardButton>(),
             [InlineKeyboardButton.WithCallbackData(localizer[Text.Back], CallbackData.Back)]
-        });
+        ]);
 
         await using (stream)
         {

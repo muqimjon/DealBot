@@ -118,10 +118,10 @@ public partial class BotUpdateHandler
         Domain.Entities.User eventUser,
         CancellationToken cancellationToken)
     {
-        InlineKeyboardMarkup keyboard = new(new InlineKeyboardButton[][]
-        {
+        InlineKeyboardMarkup keyboard = new(
+        [
             [InlineKeyboardButton.WithCallbackData(localizer[Text.Continue]) ]
-        });
+        ]);
 
         var role = localizer[eventUser.Role.ToString()];
 
@@ -181,6 +181,10 @@ public partial class BotUpdateHandler
 
     private Task HandleUnknownInlineQueryAsync(ITelegramBotClient botClient, InlineQuery inlineQuery, CancellationToken cancellationToken)
     {
+        ArgumentNullException.ThrowIfNull(botClient);
+
+        ArgumentNullException.ThrowIfNull(inlineQuery);
+
         logger.LogInformation("Received unknown callback query: {inlineQuery}", inlineQuery);
         return Task.CompletedTask;
     }

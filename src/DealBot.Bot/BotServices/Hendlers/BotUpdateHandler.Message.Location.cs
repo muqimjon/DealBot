@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using System.Globalization;
 using System.Net.Http;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 using Telegram.Bot;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.ReplyMarkups;
@@ -66,12 +67,12 @@ public partial class BotUpdateHandler
         var latitude = message.Location!.Latitude;
         var longitude = message.Location.Longitude;
         var address = await GetAddressFromCoordinatesAsync(longitude, latitude);
-        await appDbContext.Addresses.AddAsync(address ??= new(), cancellationToken);
+        await appDbContext.Addresses.AddAsync(address, cancellationToken);
         store.Address = address;
-        await SendMenuAddressInfoAsync(botClient, message, cancellationToken, value: address);
+        await SendMenuAddressInfoAsync(botClient, message, cancellationToken, address: address);
     }
 
-    private async Task<Address?> GetAddressFromCoordinatesAsync(double longitude, double latitude)
+    private static async Task<Address> GetAddressFromCoordinatesAsync(double longitude, double latitude)
     {
         using HttpClient httpClient = new();
         httpClient.DefaultRequestHeaders.Add("User-Agent", "DealBot/1.0");
@@ -92,23 +93,31 @@ public partial class BotUpdateHandler
                 });
 
             if (nominatimResponse?.Address is null)
-                return null;
-
-            return new()
-            {
-                Country = nominatimResponse.Address.Country,
-                CountryCode = nominatimResponse.Address.CountryCode,
-                Region = nominatimResponse.Address.State,
-                District = nominatimResponse.Address.County,
-                Street = nominatimResponse.Address.Road,
-                House = nominatimResponse.Address.HouseNumber,
-                Longitude = longitude,
-                Latitude = latitude
-            };
+                return new()
+                {
+                    Latitude = latitude,
+                    Longitude = longitude
+                };
+            else
+                return new()
+                {
+                    Country = nominatimResponse.Address.Country,
+                    CountryCode = nominatimResponse.Address.CountryCode,
+                    Region = nominatimResponse.Address.State,
+                    District = nominatimResponse.Address.County,
+                    Street = nominatimResponse.Address.Road,
+                    House = nominatimResponse.Address.HouseNumber,
+                    Longitude = longitude,
+                    Latitude = latitude
+                };
         }
         catch { }
 
-        return null;
+        return new()
+        {
+            Latitude = latitude,
+            Longitude = longitude
+        };
     }
 
 }
@@ -123,6 +132,7 @@ public class NominatimResponse
 public class NominatimAddress
 {
     public string? Country { get; set; }
+    [JsonPropertyName("country_code")]
     public string? CountryCode { get; set; }
     public string? State { get; set; }
     public string? County { get; set; }

@@ -63,6 +63,7 @@ public partial class BotUpdateHandler
                 States.WaitingForSelectRole => HandleSelectedRoleAsync(botClient, callbackQuery, cancellationToken),
                 States.WaitingForMessageMenu => HandleSelectedMessageMenuAsync(botClient, callbackQuery, cancellationToken),
                 States.WaitingForSelectGenderForMessage => HandleSelectedGenderForMessageAsync(botClient, callbackQuery, cancellationToken),
+                States.WaitingForSelectAddressSettings => HandleAddressSettingsAsync(botClient, callbackQuery, cancellationToken),
                 _ => HandleUnknownCallbackQueryAsync(botClient, callbackQuery, cancellationToken),
             };
 

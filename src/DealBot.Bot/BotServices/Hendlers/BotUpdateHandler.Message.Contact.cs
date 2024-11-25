@@ -35,10 +35,10 @@ public partial class BotUpdateHandler
 
         value ??= user;
 
-        ReplyKeyboardMarkup keyboard = new(new KeyboardButton[][]
-        {
+        ReplyKeyboardMarkup keyboard = new(
+        [
             [new(localizer[Text.SendContact]) { RequestContact = true }]
-        })
+        ])
         {
             ResizeKeyboard = true,
             InputFieldPlaceholder = localizer[Text.AskPhoneNumberInPlaceHolder],
@@ -90,11 +90,11 @@ public partial class BotUpdateHandler
             chatAction: ChatAction.Typing,
             cancellationToken: cancellationToken);
 
-        ReplyKeyboardMarkup keyboard = new(new KeyboardButton[][]
-        {
+        ReplyKeyboardMarkup keyboard = new(
+        [
             [new(localizer[Text.SendContact]){ RequestContact = true}],
             [new(localizer[Text.Back])]
-        })
+        ])
         {
             ResizeKeyboard = true,
             InputFieldPlaceholder = localizer[Text.AskPhoneNumberInPlaceHolder],

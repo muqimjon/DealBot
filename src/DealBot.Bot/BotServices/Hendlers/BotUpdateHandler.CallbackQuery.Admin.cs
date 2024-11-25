@@ -14,15 +14,15 @@ public partial class BotUpdateHandler
 {
     private async Task SendAdminMenuAsync(ITelegramBotClient botClient, Message message, CancellationToken cancellationToken, string actionMessage = Text.Empty)
     {
-        InlineKeyboardMarkup keyboard = new(new InlineKeyboardButton[][]
-        {
+        InlineKeyboardMarkup keyboard = new(
+        [
             [InlineKeyboardButton.WithCallbackData(localizer[Text.UserManager], CallbackData.UserManager)],
             [InlineKeyboardButton.WithCallbackData(localizer[Text.CustomersList], CallbackData.CustomersList),
                 InlineKeyboardButton.WithCallbackData(localizer[Text.EmployeesList], CallbackData.EmployeesList)],
             [InlineKeyboardButton.WithCallbackData(localizer[Text.SendMessage], CallbackData.SendMessage),
                 InlineKeyboardButton.WithCallbackData(localizer[Text.Statistics], CallbackData.Statistics)],
             [InlineKeyboardButton.WithCallbackData(localizer[Text.Settings], CallbackData.Settings)],
-        });
+        ]);
 
         var text = string.Concat(actionMessage, localizer[Text.SelectMenu]);
 
@@ -57,15 +57,15 @@ public partial class BotUpdateHandler
 
     private async Task SendAdminSettingsAsync(ITelegramBotClient botClient, Message message, CancellationToken cancellationToken, string actionMessage = Text.Empty)
     {
-        InlineKeyboardMarkup keyboard = new(new InlineKeyboardButton[][]
-        {
+        InlineKeyboardMarkup keyboard = new(
+        [
             [InlineKeyboardButton.WithCallbackData(localizer[Text.PersonalInfo], CallbackData.PersonalInfo),
                 InlineKeyboardButton.WithCallbackData(localizer[Text.ChangeLanguage], CallbackData.ChangeLanguage)],
             [InlineKeyboardButton.WithCallbackData(localizer[Text.Cashback], CallbackData.Cashback),
                 InlineKeyboardButton.WithCallbackData(localizer[Text.Company], CallbackData.Company)],
             [InlineKeyboardButton.WithCallbackData(localizer[Text.MessageToDeveloper], CallbackData.SendMessage)],
             [InlineKeyboardButton.WithCallbackData(localizer[Text.Back], CallbackData.Back)],
-        });
+        ]);
 
         var text = string.Concat(actionMessage, localizer[Text.SelectSettings]);
 
@@ -106,8 +106,8 @@ public partial class BotUpdateHandler
             .FirstOrDefaultAsync(cancellationToken))!) is null)
             await appDbContext.Stores.AddAsync(store = new());
 
-        InlineKeyboardMarkup keyboard = new(new InlineKeyboardButton[][]
-        {
+        InlineKeyboardMarkup keyboard = new(
+        [
             [InlineKeyboardButton.WithCallbackData(localizer[Text.Name], CallbackData.Name),
                 InlineKeyboardButton.WithCallbackData(localizer[Text.Description], CallbackData.Description)],
             [InlineKeyboardButton.WithCallbackData(localizer[Text.Picture], CallbackData.Picture),
@@ -118,7 +118,7 @@ public partial class BotUpdateHandler
                 InlineKeyboardButton.WithCallbackData(localizer[Text.Email], CallbackData.Email)],
             [InlineKeyboardButton.WithCallbackData(localizer[Text.Address], CallbackData.Address)],
             [InlineKeyboardButton.WithCallbackData(localizer[Text.Back], CallbackData.Back)],
-        });
+        ]);
 
         var companyInfo = localizer[
             Text.CompanyInfo,
@@ -174,7 +174,7 @@ public partial class BotUpdateHandler
         if (address is null)
             await SendRequestForLocationAsync(botClient, message, cancellationToken);
         else
-            await SendMenuAddressInfoAsync(botClient, message, cancellationToken, value: address);
+            await SendMenuAddressInfoAsync(botClient, message, cancellationToken, address: address);
     }
 
     private async Task SendMenuAddressInfoAsync(
@@ -182,19 +182,20 @@ public partial class BotUpdateHandler
         Message message,
         CancellationToken cancellationToken,
         string actionMessage = Text.Empty,
-        Address value = default!)
+        Address address = default!)
     {
         var addressInfo = string.Concat(actionMessage, localizer[Text.AddressInfo,
-            localizer[string.IsNullOrEmpty(value.Country) ? Text.Undefined : Text.Defined],
-            localizer[string.IsNullOrEmpty(value.CountryCode) ? Text.Undefined : Text.Defined],
-            localizer[string.IsNullOrEmpty(value.Region) ? Text.Undefined : Text.Defined],
-            localizer[string.IsNullOrEmpty(value.District) ? Text.Undefined : Text.Defined],
-            localizer[string.IsNullOrEmpty(value.Street) ? Text.Undefined : Text.Defined],
-            localizer[string.IsNullOrEmpty(value.House) ? Text.Undefined : Text.Defined],
-            localizer[value.Latitude == 0 || value.Longitude == 0 ? Text.Undefined : Text.Defined]]);
+            string.IsNullOrEmpty(address.Country) ? localizer[Text.Undefined] : address.Country,
+            string.IsNullOrEmpty(address.CountryCode) ? localizer[Text.Undefined] : address.CountryCode,
+            string.IsNullOrEmpty(address.Region) ? localizer[Text.Undefined] : address.Region,
+            string.IsNullOrEmpty(address.District) ? localizer[Text.Undefined] : address.District,
+            string.IsNullOrEmpty(address.Street) ? localizer[Text.Undefined] : address.Street,
+            string.IsNullOrEmpty(address.House) ? localizer[Text.Undefined] : address.House,
+            localizer[address.Latitude == 0 || address.Longitude == 0 ? Text.Undefined : Text.Defined]]);
 
-        var keyboard = new InlineKeyboardMarkup(new InlineKeyboardButton[][]
-        {
+        InlineKeyboardMarkup keyboard = new(
+        [
+            [InlineKeyboardButton.WithCallbackData(localizer[Text.Location], CallbackData.Location)],
             [InlineKeyboardButton.WithCallbackData(localizer[Text.Country], CallbackData.Country),
                 InlineKeyboardButton.WithCallbackData(localizer[Text.CountryCode], CallbackData.CountryCode)],
             [InlineKeyboardButton.WithCallbackData(localizer[Text.Region], CallbackData.Region),
@@ -202,7 +203,7 @@ public partial class BotUpdateHandler
             [InlineKeyboardButton.WithCallbackData(localizer[Text.Street], CallbackData.Street),
                 InlineKeyboardButton.WithCallbackData(localizer[Text.House], CallbackData.House)],
             [InlineKeyboardButton.WithCallbackData(localizer[Text.Back], CallbackData.Back)]
-        });
+        ]);
 
         var text = string.Concat(addressInfo, localizer[Text.SelectSettings]);
 
@@ -223,6 +224,7 @@ public partial class BotUpdateHandler
 
         await (callbackQuery.Data switch
         {
+            CallbackData.Location => SendRequestForLocationAsync(botClient, callbackQuery.Message, cancellationToken),
             CallbackData.Country => SendRequestForCountryAsync(botClient, callbackQuery.Message, cancellationToken),
             CallbackData.CountryCode => SendRequestForCountryCodeAsync(botClient, callbackQuery.Message, cancellationToken),
             CallbackData.Region => SendRequestForRegionAsync(botClient, callbackQuery.Message, cancellationToken),
@@ -233,7 +235,7 @@ public partial class BotUpdateHandler
         });
     }
 
-    private bool IsAddressValid(Address? address) =>
+    private static bool IsAddressValid(Address? address) =>
         address is not null &&
         address.Latitude != 0 &&
         address.Longitude != 0 &&
@@ -256,10 +258,10 @@ public partial class BotUpdateHandler
 
         var xabar = string.IsNullOrEmpty(text.ToString()) ? "Xodimlar mavjud emas mavjud emas" : text.ToString();
 
-        InlineKeyboardMarkup keyboard = new(new InlineKeyboardButton[][]
-        {
+        InlineKeyboardMarkup keyboard = new(
+        [
             [InlineKeyboardButton.WithCallbackData(localizer[Text.Back], CallbackData.Back)]
-        });
+        ]);
 
         await botClient.EditMessageTextAsync(
             chatId: message.Chat.Id,
@@ -277,12 +279,12 @@ public partial class BotUpdateHandler
     private async Task SendRequestRoleAsync(ITelegramBotClient botClient, Message message, CancellationToken cancellationToken, Domain.Entities.User value = default!)
     {
         value ??= user;
-        InlineKeyboardMarkup keyboard = new(new InlineKeyboardButton[][]
-        {
+        InlineKeyboardMarkup keyboard = new(
+        [
             [InlineKeyboardButton.WithCallbackData(localizer[Text.Seller], CallbackData.Seller),
                 InlineKeyboardButton.WithCallbackData(localizer[Text.Customer], CallbackData.Customer)],
             [InlineKeyboardButton.WithCallbackData(localizer[Text.Back], CallbackData.Back)],
-        });
+        ]);
 
         var text = string.Concat(localizer[Text.AskRole, localizer[value.Role.ToString()]]);
         var sentMessage = await botClient.EditMessageTextAsync(
@@ -329,8 +331,8 @@ public partial class BotUpdateHandler
                 return;
             }
 
-        InlineKeyboardMarkup keyboard = new(new InlineKeyboardButton[][]
-        {
+        InlineKeyboardMarkup keyboard = new(
+        [
             [InlineKeyboardButton.WithCallbackData(localizer[Text.FirstName], CallbackData.FirstName),
                 InlineKeyboardButton.WithCallbackData(localizer[Text.LastName], CallbackData.LastName)],
             [InlineKeyboardButton.WithCallbackData(localizer[Text.DateOfBirth], CallbackData.DateOfBirth),
@@ -339,7 +341,7 @@ public partial class BotUpdateHandler
                 InlineKeyboardButton.WithCallbackData(localizer[Text.Email], CallbackData.Email)],
             [InlineKeyboardButton.WithCallbackData(localizer[Text.Role], CallbackData.Role)],
             [InlineKeyboardButton.WithCallbackData(localizer[Text.Back], CallbackData.Back)],
-        });
+        ]);
 
         value.Contact ??= new();
 
