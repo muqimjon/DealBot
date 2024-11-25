@@ -32,6 +32,7 @@ public partial class BotUpdateHandler
                 States.WaitingForSubscribeToChannel => HandleSubscribeToChannel(botClient, callbackQuery, cancellationToken),
                 States.WaitingForSelectUserInfo => HandleSelectedUserInfoAsync(botClient, callbackQuery, cancellationToken),
                 States.WaitingForSelectGender => HandleSelectedGenderAsync(botClient, callbackQuery, cancellationToken),
+                States.WaitingForSelectAddressMenu => HandleSelectedAddressMenuAsync(botClient, callbackQuery, cancellationToken),
                 States.WaitingForSelectDateOfBirth => HandleDateOfBirthAsync(botClient, callbackQuery, cancellationToken),
                 States.WaitingForSelectDateOfBirthYear1 => HandleYearAsync(botClient, callbackQuery, cancellationToken),
                 States.WaitingForSelectDateOfBirthYear2 => HandleYearAsync(botClient, callbackQuery, cancellationToken),
@@ -64,6 +65,7 @@ public partial class BotUpdateHandler
                 States.WaitingForMessageMenu => HandleSelectedMessageMenuAsync(botClient, callbackQuery, cancellationToken),
                 States.WaitingForSelectGenderForMessage => HandleSelectedGenderForMessageAsync(botClient, callbackQuery, cancellationToken),
                 States.WaitingForSelectAddressSettings => HandleAddressSettingsAsync(botClient, callbackQuery, cancellationToken),
+                States.WaitingForSelectContactSettings => HandleContactsMenuAsync(botClient, callbackQuery, cancellationToken),
                 _ => HandleUnknownCallbackQueryAsync(botClient, callbackQuery, cancellationToken),
             };
 
@@ -77,14 +79,22 @@ public partial class BotUpdateHandler
         {
             States.WaitingForSubscribeToChannel => SendCustomerMenuAsync(botClient, message, cancellationToken),
             States.WaitingForSelectCardOption => SendCustomerMenuAsync(botClient, message, cancellationToken),
-            States.WaitingForSelectAddressOption => SendCustomerMenuAsync(botClient, message, cancellationToken),
+            States.WaitingForSelectAddressMenu => SendCustomerMenuAsync(botClient, message, cancellationToken),
+            States.WaitingForSelectDirectionOption => SendStoreAddressAsync(botClient, message, cancellationToken),
             States.WaitingForSelectStoreContactOption => SendCustomerMenuAsync(botClient, message, cancellationToken),
             States.WaitingForSendComment => SendCustomerMenuAsync(botClient, message, cancellationToken),
+
             States.WaitingForSelectGender => SendMenuPersonalInfoAsync(botClient, message, cancellationToken),
             States.WaitingForSelectDateOfBirth => SendMenuPersonalInfoAsync(botClient, message, cancellationToken),
             States.WaitingForSendEmail => SendMenuPersonalInfoAsync(botClient, message, cancellationToken),
             States.WaitingForSendLastName => SendMenuPersonalInfoAsync(botClient, message, cancellationToken),
             States.WaitingForSendFirstName => SendMenuPersonalInfoAsync(botClient, message, cancellationToken),
+            States.WaitingForSelectUserInfo => user.PlaceId switch
+            {
+                0 => SendMenuPersonalInfoAsync(botClient, message, cancellationToken),
+                _ => SendUserManagerMenuAsync(botClient, message, cancellationToken),
+            },
+
             States.WaitingForSelectDateOfBirthYear1 => SendRequestDateOfBirthAsync(botClient, message, cancellationToken),
             States.WaitingForSelectDateOfBirthYear2 => SendRequestDateOfBirthAsync(botClient, message, cancellationToken),
             States.WaitingForSelectDateOfBirthYear3 => SendRequestDateOfBirthAsync(botClient, message, cancellationToken),
@@ -92,9 +102,11 @@ public partial class BotUpdateHandler
             States.WaitingForSelectDateOfBirthYear5 => SendRequestDateOfBirthAsync(botClient, message, cancellationToken),
             States.WaitingForSelectDateOfBirthMonth => SendRequestDateOfBirthAsync(botClient, message, cancellationToken),
             States.WaitingForSelectDateOfBirthDay => SendRequestDateOfBirthAsync(botClient, message, cancellationToken),
+
             States.WaitingForSelectTransaction => SendUserManagerMenuAsync(botClient, message, cancellationToken),
             States.WaitingForSendSalesAmount => SendTransactionAsync(botClient, message, cancellationToken),
             States.WaitingForSendProductPrice => SendTransactionAsync(botClient, message, cancellationToken),
+
             States.WaitingForSelectSettings => user.Role switch
             {
                 Roles.Admin => SendAdminMenuAsync(botClient, message, cancellationToken),
@@ -142,23 +154,32 @@ public partial class BotUpdateHandler
             States.WaitingForSendDescription => SendMenuCompanyInfoAsync(botClient, message, cancellationToken),
             States.WaitingForSendMiniAppUrl => SendMenuCompanyInfoAsync(botClient, message, cancellationToken),
             States.WaitingForSendWebsite => SendMenuCompanyInfoAsync(botClient, message, cancellationToken),
-            States.WaitingForSendLocation => SendMenuCompanyInfoAsync(botClient, message, cancellationToken),
-            States.WaitingForSendCompanyEmail => SendMenuCompanyInfoAsync(botClient, message, cancellationToken),
-            States.WaitingForSendCompanyPhoneNumber => SendMenuCompanyInfoAsync(botClient, message, cancellationToken),
             States.WaitingForSendChannel => SendMenuCompanyInfoAsync(botClient, message, cancellationToken),
             States.WaitingForSelectAddressSettings => SendMenuCompanyInfoAsync(botClient, message, cancellationToken),
+            States.WaitingForSelectContactSettings => SendMenuCompanyInfoAsync(botClient, message, cancellationToken),
+
+            States.WaitingForSendCompanyPhoneNumber => SendMenuContactInfoAsync(botClient, message, cancellationToken),
+            States.WaitingForSendCompanyEmail => SendMenuContactInfoAsync(botClient, message, cancellationToken),
+
             States.EmployeesList => SendAdminMenuAsync(botClient, message, cancellationToken),
+            States.WaitingForMessageMenu => SendAdminMenuAsync(botClient, message, cancellationToken),
+
             States.WaitingForSelectCompanySettings => SendAdminSettingsAsync(botClient, message, cancellationToken),
             States.WaitingForSelectCardType => SendAdminSettingsAsync(botClient, message, cancellationToken),
-            States.WaitingForSelectCashbackQuantityPremium => SendCashbackSettingsAsync(botClient, message, cancellationToken),
             States.WaitingForSelectCashbackQuantitySimple => SendAdminSettingsAsync(botClient, message, cancellationToken),
+
+            States.WaitingForSelectCashbackQuantityPremium => SendCashbackSettingsAsync(botClient, message, cancellationToken),
             States.WaitingForSelectRole => SendAdminUserSettingsAsync(botClient, message, cancellationToken),
-            States.WaitingForMessageMenu => SendAdminMenuAsync(botClient, message, cancellationToken),
-            States.WaitingForSelectUserInfo => user.PlaceId switch
-            {
-                0 => SendMenuPersonalInfoAsync(botClient, message, cancellationToken),
-                _ => SendUserManagerMenuAsync(botClient, message, cancellationToken),
-            },
+
+            States.WaitingForSendLocation => SendMenuAddressInfoAsync(botClient, message, cancellationToken),
+            States.WaitingForSendHouse => SendMenuAddressInfoAsync(botClient, message, cancellationToken),
+            States.WaitingForSendStreet => SendMenuAddressInfoAsync(botClient, message, cancellationToken),
+            States.WaitingForSendCity => SendMenuAddressInfoAsync(botClient, message, cancellationToken),
+            States.WaitingForSendDistrict => SendMenuAddressInfoAsync(botClient, message, cancellationToken),
+            States.WaitingForSendRegion => SendMenuAddressInfoAsync(botClient, message, cancellationToken),
+            States.WaitingForSendCountryCode => SendMenuAddressInfoAsync(botClient, message, cancellationToken),
+            States.WaitingForSendCountry => SendMenuAddressInfoAsync(botClient, message, cancellationToken),
+
             _ => HandleUnknownMessageAsync(botClient, message, cancellationToken),
         };
 
@@ -181,12 +202,12 @@ public partial class BotUpdateHandler
         }
         catch { }
 
-        InlineKeyboardMarkup keyboard = new(new InlineKeyboardButton[][]
-        {
+        InlineKeyboardMarkup keyboard = new(
+        [
             [InlineKeyboardButton.WithCallbackData(Text.LanguageUz, CallbackData.CultureUz)],
             [InlineKeyboardButton.WithCallbackData(Text.LanguageEn, CallbackData.CultureEn)],
             [InlineKeyboardButton.WithCallbackData(Text.LanguageRu, CallbackData.CultureRu)]
-        });
+        ]);
 
         Message sentMessage = await botClient.SendTextMessageAsync(
             chatId: message.Chat.Id,
@@ -205,10 +226,10 @@ public partial class BotUpdateHandler
             chatAction: ChatAction.Typing,
             cancellationToken: cancellationToken);
 
-        ReplyKeyboardMarkup keyboard = new(new KeyboardButton[][]
-        {
+        ReplyKeyboardMarkup keyboard = new(
+        [
             [new(localizer[Text.SendContact]) { RequestContact = true }]
-        })
+        ])
         {
             ResizeKeyboard = true,
             InputFieldPlaceholder = Text.AskPhoneNumberInPlaceHolder,
@@ -287,7 +308,7 @@ public partial class BotUpdateHandler
 
     private Task HandleUnknownCallbackQueryAsync(ITelegramBotClient _, CallbackQuery callbackQuery, CancellationToken cancellationToken)
     {
-        logger.LogInformation("Received unknown callback query: {callbackQuery.Data}", callbackQuery?.Data);
+        logger.LogInformation("Received unknown callback query: {callbackQuery.Data}, {cancellationToken}", callbackQuery?.Data, cancellationToken);
         return Task.CompletedTask;
     }
 }

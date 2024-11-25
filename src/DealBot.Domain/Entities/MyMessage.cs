@@ -15,5 +15,5 @@ public class MyMessage : Auditable
     public long SenderId { get; set; }
 
     public User Recipient { get; set; }
-    public long? RecipientId { get; set; }
+    public long RecipientId { get; set; }
 }

@@ -1,4 +1,4 @@
-﻿namespace DealBot.Infrastructure.Persistance.EntityFramework.EntityConfigurations;
+﻿namespace DealBot.Infrastructure.Persistence.EntityFramework.EntityConfigurations;
 
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
@@ -26,7 +26,8 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
                .HasMaxLength(30);
 
         builder.Property(u => u.LastName)
-               .HasMaxLength(30);
+               .HasMaxLength(30)
+               .IsRequired(false);
 
         builder.Property(u => u.Username)
                .HasMaxLength(22);
@@ -45,6 +46,26 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
 
         builder.Property(u => u.IsActive)
                .IsRequired();
+
+        builder.Property(u => u.AddressId)
+               .IsRequired(false)
+               .HasDefaultValue(null);
+
+        builder.Property(u => u.AssetId)
+               .IsRequired(false)
+               .HasDefaultValue(null);
+
+        builder.Property(u => u.CardId)
+               .IsRequired(false)
+               .HasDefaultValue(null);
+
+        builder.Property(u => u.ChatId)
+               .IsRequired(false)
+               .HasDefaultValue(null);
+
+        builder.Property(u => u.ContactId)
+               .IsRequired(false)
+               .HasDefaultValue(null);
     }
 
     private static void ConfigureRelationships(EntityTypeBuilder<User> builder)
@@ -58,5 +79,15 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
                .WithOne(t => t.Seller)
                .HasForeignKey(t => t.SellerId)
                .OnDelete(DeleteBehavior.Restrict);
+
+        builder.HasOne(u => u.Address)
+               .WithMany()
+               .HasForeignKey(u => u.AddressId)
+               .IsRequired(false);
+
+        builder.HasOne(u => u.Contact)
+               .WithMany()
+               .HasForeignKey(u => u.ContactId)
+               .IsRequired(true);
     }
 }

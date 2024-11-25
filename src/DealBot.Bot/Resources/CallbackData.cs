@@ -6,7 +6,7 @@ public class CallbackData
     public const string CultureRu = nameof(CultureRu);
     public const string CultureEn = nameof(CultureEn);
     public const string Settings = nameof(Settings);
-    public const string Contacts = nameof(Contacts);
+    public const string Contact = nameof(Contact);
     public const string StoreAddress = nameof(StoreAddress);
     public const string ContactUs = nameof(ContactUs);
     public const string Comment = nameof(Comment);
@@ -67,6 +67,7 @@ public class CallbackData
     public const string Street = nameof(Street);
     public const string Region = nameof(Region);
     public const string District = nameof(District);
-    public const string House = nameof(House);
+    public const string HouseNumber = nameof(HouseNumber);
     public const string Location = nameof(Location);
+    public const string ViewDirection = nameof(ViewDirection);
 }

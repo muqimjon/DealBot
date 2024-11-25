@@ -118,558 +118,441 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="Greeting" xml:space="preserve">
-    <value>Assalomu alaykum {0} {1}!
-Bot haqida ma'lumot...
-Telefon raqamingizni yuboring</value>
-    <comment>Salomlashish matni, bir vaqtda foydalanuvchiga qulay bo'lgan tilni belgilashi so'raladi bundan foydalanilayotganda foudalanuvchining ismi va familiyasi talab qilinadi.</comment>
+    <value />
   </data>
   <data name="SelectLanguage" xml:space="preserve">
-    <value>O'zingizga qulay tinlni tanlang</value>
+    <value />
+  </data>
+  <data name="txtSelectedLanguage" xml:space="preserve">
+    <value />
   </data>
   <data name="About" xml:space="preserve">
-    <value>Haqida</value>
+    <value />
   </data>
   <data name="ActionNotAvailable" xml:space="preserve">
-    <value>Ushbu amalni bajarish vaqtincha imkonsiz...</value>
+    <value />
   </data>
   <data name="Address" xml:space="preserve">
-    <value>🌍 Manzil</value>
+    <value />
   </data>
   <data name="AddressInfo" xml:space="preserve">
-    <value>Joylashuv ma'lumotlari:
-
-Davlat: {0}
-Kodi: {1}
-Viloyat: {2}
-Tuman: {3}
-Shaxar: {4}
-Ko'cha: {5}
-Uy: {6}
-Joylashuv: {7}
-
-</value>
+    <value />
   </data>
   <data name="Admin" xml:space="preserve">
-    <value>Boshqaruvchi</value>
+    <value />
   </data>
   <data name="AdminMenuPersonalInfo" xml:space="preserve">
-    <value>Foydalanuvchi ma'lumotlari
-
-Ism: {0}
-Familiya: {1}
-Tug'ilgan sana: {2}
-Jinsi: {3}
-Raqam: {4}
-Email: {5}
-Roli: {6}</value>
+    <value />
   </data>
   <data name="AskAboutInPlaceHolder" xml:space="preserve">
-    <value>Bot haqida qisqa ma'lumot yozing...</value>
+    <value />
   </data>
   <data name="AskChannel" xml:space="preserve">
-    <value>Joriy kanal foydalanuvchi nomi: {0}</value>
+    <value />
   </data>
   <data name="AskChannelInPlaceHolder" xml:space="preserve">
-    <value>Kanal foydalanuvchi nomini kiriting...</value>
+    <value />
   </data>
   <data name="AskComment" xml:space="preserve">
-    <value>Taklif va shikoyatlar uchun izoh qoldiring va biz albatta buni e'tiborga olamiz!</value>
+    <value />
   </data>
   <data name="AskCommentInPlaceHolder" xml:space="preserve">
-    <value>Izoh yozing...</value>
+    <value />
   </data>
   <data name="AskCorrectNumber" xml:space="preserve">
-    <value>To'g'ri qiymat kiritayotganingizga ishonch hosil qiling
-</value>
+    <value />
   </data>
   <data name="AskDateOfBirth" xml:space="preserve">
-    <value>Tug'ilgan sana: {0}</value>
+    <value />
   </data>
   <data name="AskDescription" xml:space="preserve">
-    <value>Joriy tavsif:
-
-{0}
-
-Quyida yangilangan  matinni yuboring</value>
+    <value />
   </data>
   <data name="AskDescriptionInPlaceHolder" xml:space="preserve">
-    <value>Tavsifni kiriting...</value>
+    <value />
   </data>
   <data name="AskEmail" xml:space="preserve">
-    <value>Email: {0}</value>
+    <value />
   </data>
   <data name="AskEmailInPlaceHolder" xml:space="preserve">
-    <value>Emailni kiriting...</value>
+    <value />
   </data>
   <data name="AskFirstName" xml:space="preserve">
-    <value>Ism: {0}</value>
+    <value />
   </data>
   <data name="AskFirstNameInPlaceHolder" xml:space="preserve">
-    <value>Ismni kiriting...</value>
+    <value />
   </data>
   <data name="AskGender" xml:space="preserve">
-    <value>Jinsni tanlash
-Joriy qiymat: {0}</value>
+    <value />
   </data>
   <data name="AskHouseInPlaceHolder" xml:space="preserve">
-    <value>Uy raqamini kiriting...</value>
+    <value />
   </data>
   <data name="AskJoinToChannel" xml:space="preserve">
-    <value>Davom ettirish uchun kanalga a'zo bo'ling!</value>
+    <value />
   </data>
   <data name="AskJoinToChannelAgain" xml:space="preserve">
-    <value>❕ Siz hali ham a'zo emassiz!
-
-Iltimos, davom ettirish uchun kanalga a'zo bo'ling!</value>
+    <value />
   </data>
   <data name="AskLanguage" xml:space="preserve">
-    <value>Qulay tilni tanlang</value>
+    <value />
   </data>
   <data name="AskLastName" xml:space="preserve">
-    <value>Familiya: {0}</value>
+    <value />
   </data>
   <data name="AskLastNameInPlaceHolder" xml:space="preserve">
-    <value>Familiyani kiriting...</value>
+    <value />
   </data>
   <data name="AskLocation" xml:space="preserve">
-    <value>Joylashuvingizni yuboring</value>
+    <value />
   </data>
   <data name="AskMessage" xml:space="preserve">
-    <value>Xabarni kiriting:</value>
+    <value />
   </data>
   <data name="AskMessageInPlaceHolder" xml:space="preserve">
-    <value>Xabar matnini yozing...</value>
+    <value />
   </data>
   <data name="AskMiniAppUrl" xml:space="preserve">
-    <value>Mini app havolasi</value>
+    <value />
   </data>
   <data name="AskMiniAppUrlInPlaceHolder" xml:space="preserve">
-    <value>Mini app havolasini kiriting...</value>
+    <value />
   </data>
   <data name="AskName" xml:space="preserve">
-    <value>Joriy nom: {0}</value>
+    <value />
   </data>
   <data name="AskNameInPlaceHolder" xml:space="preserve">
-    <value>Bot uchun nom yozing..</value>
+    <value />
   </data>
   <data name="AskPhoneNumber" xml:space="preserve">
-    <value>Telefon raqamingizni yuboring</value>
+    <value />
   </data>
   <data name="AskPhoneNumberInPlaceHolder" xml:space="preserve">
-    <value>Telefon raqamingizni kiriting..</value>
+    <value />
   </data>
   <data name="AskPhoto" xml:space="preserve">
-    <value>O'zgartirish uchun yangi surat yuboring</value>
+    <value />
   </data>
   <data name="AskProductPrice" xml:space="preserve">
-    <value>Mahsulot narxini kiriting</value>
+    <value />
   </data>
   <data name="AskProductPriceInPlaceHolder" xml:space="preserve">
-    <value>Mahsulot narxini kiriting...</value>
+    <value />
   </data>
   <data name="AskRole" xml:space="preserve">
-    <value>Rol: {0}</value>
+    <value />
   </data>
   <data name="AskSalesAmountInPlaceHolder" xml:space="preserve">
-    <value>Savdo summasini kiriting...</value>
+    <value />
   </data>
   <data name="AskUserId" xml:space="preserve">
-    <value>Inline usulda user ma'lumotlarini yuboring</value>
+    <value />
   </data>
   <data name="AskUserIdInPlaceHolder" xml:space="preserve">
-    <value>@{0} va telefon raqamni kiriting...</value>
+    <value />
   </data>
   <data name="AskWebsite" xml:space="preserve">
-    <value>Joriy veb sayt havolasi: {0}</value>
+    <value />
   </data>
   <data name="Back" xml:space="preserve">
-    <value>⇚ Ortga</value>
+    <value />
   </data>
   <data name="BotSettings" xml:space="preserve">
-    <value>🤖 Botni sozlash</value>
+    <value />
   </data>
   <data name="Cancel" xml:space="preserve">
-    <value>❌ Bekor qilish</value>
+    <value />
   </data>
   <data name="CardInfo" xml:space="preserve">
-    <value>Imtiyoz karta ma'lumotlari:
-Hisob: {0}
-Turi: {1}
-Holati: {2}</value>
+    <value />
   </data>
   <data name="Cashback" xml:space="preserve">
-    <value>💸 Keshbek</value>
+    <value />
   </data>
   <data name="CashbackChanged" xml:space="preserve">
-    <value>Turi: {0}
-Joriy:   {1}
-Yangi: {2}</value>
+    <value />
   </data>
   <data name="CashbackInfo" xml:space="preserve">
-    <value>Keshbek ma'lumoti:
-
-Oddiy: {0}
-Premium: {1}</value>
+    <value />
   </data>
   <data name="ChangeLanguage" xml:space="preserve">
-    <value>🌐 Tilni o'zgartirish</value>
+    <value />
   </data>
   <data name="Channel" xml:space="preserve">
-    <value>📢 Kanal</value>
+    <value />
   </data>
   <data name="Check" xml:space="preserve">
-    <value>✔️ Tekshirish</value>
+    <value />
   </data>
   <data name="Comment" xml:space="preserve">
-    <value>✍️ Sharx qoldirish</value>
+    <value />
   </data>
   <data name="Company" xml:space="preserve">
-    <value>🏬 Tashkilot</value>
+    <value />
   </data>
   <data name="CompanyInfo" xml:space="preserve">
-    <value>Name: {0}
-Tafsilot: {1}
-Surat: {2}
-Veb sayt havolasi: {3}
-Mini app havolasi: {4}
-Kanal foydalanuvchi nomi: {5}
-
-</value>
+    <value />
   </data>
   <data name="Confirmation" xml:space="preserve">
-    <value>Savdoni tasdiqlash uchun xabar. va to'lov ma'lumotlari</value>
+    <value />
   </data>
   <data name="ContactUs" xml:space="preserve">
-    <value>☎️ Biz bilan a'loqa</value>
+    <value />
   </data>
   <data name="Continue" xml:space="preserve">
-    <value>Davom etish</value>
+    <value />
   </data>
   <data name="Customer" xml:space="preserve">
-    <value>👤 Mijoz</value>
+    <value />
   </data>
   <data name="CustomerCardInfo" xml:space="preserve">
-    <value>👤 {0}
-💵 {1}
-💎 {2}
-🔐 {3}
-💳 {4}</value>
+    <value />
   </data>
   <data name="CustomerManager" xml:space="preserve">
-    <value>👤 Mijoz boshqaruvi</value>
+    <value />
   </data>
   <data name="CustomersList" xml:space="preserve">
-    <value>📋 Mijozlar</value>
+    <value />
   </data>
   <data name="DateOfBirth" xml:space="preserve">
-    <value>🔢 Tug'ilgan sana</value>
+    <value />
   </data>
   <data name="Day" xml:space="preserve">
-    <value>Kun</value>
+    <value />
   </data>
   <data name="Defined" xml:space="preserve">
-    <value>   ✅</value>
+    <value />
   </data>
   <data name="Delete" xml:space="preserve">
-    <value>🗑️ O'chirish</value>
+    <value />
   </data>
   <data name="DeleteSucceeded" xml:space="preserve">
-    <value>✅ Muvaffaqiyatli o'chirildi!
-
-</value>
+    <value />
   </data>
   <data name="Description" xml:space="preserve">
-    <value>📜 Tavsif</value>
+    <value />
   </data>
   <data name="DescriptionPicture" xml:space="preserve">
-    <value>Tafsilot surati</value>
+    <value />
   </data>
   <data name="Email" xml:space="preserve">
-    <value>📧 Email</value>
+    <value />
   </data>
   <data name="EmployeesList" xml:space="preserve">
-    <value>👥 Ishchilar</value>
+    <value />
   </data>
   <data name="Error" xml:space="preserve">
-    <value>⚠️ Xatolik yuzaga keldi keyinroq qayta urunib ko'ring!
-
-</value>
+    <value />
   </data>
   <data name="Female" xml:space="preserve">
-    <value>♀ Ayol</value>
+    <value />
   </data>
   <data name="FirstName" xml:space="preserve">
-    <value>🪪 Ism</value>
+    <value />
   </data>
   <data name="Gender" xml:space="preserve">
-    <value>🚻 Jins</value>
+    <value />
   </data>
   <data name="Give" xml:space="preserve">
-    <value>🎁 Berish</value>
+    <value />
   </data>
   <data name="IncompleteAccountInfo" xml:space="preserve">
-    <value>⚠️ Ro'yxatdan o'tish oxiriga yetmagan holda keshbeklardan foydalanish imkoniyati mavjud emas!
-
-</value>
+    <value />
   </data>
   <data name="LackOfBalance" xml:space="preserve">
-    <value>⚠️ Hisobda mablag' yetarli emas
-
-</value>
+    <value />
   </data>
   <data name="LanguageSelected" xml:space="preserve">
-    <value>Juda yaxshi, suhbatimizni o'zbek tilida davom ettiramiz!</value>
-    <comment>Tilni tanlash yoki o'zgartirish qismida</comment>
+    <value />
   </data>
   <data name="LastName" xml:space="preserve">
-    <value>🪪 Familiya</value>
+    <value />
   </data>
   <data name="Male" xml:space="preserve">
-    <value>♂ Erkak</value>
+    <value />
   </data>
   <data name="MenuPersonalInfo" xml:space="preserve">
-    <value>Shaxsiy ma'lumotlarni o'zgartirish:
-
-Ism: {0}
-Familiya: {1}
-Tug'ilgan sana: {2}
-Jinsi: {3}
-Telefon raqami: {4}
-Email: {5}</value>
+    <value />
   </data>
   <data name="MessageSent" xml:space="preserve">
-    <value>✅ Xabar muvaffaqqiyatli yuborildi!
-
-</value>
+    <value />
   </data>
   <data name="MessageToDeveloper" xml:space="preserve">
-    <value>📬 Dasturchiga xabar</value>
+    <value />
   </data>
   <data name="MiniAppUrl" xml:space="preserve">
-    <value>📱 Mini app</value>
+    <value />
   </data>
   <data name="Month" xml:space="preserve">
-    <value>Oy</value>
+    <value />
   </data>
   <data name="MyPrivilegeCard" xml:space="preserve">
-    <value>💳 Mening imtiyoz kartam</value>
+    <value />
   </data>
   <data name="Name" xml:space="preserve">
-    <value>🏷️ Nom</value>
+    <value />
   </data>
   <data name="Next" xml:space="preserve">
-    <value>Keyin ⇒</value>
+    <value />
   </data>
   <data name="NotAvailable" xml:space="preserve">
-    <value>Ma‘lumot mavjud emas!
-
-</value>
+    <value />
   </data>
   <data name="NotFound" xml:space="preserve">
-    <value>🔍 Ma'lumot topilmadi...</value>
+    <value />
   </data>
   <data name="NotReadyNotification" xml:space="preserve">
-    <value>Hozircha bot to'liq ishga tushirilmadi. Tayyor bo'lishi bilan sizga xabar beramiz. Rahmat!...</value>
+    <value />
   </data>
   <data name="OrderOnTheSite" xml:space="preserve">
-    <value>🛍 Sayt orqali buyurtma berish</value>
+    <value />
   </data>
   <data name="PersonalInfo" xml:space="preserve">
-    <value>🔖 Shaxsiy ma'lumotlar</value>
+    <value />
   </data>
   <data name="PhoneNumber" xml:space="preserve">
-    <value>☎️ Telefon Raqam</value>
+    <value />
   </data>
   <data name="Picture" xml:space="preserve">
-    <value>🖼️ Surat</value>
+    <value />
   </data>
   <data name="Previous" xml:space="preserve">
-    <value>⇐ Oldin</value>
+    <value />
   </data>
   <data name="ReceiveComment" xml:space="preserve">
-    <value>📬 Izohingizni qabul qildik. E'tibor uchun rahmat!
-
-</value>
+    <value />
   </data>
   <data name="Referral" xml:space="preserve">
-    <value>⤴️ Do'stlar bilan ulashish</value>
+    <value />
   </data>
   <data name="Remind" xml:space="preserve">
-    <value>Eslatish</value>
+    <value />
   </data>
   <data name="RemindMessage" xml:space="preserve">
-    <value>Bu transactionni yakunlashkerak</value>
+    <value />
   </data>
   <data name="RequiredToSubscribe" xml:space="preserve">
-    <value>⚠️ Keshbek yig'ish uchun kanalga obuna bo'lish talab qilinadi!
-
-</value>
+    <value />
   </data>
   <data name="Role" xml:space="preserve">
-    <value>🎖️ Rol</value>
+    <value />
   </data>
   <data name="SalesAmount" xml:space="preserve">
-    <value>Savdo summasini kiriting</value>
+    <value />
   </data>
   <data name="SelectMenu" xml:space="preserve">
-    <value>Menyuni  tanlang</value>
+    <value />
   </data>
   <data name="SelectRole" xml:space="preserve">
-    <value>Ro'lingizni tanlang</value>
+    <value />
   </data>
   <data name="SelectSettings" xml:space="preserve">
-    <value>Sozlamalar</value>
+    <value />
   </data>
   <data name="Seller" xml:space="preserve">
-    <value>👨‍💼 Xodim</value>
+    <value />
   </data>
   <data name="SellerMenuPersonalInfo" xml:space="preserve">
-    <value>Foydalanuvchi ma'lumotlari
-
-Ism: {0}
-Familiya: {1}
-Tug'ilgan sana: {2}
-Jinsi: {3}</value>
+    <value />
   </data>
   <data name="SendContact" xml:space="preserve">
-    <value>Telefon raqamni yuborish</value>
+    <value />
   </data>
   <data name="SendLocation" xml:space="preserve">
-    <value>Joylashuvni yuborish</value>
+    <value />
   </data>
   <data name="SendLocationInPlaceHolder" xml:space="preserve">
-    <value>Standart usulda joylashuvingizni yuboring...</value>
+    <value />
   </data>
   <data name="SendMessage" xml:space="preserve">
-    <value>✉️ Xabar yuborish</value>
+    <value />
   </data>
   <data name="SentConfirmation" xml:space="preserve">
-    <value>✅ Tasdiqlash xabari muvaffaqiyatli yuborildi
-
-</value>
+    <value />
   </data>
   <data name="SetSucceeded" xml:space="preserve">
-    <value>✅ Muvaffaqiyatli o'rnatildi!
-
-</value>
+    <value />
   </data>
   <data name="Settings" xml:space="preserve">
-    <value>⚙️ Sozlamalar</value>
+    <value />
   </data>
   <data name="ShortInfo" xml:space="preserve">
-    <value>Online shop...</value>
+    <value />
   </data>
   <data name="Simple" xml:space="preserve">
-    <value>Oddiy</value>
+    <value />
   </data>
   <data name="Statistics" xml:space="preserve">
-    <value>📊 Statistika</value>
+    <value />
   </data>
   <data name="StoreAddress" xml:space="preserve">
-    <value>Do'kon manzili:
-
-Davlat: {0}
-Viloyat: {1}
-Tuman: {2}
-Shaxarcha: {3}
-Ko'cha: {4}
-Uy: {5}
-
-</value>
+    <value />
   </data>
   <data name="StoreAddressInfo" xml:space="preserve">
-    <value>Manzil:
-
-{0}</value>
+    <value />
   </data>
   <data name="StoreContactInfo" xml:space="preserve">
-    <value>Telefon: {0}
-Email: {1}</value>
+    <value />
   </data>
   <data name="Submit" xml:space="preserve">
-    <value>✅ Tasdiqlash</value>
+    <value />
   </data>
   <data name="Subscribe" xml:space="preserve">
-    <value>➕ Obuna bo'lish</value>
+    <value />
   </data>
   <data name="Take" xml:space="preserve">
-    <value>📥 Olish</value>
+    <value />
   </data>
   <data name="ToAll" xml:space="preserve">
-    <value>📢 Barchaga</value>
+    <value />
   </data>
   <data name="Transaction" xml:space="preserve">
-    <value>🔃 Ayirboshlash</value>
+    <value />
   </data>
   <data name="TransactionCanceled" xml:space="preserve">
-    <value>❌ O'tkazma bekor qilindi
-
-</value>
+    <value />
   </data>
   <data name="TransactionConfirmation" xml:space="preserve">
-    <value>💳 Joriy balans: {0}
-
-O'tkazma ma'lumotlari:
-💸 Qiymati: {1}
-🪪 Kim tarafidan: {2}
-📆 Sana: {3}
-</value>
+    <value />
   </data>
   <data name="TransactionInfo" xml:space="preserve">
-    <value>Tranzaksiya ma'lumoti:
-Qiymati: {0}
-Holati: {1}
-Mijoz: {2}
-Sotuvchi: {3}
-Sana: {4}</value>
+    <value />
   </data>
   <data name="TransactionSucceeded" xml:space="preserve">
-    <value>✅ O'tkazma muvaffaqiyatli yakunlandi 💸
-
-</value>
+    <value />
   </data>
   <data name="Undefined" xml:space="preserve">
-    <value>  🚫</value>
+    <value />
   </data>
   <data name="UpdateSucceeded" xml:space="preserve">
-    <value>✅ Muvaffaqiyatli yangilandi!
-
-</value>
+    <value />
   </data>
   <data name="UserInfo" xml:space="preserve">
-    <value>👤 {0}
-💵 {1}
-💎 {2}
-
-</value>
+    <value />
   </data>
   <data name="UserManager" xml:space="preserve">
-    <value>👤 Mijoz boshqaruvi</value>
+    <value />
   </data>
   <data name="UserRoleUpdated" xml:space="preserve">
-    <value>{0} uchun {1} roli berildi.</value>
+    <value />
   </data>
   <data name="Website" xml:space="preserve">
-    <value>🔗 Veb sayt</value>
+    <value />
   </data>
   <data name="Year" xml:space="preserve">
-    <value>Yil</value>
+    <value />
   </data>
   <data name="YourRoleUpdated" xml:space="preserve">
-    <value>Sizning rolingiz {0}ga o'zgartirildi.</value>
+    <value />
   </data>
   <data name="Location" xml:space="preserve">
-    <value>📍 Joylashuv</value>
+    <value />
   </data>
   <data name="Contact" xml:space="preserve">
-    <value>📞 Aloqa</value>
+    <value />
   </data>
   <data name="ContactInfo" xml:space="preserve">
-    <value>Aloqa sozlamalari
-
-Raqam {0}
-Email {1}
-
-</value>
+    <value />
   </data>
 </root>

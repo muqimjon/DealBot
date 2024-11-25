@@ -1,4 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿namespace DealBot.Infrastructure.Persistence.EntityFramework.EntityConfigurations;
+
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 public class CashbackSettingConfiguration : IEntityTypeConfiguration<CashbackSetting>

@@ -1,4 +1,4 @@
-﻿namespace DealBot.Infrastructure.Persistance.EntityFramework.EntityConfigurations;
+﻿namespace DealBot.Infrastructure.Persistence.EntityFramework.EntityConfigurations;
 
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
@@ -46,19 +46,23 @@ public class StoreConfiguration : IEntityTypeConfiguration<Store>
     private static void ConfigureRelationships(EntityTypeBuilder<Store> builder)
     {
         builder.HasOne(s => s.Contact)
-            .WithOne()
-            .HasForeignKey<Store>(s => s.ContactId);
+               .WithOne()
+               .HasForeignKey<Store>(s => s.ContactId)
+               .IsRequired(false);
 
         builder.HasOne(s => s.Address)
-            .WithOne()
-            .HasForeignKey<Store>(s => s.AddressId);
+               .WithOne()
+               .HasForeignKey<Store>(s => s.AddressId)
+               .IsRequired(false);
 
         builder.HasOne(s => s.Image)
-            .WithOne()
-            .HasForeignKey<Store>(s => s.AssetId);
+               .WithOne()
+               .HasForeignKey<Store>(s => s.AssetId)
+               .IsRequired(false);
 
         builder.HasMany(s => s.Reviews)
-            .WithOne(r => r.Store)
-            .HasForeignKey(r => r.StoreId);
+               .WithOne(r => r.Store)
+               .HasForeignKey(r => r.StoreId)
+               .IsRequired(false);
     }
 }

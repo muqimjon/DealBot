@@ -1,4 +1,4 @@
-﻿namespace DealBot.Infrastructure.Persistance.EntityFramework.EntityConfigurations;
+﻿namespace DealBot.Infrastructure.Persistence.EntityFramework.EntityConfigurations;
 
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;

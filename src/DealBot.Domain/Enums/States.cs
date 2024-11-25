@@ -9,7 +9,7 @@ public enum States
     WaitingForSelectMenu,
     WaitingForSubscribeToChannel,
     WaitingForSelectCardOption,
-    WaitingForSelectAddressOption,
+    WaitingForSelectAddressMenu,
     WaitingForSelectStoreContactOption,
     WaitingForSendComment,
     WaitingForSelectSettings,
@@ -62,4 +62,8 @@ public enum States
     WaitingForSendCountryCode,
     WaitingForSendRegion,
     WaitingForSendDistrict,
+    WaitingForSendCity,
+    WaitingForSelectDirectionOption,
+    WaitingForSelectDirection,
+    WaitingForSelectContactSettings,
 }

@@ -72,6 +72,7 @@ public partial class BotUpdateHandler
         await SendMenuAddressInfoAsync(botClient, message, cancellationToken, address: address);
     }
 
+    //#nullable disable
     private static async Task<Address> GetAddressFromCoordinatesAsync(double longitude, double latitude)
     {
         using HttpClient httpClient = new();
@@ -86,13 +87,10 @@ public partial class BotUpdateHandler
 
             var content = await response.Content.ReadAsStringAsync();
 
-            NominatimResponse? nominatimResponse = JsonSerializer.Deserialize<NominatimResponse>(content,
-                new JsonSerializerOptions
-                {
-                    PropertyNameCaseInsensitive = true
-                });
+            NominatimResponse nominatimResponse = JsonSerializer.Deserialize<NominatimResponse>(content,
+                options: new() { PropertyNameCaseInsensitive = true })!;
 
-            if (nominatimResponse?.Address is null)
+            if (nominatimResponse.Address is null)
                 return new()
                 {
                     Latitude = latitude,
@@ -105,8 +103,9 @@ public partial class BotUpdateHandler
                     CountryCode = nominatimResponse.Address.CountryCode,
                     Region = nominatimResponse.Address.State,
                     District = nominatimResponse.Address.County,
+                    City = nominatimResponse.Address.Town,
                     Street = nominatimResponse.Address.Road,
-                    House = nominatimResponse.Address.HouseNumber,
+                    HouseNumber = nominatimResponse.Address.HouseNumber,
                     Longitude = longitude,
                     Latitude = latitude
                 };
@@ -119,24 +118,24 @@ public partial class BotUpdateHandler
             Longitude = longitude
         };
     }
-
 }
 
 #region Model
 public class NominatimResponse
 {
-    public string? DisplayName { get; set; }
-    public NominatimAddress? Address { get; set; }
+    public string DisplayName { get; set; } = string.Empty;
+    public NominatimAddress Address { get; set; } = default!;
 }
 
 public class NominatimAddress
 {
-    public string? Country { get; set; }
+    public string Country { get; set; } = string.Empty;
     [JsonPropertyName("country_code")]
-    public string? CountryCode { get; set; }
-    public string? State { get; set; }
-    public string? County { get; set; }
-    public string? Road { get; set; }
-    public string? HouseNumber { get; set; }
+    public string CountryCode { get; set; } = string.Empty;
+    public string State { get; set; } = string.Empty;
+    public string County { get; set; } = string.Empty;
+    public string Town { get; set; } = string.Empty;
+    public string Road { get; set; } = string.Empty;
+    public string HouseNumber { get; set; } = string.Empty;
 }
 #endregion

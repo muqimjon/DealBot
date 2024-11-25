@@ -14,13 +14,13 @@ public partial class BotUpdateHandler
     private const int count = 16;
     private async Task SendRequestDateOfBirthAsync(ITelegramBotClient botClient, Message message, CancellationToken cancellationToken)
     {
-        InlineKeyboardMarkup keyboard = new(new InlineKeyboardButton[][]
-        {
+        InlineKeyboardMarkup keyboard = new(
+        [
             [InlineKeyboardButton.WithCallbackData(localizer[Text.Year], CallbackData.Year),
                 InlineKeyboardButton.WithCallbackData(localizer[Text.Month], CallbackData.Month),
                     InlineKeyboardButton.WithCallbackData(localizer[Text.Day], CallbackData.Day)],
             [InlineKeyboardButton.WithCallbackData(localizer[Text.Back], CallbackData.Back)],
-        });
+        ]);
 
         var value = user;
         if (user.PlaceId != 0 && (value = await appDbContext.Users.FirstOrDefaultAsync(u => u.Id == user.PlaceId, cancellationToken)) is null)

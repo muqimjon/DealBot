@@ -57,7 +57,7 @@ public class Text
     public const string Referral = nameof(Referral);
     public const string ShortReferralInfo = nameof(ShortReferralInfo);
 
-    public const string Contacts = nameof(Contacts);
+    public const string Contact = nameof(Contact);
     public const string ContactUs = nameof(ContactUs);
     public const string SendContact = nameof(SendContact);
     public const string StoreContactInfo = nameof(StoreContactInfo);
@@ -194,7 +194,7 @@ public class Text
     public const string SendLocation = nameof(SendLocation);
     public const string AskForLocationInPlaceHolder = nameof(AskForLocationInPlaceHolder);
 
-    public const string House = nameof(House);
+    public const string HouseNumber = nameof(HouseNumber);
     public const string AskHouse = nameof(AskHouse);
     public const string AskHouseInPlaceHolder = nameof(AskHouseInPlaceHolder);
 
@@ -217,4 +217,12 @@ public class Text
     public const string District = nameof(District);
     public const string AskDistrict = nameof(AskDistrict);
     public const string AskDistrictInPlaceHolder = nameof(AskDistrictInPlaceHolder);
+
+    public const string City = nameof(City);
+    public const string AskCity = nameof(AskCity);
+    public const string AskCityInPlaceHolder = nameof(AskCityInPlaceHolder);
+
+    public const string ViewDirection = nameof(ViewDirection);
+
+    public const string ContactInfo = nameof(ContactInfo);
 }

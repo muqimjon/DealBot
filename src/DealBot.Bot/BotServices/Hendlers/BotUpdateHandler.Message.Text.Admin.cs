@@ -36,7 +36,7 @@ public partial class BotUpdateHandler
             return;
         }
 
-        var name = string.IsNullOrEmpty(store.Name) ? Text.Undefined : store.Name;
+        var name = string.IsNullOrEmpty(store.Name) ? localizer[Text.Undefined] : store.Name;
 
         var sentMessage = await botClient.SendTextMessageAsync(
             chatId: message.Chat.Id,
@@ -92,7 +92,7 @@ public partial class BotUpdateHandler
             return;
         }
 
-        var description = string.IsNullOrEmpty(store.Description) ? Text.Undefined : store.Description;
+        var description = string.IsNullOrEmpty(store.Description) ? localizer[Text.Undefined] : store.Description;
 
         var sentMessage = await botClient.SendTextMessageAsync(
             chatId: message.Chat.Id,
@@ -148,7 +148,7 @@ public partial class BotUpdateHandler
             return;
         }
 
-        var miniAppUrl = string.IsNullOrEmpty(store.MiniAppUrl) ? Text.Undefined : store.MiniAppUrl;
+        var miniAppUrl = string.IsNullOrEmpty(store.MiniAppUrl) ? localizer[Text.Undefined] : store.MiniAppUrl;
 
         var sentMessage = await botClient.SendTextMessageAsync(
             chatId: message.Chat.Id,
@@ -204,7 +204,7 @@ public partial class BotUpdateHandler
             return;
         }
 
-        var website = string.IsNullOrEmpty(store.Website) ? Text.Undefined : store.Website;
+        var website = string.IsNullOrEmpty(store.Website) ? localizer[Text.Undefined] : store.Website;
 
         var sentMessage = await botClient.SendTextMessageAsync(
             chatId: message.Chat.Id,
@@ -262,7 +262,7 @@ public partial class BotUpdateHandler
         }
 
         store.Contact ??= new();
-        var email = string.IsNullOrEmpty(store.Contact.Email) ? Text.Undefined : store.Contact.Email;
+        var email = string.IsNullOrEmpty(store.Contact.Email) ? localizer[Text.Undefined] : store.Contact.Email;
 
         var sentMessage = await botClient.SendTextMessageAsync(
             chatId: message.Chat.Id,
@@ -321,7 +321,7 @@ public partial class BotUpdateHandler
             return;
         }
 
-        var channel = string.IsNullOrEmpty(store.Channel) ? Text.Undefined : store.Channel;
+        var channel = string.IsNullOrEmpty(store.Channel) ? localizer[Text.Undefined] : store.Channel;
 
         var sentMessage = await botClient.SendTextMessageAsync(
             chatId: message.Chat.Id,
@@ -353,6 +353,7 @@ public partial class BotUpdateHandler
     }
 
 
+    #region Company Address
     private async Task SendRequestForHouseAsync(ITelegramBotClient botClient, Message message, CancellationToken cancellationToken)
     {
         await botClient.SendChatActionAsync(
@@ -370,6 +371,7 @@ public partial class BotUpdateHandler
         };
 
         var address = (await appDbContext.Stores
+            .Include(s => s.Address)
             .OrderByDescending(s => s.CreatedAt)
             .FirstOrDefaultAsync(cancellationToken))?.Address;
 
@@ -379,7 +381,7 @@ public partial class BotUpdateHandler
             return;
         }
 
-        var channel = string.IsNullOrEmpty(address.House) ? localizer[Text.Undefined] : address.House;
+        var channel = string.IsNullOrEmpty(address.HouseNumber) ? localizer[Text.Undefined] : address.HouseNumber;
 
         var sentMessage = await botClient.SendTextMessageAsync(
             chatId: message.Chat.Id,
@@ -395,6 +397,23 @@ public partial class BotUpdateHandler
         user.MessageId = sentMessage.MessageId;
         user.State = States.WaitingForSendHouse;
     }
+
+    // TO DO need Validation
+    private async Task HandleHouseAsync(ITelegramBotClient botClient, Message message, CancellationToken cancellationToken)
+    {
+        ArgumentNullException.ThrowIfNull(message.Text, nameof(message));
+
+        var address = (await appDbContext.Stores
+            .Include(s => s.Address)
+            .OrderByDescending(s => s.CreatedAt)
+            .FirstAsync(cancellationToken)).Address;
+
+        var actionMessage = localizer[string.IsNullOrEmpty(address.HouseNumber) ? Text.SetSucceeded : Text.UpdateSucceeded];
+        address.HouseNumber = message.Text.Trim();
+
+        await SendMenuAddressInfoAsync(botClient, message, cancellationToken, actionMessage);
+    }
+
 
     private async Task SendRequestForStreetAsync(ITelegramBotClient botClient, Message message, CancellationToken cancellationToken)
     {
@@ -413,6 +432,7 @@ public partial class BotUpdateHandler
         };
 
         var address = (await appDbContext.Stores
+            .Include(s => s.Address)
             .OrderByDescending(s => s.CreatedAt)
             .FirstOrDefaultAsync(cancellationToken))?.Address;
 
@@ -439,6 +459,83 @@ public partial class BotUpdateHandler
         user.State = States.WaitingForSendStreet;
     }
 
+    // TO DO need Validation
+    private async Task HandleSrteetAsync(ITelegramBotClient botClient, Message message, CancellationToken cancellationToken)
+    {
+        ArgumentNullException.ThrowIfNull(message.Text, nameof(message));
+
+        var address = (await appDbContext.Stores
+            .Include(s => s.Address)
+            .OrderByDescending(s => s.CreatedAt)
+            .FirstAsync(cancellationToken)).Address;
+
+        var actionMessage = localizer[string.IsNullOrEmpty(address.Street) ? Text.SetSucceeded : Text.UpdateSucceeded];
+        address.Street = message.Text.Trim();
+
+        await SendMenuAddressInfoAsync(botClient, message, cancellationToken, actionMessage);
+    }
+
+    private async Task SendRequestForCityAsync(ITelegramBotClient botClient, Message message, CancellationToken cancellationToken)
+    {
+        await botClient.SendChatActionAsync(
+            chatId: message.Chat.Id,
+            chatAction: ChatAction.Typing,
+            cancellationToken: cancellationToken);
+
+        ReplyKeyboardMarkup keyboard = new(
+        [
+            [new(localizer[Text.Back])]
+        ])
+        {
+            ResizeKeyboard = true,
+            InputFieldPlaceholder = localizer[Text.AskCityInPlaceHolder],
+        };
+
+        var address = (await appDbContext.Stores
+            .Include(s => s.Address)
+            .OrderByDescending(s => s.CreatedAt)
+            .FirstOrDefaultAsync(cancellationToken))?.Address;
+
+        if (address is null)
+        {
+            await SendMenuAddressInfoAsync(botClient, message, cancellationToken, localizer[Text.Error]);
+            return;
+        }
+
+        var city = string.IsNullOrEmpty(address.City) ? localizer[Text.Undefined] : address.City;
+
+        var sentMessage = await botClient.SendTextMessageAsync(
+            chatId: message.Chat.Id,
+            text: localizer[Text.AskCity, city],
+            replyMarkup: keyboard,
+            cancellationToken: cancellationToken);
+
+        await botClient.DeleteMessageAsync(
+            chatId: message.Chat.Id,
+            messageId: message.MessageId,
+            cancellationToken: cancellationToken);
+
+        user.MessageId = sentMessage.MessageId;
+        user.State = States.WaitingForSendCity;
+    }
+
+    // TO DO need Validation
+    private async Task HandleCityAsync(ITelegramBotClient botClient, Message message, CancellationToken cancellationToken)
+    {
+        ArgumentNullException.ThrowIfNull(message.Text, nameof(message));
+
+        var address = (await appDbContext.Stores
+            .Include(s => s.Address)
+            .OrderByDescending(s => s.CreatedAt)
+            .FirstAsync(cancellationToken)).Address;
+
+        var actionMessage = localizer[string.IsNullOrEmpty(address.City) ? Text.SetSucceeded : Text.UpdateSucceeded];
+        address.City = message.Text.Trim();
+
+        await SendMenuAddressInfoAsync(botClient, message, cancellationToken, actionMessage);
+    }
+
+
     private async Task SendRequestForDistrictAsync(ITelegramBotClient botClient, Message message, CancellationToken cancellationToken)
     {
         await botClient.SendChatActionAsync(
@@ -456,6 +553,7 @@ public partial class BotUpdateHandler
         };
 
         var address = (await appDbContext.Stores
+            .Include(s => s.Address)
             .OrderByDescending(s => s.CreatedAt)
             .FirstOrDefaultAsync(cancellationToken))?.Address;
 
@@ -482,6 +580,23 @@ public partial class BotUpdateHandler
         user.State = States.WaitingForSendDistrict;
     }
 
+    // TO DO need Validation
+    private async Task HandleDistrictAsync(ITelegramBotClient botClient, Message message, CancellationToken cancellationToken)
+    {
+        ArgumentNullException.ThrowIfNull(message.Text, nameof(message));
+
+        var address = (await appDbContext.Stores
+            .Include(s => s.Address)
+            .OrderByDescending(s => s.CreatedAt)
+            .FirstAsync(cancellationToken)).Address;
+
+        var actionMessage = localizer[string.IsNullOrEmpty(address.District) ? Text.SetSucceeded : Text.UpdateSucceeded];
+        address.District = message.Text.Trim();
+
+        await SendMenuAddressInfoAsync(botClient, message, cancellationToken, actionMessage);
+    }
+
+
     private async Task SendRequestForRegionAsync(ITelegramBotClient botClient, Message message, CancellationToken cancellationToken)
     {
         await botClient.SendChatActionAsync(
@@ -499,6 +614,7 @@ public partial class BotUpdateHandler
         };
 
         var address = (await appDbContext.Stores
+            .Include(s => s.Address)
             .OrderByDescending(s => s.CreatedAt)
             .FirstOrDefaultAsync(cancellationToken))?.Address;
 
@@ -525,6 +641,23 @@ public partial class BotUpdateHandler
         user.State = States.WaitingForSendRegion;
     }
 
+    // TO DO need Validation
+    private async Task HandleRegionAsync(ITelegramBotClient botClient, Message message, CancellationToken cancellationToken)
+    {
+        ArgumentNullException.ThrowIfNull(message.Text, nameof(message));
+
+        var address = (await appDbContext.Stores
+            .Include(s => s.Address)
+            .OrderByDescending(s => s.CreatedAt)
+            .FirstAsync(cancellationToken)).Address;
+
+        var actionMessage = localizer[string.IsNullOrEmpty(address.Region) ? Text.SetSucceeded : Text.UpdateSucceeded];
+        address.Region = message.Text.Trim();
+
+        await SendMenuAddressInfoAsync(botClient, message, cancellationToken, actionMessage);
+    }
+
+
     private async Task SendRequestForCountryCodeAsync(ITelegramBotClient botClient, Message message, CancellationToken cancellationToken)
     {
         await botClient.SendChatActionAsync(
@@ -542,6 +675,7 @@ public partial class BotUpdateHandler
         };
 
         var address = (await appDbContext.Stores
+            .Include(s => s.Address)
             .OrderByDescending(s => s.CreatedAt)
             .FirstOrDefaultAsync(cancellationToken))?.Address;
 
@@ -568,6 +702,23 @@ public partial class BotUpdateHandler
         user.State = States.WaitingForSendCountryCode;
     }
 
+    // TO DO need Validation
+    private async Task HandleCountryCodeAsync(ITelegramBotClient botClient, Message message, CancellationToken cancellationToken)
+    {
+        ArgumentNullException.ThrowIfNull(message.Text, nameof(message));
+
+        var address = (await appDbContext.Stores
+            .Include(s => s.Address)
+            .OrderByDescending(s => s.CreatedAt)
+            .FirstAsync(cancellationToken)).Address;
+
+        var actionMessage = localizer[string.IsNullOrEmpty(address.CountryCode) ? Text.SetSucceeded : Text.UpdateSucceeded];
+        address.CountryCode = message.Text.Trim();
+
+        await SendMenuAddressInfoAsync(botClient, message, cancellationToken, actionMessage);
+    }
+
+
     private async Task SendRequestForCountryAsync(ITelegramBotClient botClient, Message message, CancellationToken cancellationToken)
     {
         await botClient.SendChatActionAsync(
@@ -585,6 +736,7 @@ public partial class BotUpdateHandler
         };
 
         var address = (await appDbContext.Stores
+            .Include(s => s.Address)
             .OrderByDescending(s => s.CreatedAt)
             .FirstOrDefaultAsync(cancellationToken))?.Address;
 
@@ -610,4 +762,21 @@ public partial class BotUpdateHandler
         user.MessageId = sentMessage.MessageId;
         user.State = States.WaitingForSendCountry;
     }
+
+    // TO DO need Validation
+    private async Task HandleCountryAsync(ITelegramBotClient botClient, Message message, CancellationToken cancellationToken)
+    {
+        ArgumentNullException.ThrowIfNull(message.Text, nameof(message));
+
+        var address = (await appDbContext.Stores
+            .Include(s => s.Address)
+            .OrderByDescending(s => s.CreatedAt)
+            .FirstAsync(cancellationToken)).Address;
+
+        var actionMessage = localizer[string.IsNullOrEmpty(address.Country) ? Text.SetSucceeded : Text.UpdateSucceeded];
+        address.Country = message.Text.Trim();
+
+        await SendMenuAddressInfoAsync(botClient, message, cancellationToken, actionMessage);
+    }
+    #endregion
 }

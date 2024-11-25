@@ -102,7 +102,6 @@ public partial class BotUpdateHandler
         Store store;
         if ((store = (await appDbContext.Stores
             .Include(s => s.Image)
-            .Include(s => s.Contact)
             .FirstOrDefaultAsync(cancellationToken))!) is null)
             await appDbContext.Stores.AddAsync(store = new());
 
@@ -114,9 +113,8 @@ public partial class BotUpdateHandler
                 InlineKeyboardButton.WithCallbackData(localizer[Text.Website], CallbackData.Website)],
             [InlineKeyboardButton.WithCallbackData(localizer[Text.Channel], CallbackData.Channel),
                 InlineKeyboardButton.WithCallbackData(localizer[Text.MiniAppUrl], CallbackData.MiniAppUrl)],
-            [InlineKeyboardButton.WithCallbackData(localizer[Text.PhoneNumber], CallbackData.PhoneNumber),
-                InlineKeyboardButton.WithCallbackData(localizer[Text.Email], CallbackData.Email)],
-            [InlineKeyboardButton.WithCallbackData(localizer[Text.Address], CallbackData.Address)],
+            [InlineKeyboardButton.WithCallbackData(localizer[Text.Contact], CallbackData.Contact),
+                InlineKeyboardButton.WithCallbackData(localizer[Text.Address], CallbackData.Address)],
             [InlineKeyboardButton.WithCallbackData(localizer[Text.Back], CallbackData.Back)],
         ]);
 
@@ -125,8 +123,6 @@ public partial class BotUpdateHandler
             localizer[string.IsNullOrEmpty(store.Name) ? Text.Undefined : Text.Defined],
             localizer[string.IsNullOrEmpty(store.Description) ? Text.Undefined : Text.Defined],
             localizer[string.IsNullOrEmpty(store.Image?.FileId) ? Text.Undefined : Text.Defined],
-            localizer[string.IsNullOrEmpty(store.Contact?.Phone) ? Text.Undefined : Text.Defined],
-            localizer[string.IsNullOrEmpty(store.Contact?.Email) ? Text.Undefined : Text.Defined],
             localizer[string.IsNullOrEmpty(store.Website) ? Text.Undefined : Text.Defined],
             localizer[string.IsNullOrEmpty(store.MiniAppUrl) ? Text.Undefined : Text.Defined],
             localizer[string.IsNullOrEmpty(store.Channel) ? Text.Undefined : Text.Defined]];
@@ -156,25 +152,71 @@ public partial class BotUpdateHandler
             CallbackData.MiniAppUrl => SendRequestForMiniAppUrlAsync(botClient, callbackQuery.Message, cancellationToken),
             CallbackData.Website => SendRequestForWebsiteAsync(botClient, callbackQuery.Message, cancellationToken),
             CallbackData.Channel => SendRequestForChannelAsync(botClient, callbackQuery.Message, cancellationToken),
-            CallbackData.PhoneNumber => SendRequestCompanyPhoneNumberAsync(botClient, callbackQuery.Message, cancellationToken),
-            CallbackData.Email => SendRequestForEmailAsync(botClient, callbackQuery.Message, cancellationToken),
-            CallbackData.Address => HandleAddressAsync(botClient, callbackQuery.Message, cancellationToken),
+            CallbackData.Contact => SendMenuContactInfoAsync(botClient, callbackQuery.Message, cancellationToken),
+            CallbackData.Address => SendMenuAddressInfoAsync(botClient, callbackQuery.Message, cancellationToken),
             _ => default!,
         });
     }
 
-
-    private async Task HandleAddressAsync(ITelegramBotClient botClient, Message message, CancellationToken cancellationToken)
+    private async Task SendMenuContactInfoAsync(
+        ITelegramBotClient botClient,
+        Message message,
+        CancellationToken cancellationToken,
+        string actionMessage = Text.Empty,
+        Domain.Entities.Contact contacts = default!)
     {
-        var address = (await appDbContext.Stores
-            .Include(s => s.Address)
+        if (contacts is null)
+        {
+            var store = await appDbContext.Stores
+            .Include(s => s.Contact)
             .OrderByDescending(s => s.CreatedAt)
-            .FirstOrDefaultAsync(cancellationToken))?.Address;
+            .LastOrDefaultAsync(cancellationToken);
 
-        if (address is null)
-            await SendRequestForLocationAsync(botClient, message, cancellationToken);
-        else
-            await SendMenuAddressInfoAsync(botClient, message, cancellationToken, address: address);
+            if (store is null)
+            {
+                await SendAdminSettingsAsync(botClient, message, cancellationToken, localizer[Text.Error]);
+                return;
+            }
+            else if (store.Contact is null)
+                await appDbContext.Contacts.AddAsync(store.Contact ??= new());
+
+            contacts = store.Contact;
+        }
+
+        var addressInfo = string.Concat(actionMessage, localizer[Text.ContactInfo,
+        string.IsNullOrEmpty(contacts.Phone) ? localizer[Text.Undefined] : contacts.Phone,
+        string.IsNullOrEmpty(contacts.Email) ? localizer[Text.Undefined] : contacts.Email]);
+
+        InlineKeyboardMarkup keyboard = new(
+        [
+            [InlineKeyboardButton.WithCallbackData(localizer[Text.Email], CallbackData.Email),
+                InlineKeyboardButton.WithCallbackData(localizer[Text.PhoneNumber], CallbackData.PhoneNumber)],
+            [InlineKeyboardButton.WithCallbackData(localizer[Text.Back], CallbackData.Back)]
+        ]);
+
+        var text = string.Concat(addressInfo, localizer[Text.SelectSettings]);
+
+        var sentMessage = await EditOrSendMessageAsync(
+            botClient: botClient,
+            message: message,
+            text: text,
+            keyboard: keyboard,
+            cancellationToken: cancellationToken);
+
+        user.MessageId = sentMessage.MessageId;
+        user.State = States.WaitingForSelectContactSettings;
+    }
+
+    private async Task HandleContactsMenuAsync(ITelegramBotClient botClient, CallbackQuery callbackQuery, CancellationToken cancellationToken)
+    {
+        ArgumentNullException.ThrowIfNull(callbackQuery.Message, nameof(Message));
+
+        await (callbackQuery.Data switch
+        {
+            CallbackData.PhoneNumber => SendRequestCompanyPhoneNumberAsync(botClient, callbackQuery.Message, cancellationToken),
+            CallbackData.Email => SendRequestForEmailAsync(botClient, callbackQuery.Message, cancellationToken),
+            _ => default!,
+        });
     }
 
     private async Task SendMenuAddressInfoAsync(
@@ -184,13 +226,32 @@ public partial class BotUpdateHandler
         string actionMessage = Text.Empty,
         Address address = default!)
     {
+        if (address is null)
+        {
+            var store = await appDbContext.Stores
+            .Include(s => s.Address)
+            .OrderByDescending(s => s.CreatedAt)
+            .LastOrDefaultAsync(cancellationToken);
+
+            if (store is null)
+            {
+                await SendAdminSettingsAsync(botClient, message, cancellationToken, localizer[Text.Error]);
+                return;
+            }
+            else if (store.Address is null)
+                await appDbContext.Addresses.AddAsync(store.Address ??= new());
+
+            address = store.Address;
+        }
+
         var addressInfo = string.Concat(actionMessage, localizer[Text.AddressInfo,
             string.IsNullOrEmpty(address.Country) ? localizer[Text.Undefined] : address.Country,
             string.IsNullOrEmpty(address.CountryCode) ? localizer[Text.Undefined] : address.CountryCode,
             string.IsNullOrEmpty(address.Region) ? localizer[Text.Undefined] : address.Region,
             string.IsNullOrEmpty(address.District) ? localizer[Text.Undefined] : address.District,
+            string.IsNullOrEmpty(address.City) ? localizer[Text.Undefined] : address.City,
             string.IsNullOrEmpty(address.Street) ? localizer[Text.Undefined] : address.Street,
-            string.IsNullOrEmpty(address.House) ? localizer[Text.Undefined] : address.House,
+            string.IsNullOrEmpty(address.HouseNumber) ? localizer[Text.Undefined] : address.HouseNumber,
             localizer[address.Latitude == 0 || address.Longitude == 0 ? Text.Undefined : Text.Defined]]);
 
         InlineKeyboardMarkup keyboard = new(
@@ -199,9 +260,10 @@ public partial class BotUpdateHandler
             [InlineKeyboardButton.WithCallbackData(localizer[Text.Country], CallbackData.Country),
                 InlineKeyboardButton.WithCallbackData(localizer[Text.CountryCode], CallbackData.CountryCode)],
             [InlineKeyboardButton.WithCallbackData(localizer[Text.Region], CallbackData.Region),
-                InlineKeyboardButton.WithCallbackData(localizer[Text.District], CallbackData.District)],
-            [InlineKeyboardButton.WithCallbackData(localizer[Text.Street], CallbackData.Street),
-                InlineKeyboardButton.WithCallbackData(localizer[Text.House], CallbackData.House)],
+                InlineKeyboardButton.WithCallbackData(localizer[Text.City], CallbackData.City)],
+            [InlineKeyboardButton.WithCallbackData(localizer[Text.District], CallbackData.District),
+                InlineKeyboardButton.WithCallbackData(localizer[Text.Street], CallbackData.Street)],
+            [InlineKeyboardButton.WithCallbackData(localizer[Text.HouseNumber], CallbackData.HouseNumber)],
             [InlineKeyboardButton.WithCallbackData(localizer[Text.Back], CallbackData.Back)]
         ]);
 
@@ -228,22 +290,13 @@ public partial class BotUpdateHandler
             CallbackData.Country => SendRequestForCountryAsync(botClient, callbackQuery.Message, cancellationToken),
             CallbackData.CountryCode => SendRequestForCountryCodeAsync(botClient, callbackQuery.Message, cancellationToken),
             CallbackData.Region => SendRequestForRegionAsync(botClient, callbackQuery.Message, cancellationToken),
+            CallbackData.City => SendRequestForCityAsync(botClient, callbackQuery.Message, cancellationToken),
             CallbackData.District => SendRequestForDistrictAsync(botClient, callbackQuery.Message, cancellationToken),
             CallbackData.Street => SendRequestForStreetAsync(botClient, callbackQuery.Message, cancellationToken),
-            CallbackData.House => SendRequestForHouseAsync(botClient, callbackQuery.Message, cancellationToken),
+            CallbackData.HouseNumber => SendRequestForHouseAsync(botClient, callbackQuery.Message, cancellationToken),
             _ => default!,
         });
     }
-
-    private static bool IsAddressValid(Address? address) =>
-        address is not null &&
-        address.Latitude != 0 &&
-        address.Longitude != 0 &&
-        string.IsNullOrEmpty(address.Country) &&
-        string.IsNullOrEmpty(address.Region) &&
-        string.IsNullOrEmpty(address.District) &&
-        string.IsNullOrEmpty(address.Street) &&
-        string.IsNullOrEmpty(address.House);
 
     private async Task SendEmployeesListAsync(ITelegramBotClient botClient, Message message, CancellationToken cancellationToken)
     {

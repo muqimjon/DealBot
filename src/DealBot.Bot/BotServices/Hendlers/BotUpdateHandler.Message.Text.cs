@@ -44,6 +44,14 @@ public partial class BotUpdateHandler
             States.WaitingForSendCompanyEmail => HandleCompanyEmailAsync(botClient, message, cancellationToken),
             States.WaitingForSendChannel => HandleChannelAsync(botClient, message, cancellationToken),
             States.WaitingForSendMessageText => HandleMessageTextAsync(botClient, message, cancellationToken),
+
+            States.WaitingForSendHouse => HandleHouseAsync(botClient, message, cancellationToken),
+            States.WaitingForSendStreet => HandleSrteetAsync(botClient, message, cancellationToken),
+            States.WaitingForSendDistrict => HandleDistrictAsync(botClient, message, cancellationToken),
+            States.WaitingForSendRegion => HandleRegionAsync(botClient, message, cancellationToken),
+            States.WaitingForSendCountryCode => HandleCountryCodeAsync(botClient, message, cancellationToken),
+            States.WaitingForSendCountry => HandleCountryAsync(botClient, message, cancellationToken),
+            States.WaitingForSendCity => HandleCityAsync(botClient, message, cancellationToken),
             _ => HandleUnknownMessageAsync(botClient, message, cancellationToken)
         };
 

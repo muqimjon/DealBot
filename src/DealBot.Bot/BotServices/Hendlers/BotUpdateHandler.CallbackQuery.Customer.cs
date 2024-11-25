@@ -4,6 +4,7 @@ using DealBot.Bot.Resources;
 using DealBot.Domain.Entities;
 using DealBot.Domain.Enums;
 using Microsoft.EntityFrameworkCore;
+using System.Globalization;
 using System.Threading;
 using Telegram.Bot;
 using Telegram.Bot.Types;
@@ -31,10 +32,10 @@ public partial class BotUpdateHandler
             [InlineKeyboardButton.WithCallbackData(localizer[Text.MyPrivilegeCard], CallbackData.MyPrivilegeCard)],
             string.IsNullOrEmpty(store!.MiniAppUrl) ? [] :
                 [InlineKeyboardButton.WithWebApp(localizer[Text.OrderOnTheSite], new WebAppInfo() { Url = store.MiniAppUrl })],
-            string.IsNullOrEmpty(store.Contact?.Phone) ? [] :
+            !IsCOntactValid(store.Contact) ? [] :
                 [InlineKeyboardButton.WithCallbackData(localizer[Text.ContactUs], CallbackData.ContactUs)],
-            IsAddressValid(store.Address) ? [] :
-                [InlineKeyboardButton.WithCallbackData(localizer[Text.StoreAddress], CallbackData.StoreAddress)],
+            !IsAddressValid(store.Address) ? [] :
+                [InlineKeyboardButton.WithCallbackData(localizer[Text.Address], CallbackData.Address)],
             [InlineKeyboardButton.WithCallbackData(localizer[Text.Settings], CallbackData.Settings),
                 InlineKeyboardButton.WithCallbackData(localizer[Text.Comment], CallbackData.Comment)],
             [InlineKeyboardButton.WithUrl(localizer[Text.Referral], await GetShareLink(botClient, cancellationToken))],
@@ -74,7 +75,7 @@ public partial class BotUpdateHandler
                     true => SendUserPrivilegeCardAsync(botClient, callbackQuery.Message, cancellationToken),
                     _ => SendRequestJoinToChannel(botClient, callbackQuery.Message, cancellationToken),
                 },
-            CallbackData.StoreAddress => SendStoreAddressAsync(botClient, callbackQuery.Message, cancellationToken),
+            CallbackData.Address => SendStoreAddressAsync(botClient, callbackQuery.Message, cancellationToken),
             CallbackData.ContactUs => SendContactInfoAsync(botClient, callbackQuery.Message, cancellationToken),
             CallbackData.Comment => SendRequestCommentAsync(botClient, callbackQuery.Message, cancellationToken),
             CallbackData.Settings => SendCustomerSettingsAsync(botClient, callbackQuery.Message, cancellationToken),
@@ -186,6 +187,59 @@ public partial class BotUpdateHandler
 
     private async Task SendStoreAddressAsync(ITelegramBotClient botClient, Message message, CancellationToken cancellationToken)
     {
+        var storeWithAddress = await appDbContext.Stores
+            .Include(s => s.Address)
+            .OrderByDescending(s => s.Id)
+            .FirstOrDefaultAsync(cancellationToken);
+
+        var address = storeWithAddress?.Address;
+
+        if (address is null)
+        {
+            await SendCustomerMenuAsync(botClient, message, cancellationToken, localizer[Text.Error]);
+            return;
+        }
+
+        var addressText = localizer[
+            Text.StoreAddress,
+            string.IsNullOrWhiteSpace(address.Country) ? localizer[Text.Undefined] : address.Country,
+            string.IsNullOrWhiteSpace(address.Region) ? localizer[Text.Undefined] : address.Region,
+            string.IsNullOrWhiteSpace(address.District) ? localizer[Text.Undefined] : address.District,
+            string.IsNullOrWhiteSpace(address.City) ? localizer[Text.Undefined] : address.City,
+            string.IsNullOrWhiteSpace(address.Street) ? localizer[Text.Undefined] : address.Street,
+            string.IsNullOrWhiteSpace(address.HouseNumber) ? localizer[Text.Undefined] : address.HouseNumber];
+
+        var inlineKeyboard = new InlineKeyboardMarkup(
+        [
+            [InlineKeyboardButton.WithCallbackData(localizer[Text.ViewDirection], CallbackData.ViewDirection)],
+            [InlineKeyboardButton.WithCallbackData(localizer[Text.Back], CallbackData.Back)]
+        ]);
+
+        var sentMessage = await EditOrSendMessageAsync(
+            botClient: botClient,
+            message: message,
+            text: addressText,
+            cancellationToken: cancellationToken,
+            keyboard: inlineKeyboard);
+
+        user.MessageId = sentMessage.MessageId;
+        user.State = States.WaitingForSelectAddressMenu;
+    }
+
+    private async Task HandleSelectedAddressMenuAsync(ITelegramBotClient botClient, CallbackQuery callbackQuery, CancellationToken cancellationToken)
+    {
+        ArgumentNullException.ThrowIfNull(callbackQuery.Message, nameof(Message));
+
+        await (callbackQuery.Data switch
+        {
+            CallbackData.ViewDirection => SendDirectionAsync(botClient, callbackQuery.Message, cancellationToken),
+            _ => HandleUnknownCallbackQueryAsync(botClient, callbackQuery, cancellationToken),
+        });
+    }
+
+
+    private async Task SendDirectionAsync(ITelegramBotClient botClient, Message message, CancellationToken cancellationToken)
+    {
         var address = (await appDbContext.Stores
             .Include(s => s.Address)
             .OrderByDescending(s => s.Id)
@@ -197,16 +251,25 @@ public partial class BotUpdateHandler
             return;
         }
 
-        double latitude = address.Latitude;
-        double longitude = address.Longitude;
+        string formattedLatitude = address.Latitude.ToString(CultureInfo.InvariantCulture);
+        string formattedLongitude = address.Longitude.ToString(CultureInfo.InvariantCulture);
 
-        string googleMapsUrl = $"https://www.google.com/maps?q={latitude},{longitude}";
-        string yandexMapsUrl = $"https://yandex.com/maps/?rtext={latitude},{longitude}&rtt=auto";
+        var addressName = string.Join(", ", [address.Street, address.District, address.Region]);
 
-        InlineKeyboardMarkup keyboard = new(
+        // Generate URLs for different map services https://maps.google.com/?q=<lat>,<lng>
+        string googleMapsUrl = $"https://maps.google.com/?q={formattedLatitude},{formattedLongitude}";
+        string yandexMapsUrl = $"https://yandex.uz/maps/?ll={formattedLongitude}%2C{formattedLatitude}&mode=routes&rtext=~40.244164%2C71.558187&rtt=auto&ruri=~&z=16";
+        string yandexMapsUr = $"https://yandex.ru/maps/?ll={formattedLongitude},{formattedLatitude}&z=12&l=map";
+        string appleMapsUrl = $"https://maps.apple.com/?q={formattedLatitude},{formattedLongitude}";
+        string twoGisUrl = $"https://2gis.com/?query={formattedLatitude}%2C{formattedLongitude}";
+
+        // Inline keyboard buttons for the map services
+        var inlineKeyboard = new InlineKeyboardMarkup(
         [
             [InlineKeyboardButton.WithUrl("Google Maps", googleMapsUrl),
                 InlineKeyboardButton.WithUrl("Yandex Maps", yandexMapsUrl)],
+            [InlineKeyboardButton.WithUrl("Apple Maps", appleMapsUrl),
+                InlineKeyboardButton.WithUrl("2GIS", twoGisUrl)],
             [InlineKeyboardButton.WithCallbackData(localizer[Text.Back], CallbackData.Back)]
         ]);
 
@@ -214,9 +277,9 @@ public partial class BotUpdateHandler
         {
             var locationMessage = await botClient.SendLocationAsync(
                 chatId: message.Chat.Id,
-                latitude: latitude,
-                longitude: longitude,
-                replyMarkup: keyboard,
+                latitude: address.Latitude,
+                longitude: address.Longitude,
+                replyMarkup: inlineKeyboard,
                 cancellationToken: cancellationToken);
 
             await botClient.DeleteMessageAsync(
@@ -225,11 +288,12 @@ public partial class BotUpdateHandler
                 cancellationToken: cancellationToken);
 
             user.MessageId = locationMessage.MessageId;
-            user.State = States.WaitingForSelectAddressOption;
+            user.State = States.WaitingForSelectDirectionOption;
         }
-        catch
+        catch (Exception ex)
         {
-            logger.LogInformation("Invalid address");
+            logger.LogError(ex, "Manzilga yo'l ko'rsatishda xatolik yuz berdi");
+            await SendCustomerMenuAsync(botClient, message, cancellationToken, localizer[Text.Error]);
         }
     }
 
@@ -285,15 +349,6 @@ public partial class BotUpdateHandler
 
         return true;
     }
-
-    public bool IsAccountComplete(Domain.Entities.User user)
-        => !string.IsNullOrWhiteSpace(user.FirstName) &&
-           !string.IsNullOrWhiteSpace(user.LastName) &&
-           !string.IsNullOrWhiteSpace(user.Contact.Email) &&
-           !string.IsNullOrWhiteSpace(user.Contact.Phone) &&
-           user.Gender != Genders.Unknown &&
-           user.DateOfBirth != DateTimeOffset.MinValue &&
-           user.DateOfBirth.Year > 0;
 
     private async Task<string> GetShareLink(ITelegramBotClient botClient, CancellationToken cancellationToken)
     {
@@ -374,16 +429,35 @@ public partial class BotUpdateHandler
 
 
     #region Is ready
+    private bool IsCOntactValid(Domain.Entities.Contact contact) =>
+        contact is not null &&
+        !string.IsNullOrWhiteSpace(contact.Phone) &&
+        !string.IsNullOrWhiteSpace(contact.Phone);
+
+    public bool IsAccountComplete(Domain.Entities.User user)
+        => !string.IsNullOrWhiteSpace(user.FirstName) &&
+           !string.IsNullOrWhiteSpace(user.LastName) &&
+           !string.IsNullOrWhiteSpace(user.Contact.Email) &&
+           !string.IsNullOrWhiteSpace(user.Contact.Phone) &&
+           user.Gender != Genders.Unknown &&
+           user.DateOfBirth != DateTimeOffset.MinValue &&
+           user.DateOfBirth.Year > 0;
+
     private static bool IsStoreReady(Store? store)
         => store is not null
-        //&& channel.MiniAppUrl is not null
-        && store.Contact is not null
-        && store.Contact.Phone is not null
-        && store.Contact.Email is not null
-        //&& channel.Channel is not null
-        //&& channel.Address is not null
         && store.Description is not null
         && store.Name is not null;
+
+    private static bool IsAddressValid(Address? address) =>
+        address is not null &&
+        address.Latitude != default &&
+        address.Longitude != default &&
+        !string.IsNullOrEmpty(address?.Country) &&
+        !string.IsNullOrEmpty(address?.Region) &&
+        !string.IsNullOrEmpty(address?.District) &&
+        !string.IsNullOrEmpty(address?.City) &&
+        !string.IsNullOrEmpty(address?.Street) &&
+        !string.IsNullOrEmpty(address?.HouseNumber);
 
     private async Task SendNotReadyNotificationAsync(ITelegramBotClient botClient, Message message, CancellationToken cancellationToken)
     {

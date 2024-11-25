@@ -15,7 +15,7 @@ public sealed class User : Auditable
     public long TelegramId { get; set; }
     public States State { get; set; }
     public int MessageId { get; set; }
-    public long ChatId { get; set; }
+    public long? ChatId { get; set; }
     public bool IsActive { get; set; }
     public long PlaceId { get; set; }
     public int PageNumber { get; set; }
@@ -32,7 +32,7 @@ public sealed class User : Auditable
     public Asset Image { get; set; }
     public long? AssetId { get; set; }
 
-    public Referral? ReferredBy { get; set; }
+    public Referral ReferredBy { get; set; }
     public ICollection<Transaction> SellerTransactions { get; set; }
     public ICollection<Transaction> CustomerTransactions { get; set; }
     public ICollection<Referral> ReferralsInitiated { get; set; }

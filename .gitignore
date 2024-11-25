@@ -397,6 +397,5 @@ FodyWeavers.xsd
 # JetBrains Rider
 *.sln.iml
 /src/DealBot.Bot/appsettings.Development.json
-/src/DealBot.Infrastructure/Persistance/EntityFramework/Migration
-/src/DealBot.Infrastructure/Persistance/EntityFramework/Migrations
+/src/DealBot.Infrastructure/Persistence/EntityFramework/Migration
 /src/DealBot.Infrastructure/Persistence/EntityFramework/Migrations

@@ -79,7 +79,7 @@ public partial class BotUpdateHandler
         var actionMessage = localizer[string.IsNullOrEmpty(value.Contact.Phone) ? Text.SetSucceeded : Text.UpdateSucceeded];
         value.Contact.Phone = message.Contact.PhoneNumber;
 
-        await SendCustomerMenuAsync(botClient, message, cancellationToken, actionMessage);
+        await SendMenuContactInfoAsync(botClient, message, cancellationToken, actionMessage);
     }
 
 
@@ -147,6 +147,6 @@ public partial class BotUpdateHandler
         var actionMessage = localizer[string.IsNullOrEmpty(store.Contact.Phone) ? Text.SetSucceeded : Text.UpdateSucceeded];
         store.Contact.Phone = message.Contact.PhoneNumber;
 
-        await SendMenuCompanyInfoAsync(botClient, message, cancellationToken, actionMessage);
+        await SendMenuContactInfoAsync(botClient, message, cancellationToken, actionMessage);
     }
 }

@@ -2,10 +2,9 @@
 
 using DealBot.Application.Common;
 using DealBot.Bot.Resources;
-using DealBot.Infrastructure.Persistance.EntityFramework;
+using DealBot.Infrastructure.Persistence.EntityFramework;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Localization;
-using System;
 using System.Globalization;
 using Telegram.Bot;
 using Telegram.Bot.Polling;
@@ -48,9 +47,7 @@ public partial class BotUpdateHandler(
 
     private async Task<Domain.Entities.User> GetUserAsync(Update update, CancellationToken cancellationToken)
     {
-        var updateContent = GetUpdateContent(update);
-        var from = updateContent.From;
-        long telegramId = from.Id;
+        var (from, chatId) = GetUpdateContent(update);
 
         var entity = await appDbContext.Users
             .Include(user => user.Address)
@@ -63,17 +60,17 @@ public partial class BotUpdateHandler(
             .Include(user => user.ReferralsInitiated)
             .AsSingleQuery()
             .FirstOrDefaultAsync(user
-                => user.TelegramId.Equals(telegramId), cancellationToken);
+                => user.TelegramId.Equals(from.Id), cancellationToken);
 
         if (entity is null)
             await appDbContext.Users.AddAsync(entity = new Domain.Entities.User
             {
                 TelegramId = from.Id,
-                ChatId = updateContent.Chat.Id,
-                LastName = from.LastName,
-                Username = from.Username,
+                ChatId = chatId,
+                LastName = from.LastName!,
+                Username = from.Username!,
                 FirstName = from.FirstName,
-                LanguageCode = from.LanguageCode,
+                LanguageCode = from.LanguageCode!,
                 Contact = new Domain.Entities.Contact(),
                 Card = new Domain.Entities.Card(),
             }, cancellationToken);
@@ -81,25 +78,25 @@ public partial class BotUpdateHandler(
         return entity;
     }
 
-    private static dynamic GetUpdateContent(Update update) => update.Type switch
+    private static (User user, long chatId) GetUpdateContent(Update update) => (update.Type switch
     {
-        UpdateType.Message => update.Message!,
-        UpdateType.ChatMember => update.ChatMember!,
-        UpdateType.CallbackQuery => update.CallbackQuery!,
-        UpdateType.MyChatMember => update.MyChatMember!,
-        UpdateType.InlineQuery => update.InlineQuery!,
-        _ => update.Message!,
-    };
+        UpdateType.Message => (update.Message!.From, update.Message.Chat.Id),
+        UpdateType.ChatMember => (update.ChatMember!.From, update.ChatMember.Chat.Id),
+        UpdateType.CallbackQuery => (update.CallbackQuery!.From, update.CallbackQuery.Message!.Chat.Id),
+        UpdateType.MyChatMember => (update.MyChatMember!.From, update.MyChatMember.Chat.Id),
+        UpdateType.InlineQuery => (update.InlineQuery!.From, update.InlineQuery.From.Id),
+        _ => default,
+    })!;
 
-    private static void SetCulture(string? languageCode)
+    private static void SetCulture(string languageCode)
     {
-        var culture = languageCode switch
-        {
-            CallbackData.CultureUz => new CultureInfo("uz-UZ"),
-            CallbackData.CultureEn => new CultureInfo("en-US"),
-            CallbackData.CultureRu => new CultureInfo("ru-RU"),
-            _ => CultureInfo.CurrentCulture
-        };
+        //var culture = languageCode switch
+        //{
+        //    CallbackData.CultureUz => new CultureInfo("uz-UZ"),
+        //    CallbackData.CultureEn => new CultureInfo("en-US"),
+        //    CallbackData.CultureRu => new CultureInfo("ru-RU"),
+        //    _ => CultureInfo.CurrentCulture
+        //};
 
         CultureInfo.CurrentCulture = new CultureInfo("uz-UZ"); // culture
         CultureInfo.CurrentUICulture = new CultureInfo("uz-UZ"); // culture
